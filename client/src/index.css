@@ -37,6 +37,36 @@ body {
   margin-bottom: 1.25rem;
 }
 
+.hero-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.lang-switch {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  overflow: hidden;
+  background: var(--panel);
+}
+
+.lang-switch .lang {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  padding: 0.35rem 0.65rem;
+  font-weight: 700;
+  cursor: pointer;
+  min-width: 2.5rem;
+}
+
+.lang-switch .lang.active {
+  background: var(--accent);
+  color: white;
+}
+
 .brand {
   margin: 0;
   font-size: 0.85rem;

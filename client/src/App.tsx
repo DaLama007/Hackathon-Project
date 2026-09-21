@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 type DietTag = "vegetarian" | "vegan" | "halal";
+type Lang = "en" | "nl";
 
 interface UserPrefs {
   vegetarian: boolean;
@@ -57,6 +58,73 @@ interface ShoppingItem {
 type View = "recipes" | "match" | "list";
 
 const emptyPrefs: UserPrefs = { vegetarian: false, vegan: false, halal: false };
+const LANG_KEY = "platewise-lang";
+
+const copy = {
+  en: {
+    title: "Diet planner",
+    subtitle: "Prefs → recipe → Albert Heijn products (bonus first) → shopping list",
+    recipes: "Recipes",
+    match: "Match",
+    list: "List",
+    prefs: "Preferences",
+    vegetarian: "Vegetarian",
+    vegan: "Vegan",
+    halal: "Halal",
+    hint: "Recipes are filtered by store tags — not medical/religious advice.",
+    loading: "Loading…",
+    noRecipes: "No recipes for these prefs — turn a filter off.",
+    servings: "servings",
+    matching: "Matching…",
+    addViaAh: "Add via AH",
+    mockBanner: "AH API unreachable — using mock products (demo still works).",
+    noProduct: "No product found",
+    adding: "Adding…",
+    addSelected: "Add selected to list",
+    shoppingList: "Shopping list",
+    clear: "Clear",
+    emptyList: "List is empty. Match a recipe to start.",
+    remove: "Remove",
+    total: "Estimated total",
+    selectOne: "Select at least one product",
+    switchTo: "NL",
+    switchAria: "Switch to Dutch",
+  },
+  nl: {
+    title: "Dieetplanner",
+    subtitle: "Voorkeuren → recept → AH-producten (bonus eerst) → boodschappenlijst",
+    recipes: "Recepten",
+    match: "Match",
+    list: "Lijst",
+    prefs: "Voorkeuren",
+    vegetarian: "Vegetarisch",
+    vegan: "Vegan",
+    halal: "Halal",
+    hint: "Recepten worden gefilterd op store-tags; geen medische/religieuze garantie.",
+    loading: "Laden…",
+    noRecipes: "Geen recepten voor deze voorkeuren. Zet een filter uit.",
+    servings: "pers",
+    matching: "Matchen…",
+    addViaAh: "Voeg toe via AH",
+    mockBanner: "AH API onbereikbaar — mock producten gebruikt (demo blijft werken).",
+    noProduct: "Geen product gevonden",
+    adding: "Toevoegen…",
+    addSelected: "Geselecteerde producten naar lijst",
+    shoppingList: "Boodschappenlijst",
+    clear: "Leegmaken",
+    emptyList: "Lijst is leeg. Match een recept om te beginnen.",
+    remove: "Verwijderen",
+    total: "Geschat totaal",
+    selectOne: "Selecteer minstens één product",
+    switchTo: "EN",
+    switchAria: "Schakel naar Engels",
+  },
+} as const;
+
+function readStoredLang(): Lang {
+  const stored = localStorage.getItem(LANG_KEY);
+  return stored === "en" || stored === "nl" ? stored : "nl";
+}
 
 function formatPrice(price: number | null | undefined): string {
   if (price == null) return "—";
@@ -64,6 +132,9 @@ function formatPrice(price: number | null | undefined): string {
 }
 
 export default function App() {
+  const [lang, setLang] = useState<Lang>(() => readStoredLang());
+  const t = copy[lang];
+
   const [view, setView] = useState<View>("recipes");
   const [prefs, setPrefs] = useState<UserPrefs>(emptyPrefs);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -77,6 +148,16 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [matching, setMatching] = useState(false);
   const [adding, setAdding] = useState(false);
+
+  function setLanguage(next: Lang) {
+    setLang(next);
+    localStorage.setItem(LANG_KEY, next);
+    document.documentElement.lang = next;
+  }
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
 
   async function loadPrefs() {
     const res = await fetch("/api/prefs");
@@ -190,7 +271,7 @@ export default function App() {
       });
 
     if (items.length === 0) {
-      setError("Select at least one product");
+      setError(t.selectOne);
       return;
     }
 
@@ -240,37 +321,55 @@ export default function App() {
   return (
     <main className="app">
       <header className="hero">
-        <p className="brand">PlateWise</p>
-        <h1>Diet planner</h1>
-        <p className="subtitle">
-          Prefs → recept → Albert Heijn producten (bonus eerst) → boodschappenlijst
-        </p>
+        <div className="hero-top">
+          <p className="brand">PlateWise</p>
+          <div className="lang-switch" role="group" aria-label="Language / Taal">
+            <button
+              type="button"
+              className={lang === "en" ? "lang active" : "lang"}
+              onClick={() => setLanguage("en")}
+              aria-pressed={lang === "en"}
+            >
+              EN
+            </button>
+            <button
+              type="button"
+              className={lang === "nl" ? "lang active" : "lang"}
+              onClick={() => setLanguage("nl")}
+              aria-pressed={lang === "nl"}
+            >
+              NL
+            </button>
+          </div>
+        </div>
+        <h1>{t.title}</h1>
+        <p className="subtitle">{t.subtitle}</p>
       </header>
 
-      <nav className="tabs" aria-label="Views">
+      <nav className="tabs" aria-label={lang === "en" ? "Views" : "Weergaven"}>
         <button className={view === "recipes" ? "active" : ""} onClick={() => setView("recipes")}>
-          Recepten
+          {t.recipes}
         </button>
         <button
           className={view === "match" ? "active" : ""}
           onClick={() => selectedRecipe && setView("match")}
           disabled={!selectedRecipe}
         >
-          Match
+          {t.match}
         </button>
         <button className={view === "list" ? "active" : ""} onClick={() => setView("list")}>
-          Lijst ({shoppingList.length})
+          {t.list} ({shoppingList.length})
         </button>
       </nav>
 
-      <section className="prefs" aria-label="Dietary preferences">
-        <h2>Voorkeuren</h2>
+      <section className="prefs" aria-label={t.prefs}>
+        <h2>{t.prefs}</h2>
         <div className="pref-toggles">
           {(
             [
-              ["vegetarian", "Vegetarisch"],
-              ["vegan", "Vegan"],
-              ["halal", "Halal"],
+              ["vegetarian", t.vegetarian],
+              ["vegan", t.vegan],
+              ["halal", t.halal],
             ] as const
           ).map(([key, label]) => (
             <label key={key} className="pref">
@@ -283,18 +382,20 @@ export default function App() {
             </label>
           ))}
         </div>
-        <p className="hint">Recepten worden gefilterd op store-tags; geen medische/religieuze garantie.</p>
+        <p className="hint">{t.hint}</p>
       </section>
 
       {error && <p className="error">{error}</p>}
 
       {loading ? (
-        <p className="empty">Laden…</p>
+        <p className="empty">{t.loading}</p>
       ) : view === "recipes" ? (
         <section>
-          <h2>Recepten ({recipes.length})</h2>
+          <h2>
+            {t.recipes} ({recipes.length})
+          </h2>
           {recipes.length === 0 ? (
-            <p className="empty">Geen recepten voor deze voorkeuren. Zet een filter uit.</p>
+            <p className="empty">{t.noRecipes}</p>
           ) : (
             <ul className="recipe-list">
               {recipes.map((recipe) => (
@@ -303,11 +404,12 @@ export default function App() {
                     <h3>{recipe.title}</h3>
                     <p>{recipe.summary}</p>
                     <p className="meta">
-                      {recipe.timeMinutes} min · {recipe.servings} pers · {recipe.dietTags.join(", ")}
+                      {recipe.timeMinutes} min · {recipe.servings} {t.servings} ·{" "}
+                      {recipe.dietTags.join(", ")}
                     </p>
                   </div>
                   <button disabled={matching} onClick={() => matchRecipe(recipe)}>
-                    {matching && selectedRecipe?.id === recipe.id ? "Matchen…" : "Voeg toe via AH"}
+                    {matching && selectedRecipe?.id === recipe.id ? t.matching : t.addViaAh}
                   </button>
                 </li>
               ))}
@@ -316,10 +418,10 @@ export default function App() {
         </section>
       ) : view === "match" && selectedRecipe ? (
         <section>
-          <h2>Match: {selectedRecipe.title}</h2>
-          {usedMock && (
-            <p className="banner">AH API onbereikbaar — mock producten gebruikt (demo blijft werken).</p>
-          )}
+          <h2>
+            {t.match}: {selectedRecipe.title}
+          </h2>
+          {usedMock && <p className="banner">{t.mockBanner}</p>}
           <ul className="match-list">
             {matches.map((row) => {
               const key = row.ingredient.searchTerm;
@@ -361,28 +463,28 @@ export default function App() {
                       )}
                     </div>
                   ) : (
-                    <p className="empty">Geen product gevonden</p>
+                    <p className="empty">{t.noProduct}</p>
                   )}
                 </li>
               );
             })}
           </ul>
           <button className="primary" disabled={adding} onClick={addSelectedToList}>
-            {adding ? "Toevoegen…" : "Geselecteerde producten naar lijst"}
+            {adding ? t.adding : t.addSelected}
           </button>
         </section>
       ) : (
         <section>
           <div className="list-header">
-            <h2>Boodschappenlijst</h2>
+            <h2>{t.shoppingList}</h2>
             {shoppingList.length > 0 && (
               <button className="ghost" onClick={clearList}>
-                Leegmaken
+                {t.clear}
               </button>
             )}
           </div>
           {shoppingList.length === 0 ? (
-            <p className="empty">Lijst is leeg. Match een recept om te beginnen.</p>
+            <p className="empty">{t.emptyList}</p>
           ) : (
             <>
               <ul className="shop-list">
@@ -395,13 +497,15 @@ export default function App() {
                         {item.is_bonus ? ` · ${item.bonus_label ?? "Bonus"}` : ""}
                       </p>
                     </div>
-                    <button className="delete" onClick={() => removeItem(item.id)} aria-label="Remove">
+                    <button className="delete" onClick={() => removeItem(item.id)} aria-label={t.remove}>
                       ×
                     </button>
                   </li>
                 ))}
               </ul>
-              <p className="total">Geschat totaal: {formatPrice(listTotal)}</p>
+              <p className="total">
+                {t.total}: {formatPrice(listTotal)}
+              </p>
             </>
           )}
         </section>
