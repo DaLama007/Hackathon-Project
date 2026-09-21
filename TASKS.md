@@ -36,6 +36,15 @@ Open tasks are available to any agent. Claimed tasks show `(@branch-name)` on th
 
 ## P1
 
+- [x] Login with per-account save/load of prefs and shopping list (@cursor/login-save-load-3111)
+  - **ID**: auth-save-load
+  - **Status**: done
+  - **Tags**: backend, frontend, auth
+  - **Files**: `server/src/auth.ts`, `server/src/db.ts`, `server/src/index.ts`, `client/src/Login.tsx`, `client/src/App.tsx`, `client/src/index.css`, `scripts/smoke-test.mjs`, `.env.example`
+  - **Details**: Requested directly by the user, not picked from this backlog. Username/password accounts with `bcryptjs` hashes and an httpOnly signed session cookie; sessions live in a SQLite `sessions` table. `prefs` became per-account `user_prefs` and `shopping_list` gained a `user_id` with `UNIQUE (user_id, product_id)`. Save is implicit on every write, load is implicit on login — no named snapshots. Pre-accounts rows are adopted by the seeded demo account (`DEMO_USERNAME` / `DEMO_PASSWORD`) behind a `PRAGMA user_version` gate; old tables stay as `prefs_legacy` / `shopping_list_legacy`.
+  - **Acceptance**: Planner is unreachable without a session; register/login/logout work; prefs and list survive logout and return on the next login; a second account starts clean. Auth copy is EN/NL.
+  - **Smoke**: (1) load the app → login screen, no tabs. (2) Registreer a new user → tabs appear, header shows `Ingelogd als <name>`. (3) Tick Vegetarisch, match a recipe, add products to the list. (4) Uitloggen → back to the login screen. (5) Log back in → Vegetarisch still ticked and the same list/total. (6) Register a second account → default prefs, empty list.
+
 - [x] Translate recipe/ingredient names in EN mode (@cursor/translate-names-en-078b)
   - **ID**: translate-names-en
   - **Status**: done

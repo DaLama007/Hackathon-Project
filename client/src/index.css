@@ -503,6 +503,7 @@ body::after {
 .recipe-card,
 .match-card,
 .shop-card,
+.auth-card,
 .empty-state,
 .banner,
 .error-banner {
@@ -522,6 +523,7 @@ body::after {
 .recipe-card::before,
 .match-card::before,
 .shop-card::before,
+.auth-card::before,
 .empty-state::before,
 .banner::before,
 .error-banner::before {
@@ -543,6 +545,7 @@ body::after {
 .recipe-card > *,
 .match-card > *,
 .shop-card > *,
+.auth-card > *,
 .empty-state > *,
 .banner > *,
 .error-banner > * {
@@ -1460,5 +1463,97 @@ button {
   .suggest-list button,
   .offer-recipes button {
     width: 100%;
+  }
+}
+
+/* Accounts: header account row + login/signup card (glass surface above) */
+
+.hero-actions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.account {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.account strong {
+  color: var(--ink);
+}
+
+.auth-card {
+  padding: 1.4rem 1.25rem;
+  max-width: 24rem;
+  margin: 0 auto;
+}
+
+.auth-card h2 {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-brand);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.auth-blurb {
+  margin: 0 0 1.15rem;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-weight: 600;
+}
+
+.auth-field input {
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 400;
+}
+
+.auth-field input:focus {
+  outline: 2px solid rgba(31, 138, 91, 0.35);
+  outline-offset: 1px;
+}
+
+.auth-field small {
+  font-weight: 400;
+}
+
+.auth-card .primary {
+  margin-top: 0.25rem;
+}
+
+.auth-switch {
+  margin-top: 0.9rem;
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  .hero-actions {
+    width: 100%;
+  }
+
+  .auth-card {
+    max-width: none;
   }
 }
