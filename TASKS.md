@@ -10,9 +10,9 @@ Open tasks are available to any agent. Claimed tasks show `(@branch-name)` on th
 
 ## P0
 
-- [ ] Polish frontend UI
+- [x] Polish frontend UI (@cursor/frontend-ui-ad72)
   - **ID**: frontend-ui
-  - **Status**: open
+  - **Status**: done
   - **Tags**: frontend, ui
   - **Files**: `client/src/App.tsx`, `client/src/index.css`
   - **Details**: Make the existing PlateWise demo look and feel demo-ready. Today the app is a single-page three-tab flow (recipes / match / list) with functional but sparse layout. Improve visual hierarchy, recipe cards, product images, match-review (swap/uncheck), shopping list, empty/error/loading states, and mobile + ~720px desktop. Keep EN/NL via the existing `copy.en` / `copy.nl` map (default NL, persist `platewise-lang`). Do not rebuild the stack or add an i18n library.

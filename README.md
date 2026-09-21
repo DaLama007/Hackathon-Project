@@ -27,7 +27,6 @@ Current backlog:
 
 | ID | Task |
 | --- | --- |
-| `frontend-ui` | Polish frontend UI |
 | `camera-ai-scan` | Camera + AI scan of ingredients/products |
 
 Accounts are handled by `auth-save-load` (done) — see `TASKS.md` for its smoke checklist.
