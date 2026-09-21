@@ -1,99 +1,410 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-interface Note {
+type DietTag = "vegetarian" | "vegan" | "halal";
+
+interface UserPrefs {
+  vegetarian: boolean;
+  vegan: boolean;
+  halal: boolean;
+}
+
+interface Ingredient {
+  name: string;
+  quantity: number;
+  unit: string;
+  searchTerm: string;
+  optional: boolean;
+}
+
+interface Recipe {
+  id: string;
+  title: string;
+  servings: number;
+  timeMinutes: number;
+  dietTags: DietTag[];
+  summary: string;
+  steps: string[];
+  ingredients: Ingredient[];
+}
+
+interface Product {
+  id: string;
+  title: string;
+  price: number | null;
+  isBonus: boolean;
+  bonusLabel: string | null;
+  imageUrl: string | null;
+  source: "ah" | "mock";
+}
+
+interface MatchRow {
+  ingredient: Ingredient;
+  product: Product | null;
+  alternatives: Product[];
+  usedMock: boolean;
+}
+
+interface ShoppingItem {
   id: number;
-  text: string;
-  created_at: string;
+  product_id: string;
+  title: string;
+  price: number | null;
+  is_bonus: boolean;
+  bonus_label: string | null;
+  quantity: number;
+}
+
+type View = "recipes" | "match" | "list";
+
+const emptyPrefs: UserPrefs = { vegetarian: false, vegan: false, halal: false };
+
+function formatPrice(price: number | null | undefined): string {
+  if (price == null) return "—";
+  return `€${price.toFixed(2)}`;
 }
 
 export default function App() {
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [text, setText] = useState("");
+  const [view, setView] = useState<View>("recipes");
+  const [prefs, setPrefs] = useState<UserPrefs>(emptyPrefs);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+  const [matches, setMatches] = useState<MatchRow[]>([]);
+  const [selectedProducts, setSelectedProducts] = useState<Record<string, Product>>({});
+  const [included, setIncluded] = useState<Record<string, boolean>>({});
+  const [usedMock, setUsedMock] = useState(false);
+  const [shoppingList, setShoppingList] = useState<ShoppingItem[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [matching, setMatching] = useState(false);
+  const [adding, setAdding] = useState(false);
 
-  async function loadNotes() {
+  async function loadPrefs() {
+    const res = await fetch("/api/prefs");
+    if (!res.ok) throw new Error(`GET /api/prefs failed: ${res.status}`);
+    setPrefs(await res.json());
+  }
+
+  async function loadRecipes() {
+    const res = await fetch("/api/recipes");
+    if (!res.ok) throw new Error(`GET /api/recipes failed: ${res.status}`);
+    setRecipes(await res.json());
+  }
+
+  async function loadShoppingList() {
+    const res = await fetch("/api/shopping-list");
+    if (!res.ok) throw new Error(`GET /api/shopping-list failed: ${res.status}`);
+    setShoppingList(await res.json());
+  }
+
+  async function bootstrap() {
     try {
-      const res = await fetch("/api/notes");
-      if (!res.ok) throw new Error(`GET /api/notes failed: ${res.status}`);
-      setNotes(await res.json());
+      setLoading(true);
+      await Promise.all([loadPrefs(), loadRecipes(), loadShoppingList()]);
       setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load notes");
+      setError(err instanceof Error ? err.message : "Failed to load");
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    loadNotes();
+    bootstrap();
   }, []);
 
-  async function addNote(event: React.FormEvent) {
-    event.preventDefault();
-    const trimmed = text.trim();
-    if (!trimmed) return;
+  async function updatePref(key: keyof UserPrefs, value: boolean) {
+    const next = { ...prefs, [key]: value };
+    if (key === "vegan" && value) next.vegetarian = true;
+    setPrefs(next);
     try {
-      const res = await fetch("/api/notes", {
-        method: "POST",
+      const res = await fetch("/api/prefs", {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: trimmed }),
+        body: JSON.stringify(next),
       });
-      if (!res.ok) throw new Error(`POST /api/notes failed: ${res.status}`);
-      setText("");
-      await loadNotes();
+      if (!res.ok) throw new Error(`PUT /api/prefs failed: ${res.status}`);
+      setPrefs(await res.json());
+      await loadRecipes();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to add note");
+      setError(err instanceof Error ? err.message : "Failed to save prefs");
     }
   }
 
-  async function removeNote(id: number) {
+  async function matchRecipe(recipe: Recipe) {
+    setSelectedRecipe(recipe);
+    setMatching(true);
+    setError(null);
     try {
-      const res = await fetch(`/api/notes/${id}`, { method: "DELETE" });
-      if (!res.ok && res.status !== 204) throw new Error(`DELETE failed: ${res.status}`);
-      await loadNotes();
+      const res = await fetch(`/api/recipes/${recipe.id}/match`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ includeOptional: false }),
+      });
+      if (!res.ok) throw new Error(`Match failed: ${res.status}`);
+      const data = await res.json();
+      const rows = data.matches as MatchRow[];
+      setMatches(rows);
+      setUsedMock(Boolean(data.usedMock));
+
+      const products: Record<string, Product> = {};
+      const includedMap: Record<string, boolean> = {};
+      for (const row of rows) {
+        const key = row.ingredient.searchTerm;
+        if (row.product) products[key] = row.product;
+        includedMap[key] = Boolean(row.product);
+      }
+      setSelectedProducts(products);
+      setIncluded(includedMap);
+      setView("match");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete note");
+      setError(err instanceof Error ? err.message : "Failed to match products");
+    } finally {
+      setMatching(false);
     }
   }
+
+  function swapProduct(searchTerm: string, productId: string, row: MatchRow) {
+    const all = [row.product, ...row.alternatives].filter(Boolean) as Product[];
+    const found = all.find((p) => p.id === productId);
+    if (found) {
+      setSelectedProducts((prev) => ({ ...prev, [searchTerm]: found }));
+    }
+  }
+
+  async function addSelectedToList() {
+    if (!selectedRecipe) return;
+    const items = matches
+      .filter((row) => included[row.ingredient.searchTerm] && selectedProducts[row.ingredient.searchTerm])
+      .map((row) => {
+        const product = selectedProducts[row.ingredient.searchTerm];
+        return {
+          productId: product.id,
+          title: product.title,
+          price: product.price,
+          isBonus: product.isBonus,
+          bonusLabel: product.bonusLabel,
+          searchTerm: row.ingredient.searchTerm,
+          recipeId: selectedRecipe.id,
+          quantity: 1,
+        };
+      });
+
+    if (items.length === 0) {
+      setError("Select at least one product");
+      return;
+    }
+
+    setAdding(true);
+    try {
+      const res = await fetch("/api/shopping-list/items", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items }),
+      });
+      if (!res.ok) throw new Error(`Add to list failed: ${res.status}`);
+      await loadShoppingList();
+      setView("list");
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to add items");
+    } finally {
+      setAdding(false);
+    }
+  }
+
+  async function removeItem(id: number) {
+    try {
+      const res = await fetch(`/api/shopping-list/items/${id}`, { method: "DELETE" });
+      if (!res.ok && res.status !== 204) throw new Error(`Delete failed: ${res.status}`);
+      await loadShoppingList();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to remove item");
+    }
+  }
+
+  async function clearList() {
+    try {
+      const res = await fetch("/api/shopping-list", { method: "DELETE" });
+      if (!res.ok && res.status !== 204) throw new Error(`Clear failed: ${res.status}`);
+      await loadShoppingList();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to clear list");
+    }
+  }
+
+  const listTotal = useMemo(
+    () => shoppingList.reduce((sum, item) => sum + (item.price ?? 0) * item.quantity, 0),
+    [shoppingList],
+  );
 
   return (
     <main className="app">
-      <h1>Hackathon Notes</h1>
-      <p className="subtitle">Vite + React &middot; Express API &middot; SQLite</p>
+      <header className="hero">
+        <p className="brand">PlateWise</p>
+        <h1>Diet planner</h1>
+        <p className="subtitle">
+          Prefs → recept → Albert Heijn producten (bonus eerst) → boodschappenlijst
+        </p>
+      </header>
 
-      <form className="composer" onSubmit={addNote}>
-        <input
-          type="text"
-          value={text}
-          placeholder="Write a note and hit Add…"
-          onChange={(event) => setText(event.target.value)}
-          aria-label="Note text"
-        />
-        <button type="submit">Add</button>
-      </form>
+      <nav className="tabs" aria-label="Views">
+        <button className={view === "recipes" ? "active" : ""} onClick={() => setView("recipes")}>
+          Recepten
+        </button>
+        <button
+          className={view === "match" ? "active" : ""}
+          onClick={() => selectedRecipe && setView("match")}
+          disabled={!selectedRecipe}
+        >
+          Match
+        </button>
+        <button className={view === "list" ? "active" : ""} onClick={() => setView("list")}>
+          Lijst ({shoppingList.length})
+        </button>
+      </nav>
+
+      <section className="prefs" aria-label="Dietary preferences">
+        <h2>Voorkeuren</h2>
+        <div className="pref-toggles">
+          {(
+            [
+              ["vegetarian", "Vegetarisch"],
+              ["vegan", "Vegan"],
+              ["halal", "Halal"],
+            ] as const
+          ).map(([key, label]) => (
+            <label key={key} className="pref">
+              <input
+                type="checkbox"
+                checked={prefs[key]}
+                onChange={(e) => updatePref(key, e.target.checked)}
+              />
+              {label}
+            </label>
+          ))}
+        </div>
+        <p className="hint">Recepten worden gefilterd op store-tags; geen medische/religieuze garantie.</p>
+      </section>
 
       {error && <p className="error">{error}</p>}
 
       {loading ? (
-        <p className="empty">Loading…</p>
-      ) : notes.length === 0 ? (
-        <p className="empty">No notes yet. Add your first one above.</p>
+        <p className="empty">Laden…</p>
+      ) : view === "recipes" ? (
+        <section>
+          <h2>Recepten ({recipes.length})</h2>
+          {recipes.length === 0 ? (
+            <p className="empty">Geen recepten voor deze voorkeuren. Zet een filter uit.</p>
+          ) : (
+            <ul className="recipe-list">
+              {recipes.map((recipe) => (
+                <li key={recipe.id}>
+                  <div>
+                    <h3>{recipe.title}</h3>
+                    <p>{recipe.summary}</p>
+                    <p className="meta">
+                      {recipe.timeMinutes} min · {recipe.servings} pers · {recipe.dietTags.join(", ")}
+                    </p>
+                  </div>
+                  <button disabled={matching} onClick={() => matchRecipe(recipe)}>
+                    {matching && selectedRecipe?.id === recipe.id ? "Matchen…" : "Voeg toe via AH"}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      ) : view === "match" && selectedRecipe ? (
+        <section>
+          <h2>Match: {selectedRecipe.title}</h2>
+          {usedMock && (
+            <p className="banner">AH API onbereikbaar — mock producten gebruikt (demo blijft werken).</p>
+          )}
+          <ul className="match-list">
+            {matches.map((row) => {
+              const key = row.ingredient.searchTerm;
+              const selected = selectedProducts[key];
+              const options = [row.product, ...row.alternatives].filter(Boolean) as Product[];
+              return (
+                <li key={key}>
+                  <label className="match-head">
+                    <input
+                      type="checkbox"
+                      checked={Boolean(included[key])}
+                      onChange={(e) =>
+                        setIncluded((prev) => ({ ...prev, [key]: e.target.checked }))
+                      }
+                    />
+                    <span>
+                      {row.ingredient.name}{" "}
+                      <span className="meta">
+                        ({row.ingredient.quantity} {row.ingredient.unit})
+                      </span>
+                    </span>
+                  </label>
+                  {selected ? (
+                    <div className="match-body">
+                      <select
+                        value={selected.id}
+                        onChange={(e) => swapProduct(key, e.target.value, row)}
+                        aria-label={`Product for ${row.ingredient.name}`}
+                      >
+                        {options.map((product) => (
+                          <option key={product.id} value={product.id}>
+                            {product.title} · {formatPrice(product.price)}
+                            {product.isBonus ? " · BONUS" : ""}
+                          </option>
+                        ))}
+                      </select>
+                      {selected.isBonus && (
+                        <span className="bonus">{selected.bonusLabel ?? "Bonus"}</span>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="empty">Geen product gevonden</p>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+          <button className="primary" disabled={adding} onClick={addSelectedToList}>
+            {adding ? "Toevoegen…" : "Geselecteerde producten naar lijst"}
+          </button>
+        </section>
       ) : (
-        <ul className="notes">
-          {notes.map((note) => (
-            <li key={note.id}>
-              <span>{note.text}</span>
-              <button
-                className="delete"
-                onClick={() => removeNote(note.id)}
-                aria-label={`Delete note ${note.id}`}
-              >
-                ×
+        <section>
+          <div className="list-header">
+            <h2>Boodschappenlijst</h2>
+            {shoppingList.length > 0 && (
+              <button className="ghost" onClick={clearList}>
+                Leegmaken
               </button>
-            </li>
-          ))}
-        </ul>
+            )}
+          </div>
+          {shoppingList.length === 0 ? (
+            <p className="empty">Lijst is leeg. Match een recept om te beginnen.</p>
+          ) : (
+            <>
+              <ul className="shop-list">
+                {shoppingList.map((item) => (
+                  <li key={item.id}>
+                    <div>
+                      <strong>{item.title}</strong>
+                      <p className="meta">
+                        ×{item.quantity} · {formatPrice(item.price)}
+                        {item.is_bonus ? ` · ${item.bonus_label ?? "Bonus"}` : ""}
+                      </p>
+                    </div>
+                    <button className="delete" onClick={() => removeItem(item.id)} aria-label="Remove">
+                      ×
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <p className="total">Geschat totaal: {formatPrice(listTotal)}</p>
+            </>
+          )}
+        </section>
       )}
     </main>
   );

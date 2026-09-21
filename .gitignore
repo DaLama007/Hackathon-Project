@@ -7,7 +7,11 @@ dist/
 *.sqlite
 *.sqlite3
 *.db
-data/
+/data/
+server/data/*.sqlite
+server/data/*.sqlite3
+!server/data/recipes.json
+!server/data/mock-products.json
 
 # Env files (never commit real secrets)
 .env
