@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
+import Login, { type AuthUser } from "./Login";
 import {
   ingredientName,
   ingredientUnit,
@@ -135,6 +136,11 @@ const copy = {
     searching: "Searching…",
     noItemResults: "No products for that search.",
     itemAdded: "Added to list",
+    loggedInAs: "Signed in as",
+    logOut: "Log out",
+    loggingOut: "Logging out…",
+    sessionExpired: "Your session ended. Please log in again.",
+    savedForYou: "Saved to your account — it will be here next time you log in.",
   },
   nl: {
     title: "Dieetplanner",
@@ -188,6 +194,11 @@ const copy = {
     searching: "Zoeken…",
     noItemResults: "Geen producten voor deze zoekterm.",
     itemAdded: "Toegevoegd aan lijst",
+    loggedInAs: "Ingelogd als",
+    logOut: "Uitloggen",
+    loggingOut: "Uitloggen…",
+    sessionExpired: "Je sessie is verlopen. Log opnieuw in.",
+    savedForYou: "Opgeslagen bij je account — staat er de volgende keer weer.",
   },
 } as const;
 
@@ -290,6 +301,8 @@ export default function App() {
   const [lang, setLang] = useState<Lang>(() => readStoredLang());
   const t = copy[lang];
 
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [loggingOut, setLoggingOut] = useState(false);
   const [view, setView] = useState<View>("recipes");
   const [prefs, setPrefs] = useState<UserPrefs>(emptyPrefs);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -324,20 +337,46 @@ export default function App() {
     document.documentElement.lang = lang;
   }, [lang]);
 
+  /** Wipes per-account state so a logged-out tab never shows someone else's plate. */
+  function clearAccountState() {
+    setPrefs(emptyPrefs);
+    setRecipes([]);
+    setOffers([]);
+    setShoppingList([]);
+    setMatches([]);
+    setSelectedRecipe(null);
+    setPinnedOffer(null);
+    setItemResults([]);
+    setItemMessage(null);
+    setShareStatus(null);
+    setView("recipes");
+  }
+
+  /** Every API route except /api/health is account-scoped, so 401 means log in again. */
+  async function apiFetch(input: string, init?: RequestInit): Promise<Response> {
+    const res = await fetch(input, init);
+    if (res.status === 401) {
+      setUser(null);
+      clearAccountState();
+      throw new Error(t.sessionExpired);
+    }
+    return res;
+  }
+
   async function loadPrefs() {
-    const res = await fetch("/api/prefs");
+    const res = await apiFetch("/api/prefs");
     if (!res.ok) throw new Error(`GET /api/prefs failed: ${res.status}`);
     setPrefs(await res.json());
   }
 
   async function loadRecipes() {
-    const res = await fetch("/api/recipes");
+    const res = await apiFetch("/api/recipes");
     if (!res.ok) throw new Error(`GET /api/recipes failed: ${res.status}`);
     setRecipes(await res.json());
   }
 
   async function loadOffers() {
-    const res = await fetch("/api/offers");
+    const res = await apiFetch("/api/offers");
     if (!res.ok) throw new Error(`GET /api/offers failed: ${res.status}`);
     const data = await res.json();
     setOffers(Array.isArray(data.offers) ? data.offers : []);
@@ -345,12 +384,13 @@ export default function App() {
   }
 
   async function loadShoppingList() {
-    const res = await fetch("/api/shopping-list");
+    const res = await apiFetch("/api/shopping-list");
     if (!res.ok) throw new Error(`GET /api/shopping-list failed: ${res.status}`);
     setShoppingList(await res.json());
   }
 
-  async function bootstrap() {
+  /** The "load" half of save/load: pulls this account's saved prefs and list. */
+  async function loadAccountData() {
     try {
       setLoading(true);
       await Promise.all([loadPrefs(), loadRecipes(), loadShoppingList(), loadOffers()]);
@@ -362,9 +402,46 @@ export default function App() {
     }
   }
 
+  async function bootstrap() {
+    try {
+      setLoading(true);
+      const res = await fetch("/api/auth/me");
+      if (!res.ok) {
+        setUser(null);
+        return;
+      }
+      setUser((await res.json()) as AuthUser);
+      await loadAccountData();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
     bootstrap();
   }, []);
+
+  async function handleAuthenticated(authUser: AuthUser) {
+    setUser(authUser);
+    setError(null);
+    await loadAccountData();
+  }
+
+  async function logout() {
+    setLoggingOut(true);
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch (err) {
+      console.error("Logout request failed", err);
+    } finally {
+      setUser(null);
+      clearAccountState();
+      setError(null);
+      setLoggingOut(false);
+    }
+  }
 
   useEffect(() => {
     if (matches.length === 0) return;
@@ -395,7 +472,7 @@ export default function App() {
     if (key === "vegan" && value) next.vegetarian = true;
     setPrefs(next);
     try {
-      const res = await fetch("/api/prefs", {
+      const res = await apiFetch("/api/prefs", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(next),
@@ -411,7 +488,7 @@ export default function App() {
   async function resolveRecipe(id: string): Promise<Recipe | null> {
     const local = recipes.find((recipe) => recipe.id === id);
     if (local) return local;
-    const res = await fetch(`/api/recipes/${id}`);
+    const res = await apiFetch(`/api/recipes/${id}`);
     if (!res.ok) return null;
     return (await res.json()) as Recipe;
   }
@@ -423,7 +500,7 @@ export default function App() {
     setMatching(true);
     setError(null);
     try {
-      const res = await fetch(`/api/recipes/${recipe.id}/match`, {
+      const res = await apiFetch(`/api/recipes/${recipe.id}/match`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ includeOptional: false }),
@@ -465,7 +542,7 @@ export default function App() {
   }
 
   async function postListItems(items: ReturnType<typeof productToListItem>[]) {
-    const res = await fetch("/api/shopping-list/items", {
+    const res = await apiFetch("/api/shopping-list/items", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ items }),
@@ -515,7 +592,7 @@ export default function App() {
     setItemMessage(null);
     setError(null);
     try {
-      const res = await fetch(
+      const res = await apiFetch(
         `/api/products/suggest?q=${encodeURIComponent(query)}&filter=${itemFilter}`,
       );
       if (!res.ok) throw new Error(`Search failed: ${res.status}`);
@@ -545,7 +622,7 @@ export default function App() {
 
   async function removeItem(id: number) {
     try {
-      const res = await fetch(`/api/shopping-list/items/${id}`, { method: "DELETE" });
+      const res = await apiFetch(`/api/shopping-list/items/${id}`, { method: "DELETE" });
       if (!res.ok && res.status !== 204) throw new Error(`Delete failed: ${res.status}`);
       await loadShoppingList();
     } catch (err) {
@@ -555,7 +632,7 @@ export default function App() {
 
   async function clearList() {
     try {
-      const res = await fetch("/api/shopping-list", { method: "DELETE" });
+      const res = await apiFetch("/api/shopping-list", { method: "DELETE" });
       if (!res.ok && res.status !== 204) throw new Error(`Clear failed: ${res.status}`);
       await loadShoppingList();
       setShareStatus(null);
@@ -647,28 +724,65 @@ export default function App() {
     );
   }
 
+  function renderLangSwitch() {
+    return (
+      <div className="lang-switch" role="group" aria-label="Language / Taal">
+        <button
+          type="button"
+          className={lang === "en" ? "lang active" : "lang"}
+          onClick={() => setLanguage("en")}
+          aria-pressed={lang === "en"}
+        >
+          EN
+        </button>
+        <button
+          type="button"
+          className={lang === "nl" ? "lang active" : "lang"}
+          onClick={() => setLanguage("nl")}
+          aria-pressed={lang === "nl"}
+        >
+          NL
+        </button>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <main className="app">
+        <header className="hero">
+          <div className="hero-top">
+            <p className="brand">PlateWise</p>
+            {renderLangSwitch()}
+          </div>
+          <h1>{t.title}</h1>
+          <p className="subtitle">{t.subtitle}</p>
+        </header>
+        {loading ? (
+          <p className="empty">{t.loading}</p>
+        ) : (
+          <>
+            {error && <p className="error">{error}</p>}
+            <Login lang={lang} onAuthenticated={handleAuthenticated} />
+          </>
+        )}
+      </main>
+    );
+  }
+
   return (
     <main className="app">
       <header className="hero">
         <div className="hero-top">
           <p className="brand">PlateWise</p>
-          <div className="lang-switch" role="group" aria-label="Language / Taal">
-            <button
-              type="button"
-              className={lang === "en" ? "lang active" : "lang"}
-              onClick={() => setLanguage("en")}
-              aria-pressed={lang === "en"}
-            >
-              EN
+          <div className="hero-actions">
+            <span className="account" title={t.savedForYou}>
+              {t.loggedInAs} <strong>{user.username}</strong>
+            </span>
+            <button type="button" className="ghost" onClick={logout} disabled={loggingOut}>
+              {loggingOut ? t.loggingOut : t.logOut}
             </button>
-            <button
-              type="button"
-              className={lang === "nl" ? "lang active" : "lang"}
-              onClick={() => setLanguage("nl")}
-              aria-pressed={lang === "nl"}
-            >
-              NL
-            </button>
+            {renderLangSwitch()}
           </div>
         </div>
         <h1>{t.title}</h1>
