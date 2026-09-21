@@ -1,16 +1,3 @@
-import { config as loadEnv } from "dotenv";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
-
-/** Load monorepo-root `.env` even when cwd is `server/` (npm workspaces). */
-export function loadProjectEnv(): void {
-  const here = dirname(fileURLToPath(import.meta.url));
-  const repoRoot = resolve(here, "../..");
-  loadEnv({ path: resolve(repoRoot, ".env") });
-  loadEnv({ path: resolve(here, "../.env") }); // optional server/.env
-  loadEnv(); // cwd fallback
-}
-
 export type LlmProvider = "openrouter" | "openai";
 
 export interface LlmConfig {

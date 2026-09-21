@@ -1,3 +1,5 @@
+import "./env.js";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 import {
@@ -7,6 +9,7 @@ import {
   searchProducts,
   type Product,
 } from "./ah.js";
+import { authRouter, requireUser, seedDemoUser, sessionSecret } from "./auth.js";
 import {
   addShoppingItem,
   clearShoppingList,
@@ -18,7 +21,6 @@ import {
   removeShoppingItem,
   setPrefs,
 } from "./db.js";
-import { loadProjectEnv } from "./llm.js";
 import {
   analyzePlate,
   buildWeeklyReview,
@@ -34,12 +36,11 @@ import {
   type UserPrefs,
 } from "./recipes.js";
 
-loadProjectEnv();
-
 const app = express();
-app.use(cors());
-// Plate photos arrive as base64; default body limit is too small.
+app.use(cors({ origin: true, credentials: true }));
+// Plate photos arrive as base64; the default body limit is too small.
 app.use(express.json({ limit: "8mb" }));
+app.use(cookieParser(sessionSecret));
 
 function parsePrefsBody(body: unknown): UserPrefs | null {
   if (!body || typeof body !== "object") return null;
@@ -51,16 +52,15 @@ function parsePrefsBody(body: unknown): UserPrefs | null {
   };
 }
 
-/** Soft user id until auth lands — header, body, or query; default "local". */
-function resolveUserId(req: express.Request): string {
-  const header = req.header("x-user-id")?.trim();
-  const bodyId =
-    req.body && typeof req.body === "object" && typeof (req.body as { userId?: unknown }).userId === "string"
-      ? String((req.body as { userId: string }).userId).trim()
-      : "";
-  const queryId = typeof req.query.userId === "string" ? req.query.userId.trim() : "";
-  const raw = header || bodyId || queryId || "local";
-  return raw.slice(0, 64) || "local";
+/** Safe on any route mounted behind `requireUser`. */
+function userIdOf(req: express.Request): number {
+  if (req.userId === undefined) throw new Error("route is missing requireUser");
+  return req.userId;
+}
+
+/** Meal tables key on TEXT, so scope them by the signed-in account id. */
+function mealUserIdOf(req: express.Request): string {
+  return String(userIdOf(req));
 }
 
 function parseLang(value: unknown): MealLang {
@@ -71,8 +71,23 @@ app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", time: new Date().toISOString() });
 });
 
-app.get("/api/prefs", (_req, res) => {
-  res.json(getPrefs());
+app.use("/api/auth", authRouter);
+
+// Everything below is account-scoped: prefs, pref-filtered recipes, the list, and meals.
+app.use(
+  [
+    "/api/prefs",
+    "/api/recipes",
+    "/api/shopping-list",
+    "/api/offers",
+    "/api/products",
+    "/api/meals",
+  ],
+  requireUser,
+);
+
+app.get("/api/prefs", (req, res) => {
+  res.json(getPrefs(userIdOf(req)));
 });
 
 app.put("/api/prefs", (req, res) => {
@@ -80,11 +95,11 @@ app.put("/api/prefs", (req, res) => {
   if (!prefs) {
     return res.status(400).json({ error: "invalid prefs body" });
   }
-  res.json(setPrefs(prefs));
+  res.json(setPrefs(userIdOf(req), prefs));
 });
 
 app.get("/api/recipes", (req, res) => {
-  const prefs = getPrefs();
+  const prefs = getPrefs(userIdOf(req));
   const filter = req.query.filter !== "0";
   res.json(filter ? listRecipes(prefs) : listRecipes());
 });
@@ -99,7 +114,7 @@ app.post("/api/recipes/:id/match", async (req, res) => {
   const recipe = getRecipe(req.params.id);
   if (!recipe) return res.status(404).json({ error: "recipe not found" });
 
-  const prefs = getPrefs();
+  const prefs = getPrefs(userIdOf(req));
   const includeOptional = Boolean(req.body?.includeOptional);
 
   const ingredients = recipe.ingredients.filter((ing) => includeOptional || !ing.optional);
@@ -131,11 +146,12 @@ app.post("/api/recipes/:id/match", async (req, res) => {
   });
 });
 
-app.get("/api/shopping-list", (_req, res) => {
-  res.json(listShoppingItems());
+app.get("/api/shopping-list", (req, res) => {
+  res.json(listShoppingItems(userIdOf(req)));
 });
 
 app.post("/api/shopping-list/items", (req, res) => {
+  const userId = userIdOf(req);
   const items = Array.isArray(req.body?.items) ? req.body.items : [req.body];
   const added = [];
 
@@ -146,7 +162,7 @@ app.post("/api/shopping-list/items", (req, res) => {
       return res.status(400).json({ error: "each item needs productId and title" });
     }
     added.push(
-      addShoppingItem({
+      addShoppingItem(userId, {
         productId: String(productId),
         title,
         price: typeof item.price === "number" ? item.price : null,
@@ -167,20 +183,20 @@ app.delete("/api/shopping-list/items/:id", (req, res) => {
   if (!Number.isInteger(id)) {
     return res.status(400).json({ error: "invalid id" });
   }
-  if (!removeShoppingItem(id)) {
+  if (!removeShoppingItem(userIdOf(req), id)) {
     return res.status(404).json({ error: "not found" });
   }
   res.status(204).end();
 });
 
-app.delete("/api/shopping-list", (_req, res) => {
-  clearShoppingList();
+app.delete("/api/shopping-list", (req, res) => {
+  clearShoppingList(userIdOf(req));
   res.status(204).end();
 });
 
 /** Current AH bonus/offers with seeded recipes that can use each item. */
-app.get("/api/offers", async (_req, res) => {
-  const prefs = getPrefs();
+app.get("/api/offers", async (req, res) => {
+  const prefs = getPrefs(userIdOf(req));
   const { products, usedMock } = await listBonusOffers(prefs, uniqueIngredientSearchTerms());
   const offers = products
     .map((product) => ({
@@ -201,7 +217,7 @@ app.get("/api/offers", async (_req, res) => {
 app.get("/api/products/suggest", async (req, res) => {
   const query = typeof req.query.q === "string" ? req.query.q.trim() : "";
   if (!query) return res.status(400).json({ error: "q is required" });
-  const prefs = getPrefs();
+  const prefs = getPrefs(userIdOf(req));
   const catalogFilter = parseCatalogFilter(req.query.filter);
   const { products, usedMock } = await searchProducts(query, prefs);
   const filtered = applyCatalogFilter(products, catalogFilter);
@@ -219,7 +235,7 @@ app.post("/api/meals/scan", async (req, res) => {
   }
   const mimeType = typeof req.body?.mimeType === "string" ? req.body.mimeType : "image/jpeg";
   const lang = parseLang(req.body?.lang);
-  const userId = resolveUserId(req);
+  const userId = mealUserIdOf(req);
   const save = req.body?.save !== false;
 
   try {
@@ -233,14 +249,14 @@ app.post("/api/meals/scan", async (req, res) => {
 });
 
 app.get("/api/meals", (req, res) => {
-  const userId = resolveUserId(req);
+  const userId = mealUserIdOf(req);
   const since = typeof req.query.since === "string" ? req.query.since : undefined;
   res.json({ userId, meals: listMealLogs(userId, since) });
 });
 
 /** Build or refresh this week's review from saved meal texts. */
 app.post("/api/meals/weekly-review", async (req, res) => {
-  const userId = resolveUserId(req);
+  const userId = mealUserIdOf(req);
   const lang = parseLang(req.body?.lang ?? req.query.lang);
   const weekStart =
     typeof req.body?.weekStart === "string" && /^\d{4}-\d{2}-\d{2}$/.test(req.body.weekStart)
@@ -257,7 +273,7 @@ app.post("/api/meals/weekly-review", async (req, res) => {
 });
 
 app.get("/api/meals/weekly-review", async (req, res) => {
-  const userId = resolveUserId(req);
+  const userId = mealUserIdOf(req);
   const lang = parseLang(req.query.lang);
   const weekStart =
     typeof req.query.weekStart === "string" && /^\d{4}-\d{2}-\d{2}$/.test(req.query.weekStart)
@@ -282,8 +298,10 @@ app.get("/api/meals/weekly-review", async (req, res) => {
 });
 
 const port = Number(process.env.PORT ?? 3001);
-app.listen(port, () => {
-  console.log(`API listening on http://localhost:${port}`);
+seedDemoUser().finally(() => {
+  app.listen(port, () => {
+    console.log(`API listening on http://localhost:${port}`);
+  });
 });
 
 export type { Product };

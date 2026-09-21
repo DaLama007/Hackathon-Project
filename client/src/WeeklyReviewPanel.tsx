@@ -45,12 +45,11 @@ export default function WeeklyReviewPanel({ t, lang, userId, onError }: WeeklyRe
     onError(null);
     try {
       const qs = new URLSearchParams({
-        userId,
         lang,
         ...(refresh ? { refresh: "1" } : {}),
       });
       const res = await fetch(`/api/meals/weekly-review?${qs}`, {
-        headers: { "X-User-Id": userId },
+        credentials: "include",
       });
       if (!res.ok) throw new Error(`Weekly review failed: ${res.status}`);
       const data = await res.json();

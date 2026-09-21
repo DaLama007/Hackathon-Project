@@ -11,6 +11,14 @@ const recipeTitlesEn: Record<string, string> = {
   shakshuka: "Shakshuka",
   "tofu-roerbak": "Tofu stir-fry with vegetables",
   bonenschotel: "Mexican bean skillet",
+  pompoensoep: "Creamy pumpkin soup",
+  "falafel-wrap": "Falafel wrap with cucumber",
+  paddenstoelenrisotto: "Mushroom risotto",
+  "hutspot-gehakt": "Hutspot with minced beef",
+  "zoete-aardappel-bowl": "Sweet potato bowl",
+  "macaroni-gehakt": "Macaroni with minced beef",
+  pannenkoeken: "Dutch pancakes",
+  "nasi-goreng": "Nasi goreng with chicken",
 };
 
 const recipeSummariesEn: Record<string, string> = {
@@ -22,6 +30,14 @@ const recipeSummariesEn: Record<string, string> = {
   shakshuka: "Eggs in spiced tomato sauce — cheap and filling.",
   "tofu-roerbak": "Plant-based stir-fry with tofu, wok vegetables, and soy sauce.",
   bonenschotel: "Budget-friendly skillet with black beans and corn.",
+  pompoensoep: "Sweet pumpkin soup with coconut milk — easy weeknight bowl.",
+  "falafel-wrap": "Quick wraps with falafel, lettuce, and tahini dip.",
+  paddenstoelenrisotto: "Creamy risotto with mushrooms and Parmesan.",
+  "hutspot-gehakt": "Dutch mashed potato, carrot, and onion with spiced minced beef.",
+  "zoete-aardappel-bowl": "Roasted sweet potato with chickpeas, quinoa, and avocado.",
+  "macaroni-gehakt": "Classic macaroni in tomato sauce with minced beef — kid-friendly.",
+  pannenkoeken: "Thin pancakes from flour, milk, and egg — sweet or savory.",
+  "nasi-goreng": "Indonesian fried rice with chicken, vegetables, and ketjap.",
 };
 
 /** Ingredient display names (Dutch seed → English). Keys are lowercase. */
@@ -60,6 +76,31 @@ const ingredientNamesEn: Record<string, string> = {
   mais: "corn",
   "tortilla's": "tortillas",
   avocados: "avocado",
+  avocado: "avocado",
+  pompoen: "pumpkin",
+  groentebouillon: "vegetable stock",
+  gember: "ginger",
+  falafel: "falafel",
+  wraps: "wraps",
+  komkommer: "cucumber",
+  ijsbergsla: "iceberg lettuce",
+  tahin: "tahini",
+  "risotto rijst": "risotto rice",
+  champignons: "mushrooms",
+  "parmezaanse kaas": "Parmesan cheese",
+  boter: "butter",
+  aardappelen: "potatoes",
+  wortelen: "carrots",
+  rundergehakt: "minced beef",
+  melk: "milk",
+  "zoete aardappel": "sweet potato",
+  quinoa: "quinoa",
+  macaroni: "macaroni",
+  tomatensaus: "tomato sauce",
+  "geraspte kaas": "grated cheese",
+  bloem: "flour",
+  stroop: "syrup",
+  ketjap: "sweet soy sauce",
 };
 
 const unitsEn: Record<string, string> = {
@@ -69,6 +110,7 @@ const unitsEn: Record<string, string> = {
   tl: "tsp",
   pot: "jar",
   bosje: "bunch",
+  fles: "bottle",
 };
 
 export function recipeTitle(id: string, dutchTitle: string, lang: Lang): string {

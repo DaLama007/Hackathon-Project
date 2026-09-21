@@ -10,17 +10,17 @@ Open tasks are available to any agent. Claimed tasks show `(@branch-name)` on th
 
 ## P0
 
-- [ ] Polish frontend UI
+- [x] Polish frontend UI (@cursor/frontend-ui-ad72 → @cursor/frontend-ui-ded9)
   - **ID**: frontend-ui
-  - **Status**: open
+  - **Status**: done
   - **Tags**: frontend, ui
-  - **Files**: `client/src/App.tsx`, `client/src/index.css`
+  - **Files**: `client/src/App.tsx`, `client/src/index.css`, `client/index.html`, `SCRATCH.md`
   - **Details**: Make the existing PlateWise demo look and feel demo-ready. Today the app is a single-page three-tab flow (recipes / match / list) with functional but sparse layout. Improve visual hierarchy, recipe cards, product images, match-review (swap/uncheck), shopping list, empty/error/loading states, and mobile + ~720px desktop. Keep EN/NL via the existing `copy.en` / `copy.nl` map (default NL, persist `platewise-lang`). Do not rebuild the stack or add an i18n library.
   - **Acceptance**: A teammate can run `npm run dev`, click through prefs → recipe → match → list, and the UI looks intentional on phone-width and desktop. New strings exist in both locales. Smoke checklist added (comment or SCRATCH.md).
 
-- [ ] Live AH API integration (auth token, real query params, real product fields)
+- [x] Live AH API integration (auth token, real query params, real product fields) (@cursor/ah-api-integration-ef28)
   - **ID**: ah-api-integration
-  - **Status**: open
+  - **Status**: done
   - **Tags**: backend, ah, api
   - **Files**: `server/src/ah.ts`, `server/src/db.ts`, `.env.example`, `scripts/smoke-test.mjs`
   - **Details**: Today **every** live call fails and we silently serve mock products, so the README claim "live search, mock fallback if AH is down" is not true yet. Verified against `api.ah.nl` on 2026-09-21 (probe commands + raw output in `SCRATCH.md`): (1) `GET /mobile-services/product/search/v2` without an `Authorization` header returns **401** `{"error":"unauthorized","error_description":"Missing valid security token"}`. Get a token from `POST https://api.ah.nl/mobile-auth/v1/auth/token/anonymous` with body `{"clientId":"appie"}` (returns `access_token`, `refresh_token`, `expires_in`), then send `Authorization: Bearer <access_token>`; no account or secret is needed. Cache the token (the existing `search_cache` table or an in-memory value) and refresh via `POST /mobile-auth/v1/auth/token/refresh` with `{"clientId":"appie","refreshToken":"…"}` — do not fetch a token per search. (2) `sortOn=PRICE_ASC`, which `ah.ts` hardcodes, returns **400** `Failed to convert 'sortOn' with value: 'PRICE_ASC'`; `sortOn=PRICELOWHIGH` and `sortOn=RELEVANCE` both return 200. (3) The `filters[]=sp_include_dieet_*` values in `prefsFacetParams` return **400** and break the whole request — drop them. The real diet/property signal is `propertyIcons` on each product, e.g. `["biologisch"]`, `["vegan","biologisch"]`, `["goedkoopje","vega","biologisch"]`; use it for the existing bio / vega / vegan / cheap filters instead of matching `biologisch` in the title. (4) For bonus items `currentPrice` is the discounted price and `priceBeforeBonus` is the higher pre-bonus price, but `mapAhProduct` reads `priceBeforeBonus` first, so live bonus items rank on the wrong price. Also available and unused: `images[].url` (product thumbnails), `unitPriceDescription`, `brand`, `discountLabels`, `nutriscore`. Keep the mock fallback and `AH_FORCE_MOCK=1` working, keep the 4s timeout, and keep `scoreProduct` ranking bonus-first then cheaper. Put the base URL / client id in `.env.example` (no secrets — the anonymous token needs none). Backend-only: does not touch `client/src/App.tsx`, so it does not overlap `frontend-ui`.
@@ -35,6 +35,15 @@ Open tasks are available to any agent. Claimed tasks show `(@branch-name)` on th
   - **Acceptance**: Demo path A: open offers, pick a bonus item, see at least one matching recipe, match remaining ingredients. Demo path B: open a recipe, filter alternatives to bio or cheapest, add to list. Demo path C: add a non-recipe item to the list. Mock fallback still works with `AH_FORCE_MOCK=1`. EN/NL copy for new UI. CHANGELOG bullet.
 
 ## P1
+
+- [x] Login with per-account save/load of prefs and shopping list (@cursor/login-save-load-3111)
+  - **ID**: auth-save-load
+  - **Status**: done
+  - **Tags**: backend, frontend, auth
+  - **Files**: `server/src/auth.ts`, `server/src/db.ts`, `server/src/index.ts`, `client/src/Login.tsx`, `client/src/App.tsx`, `client/src/index.css`, `scripts/smoke-test.mjs`, `.env.example`
+  - **Details**: Requested directly by the user, not picked from this backlog. Username/password accounts with `bcryptjs` hashes and an httpOnly signed session cookie; sessions live in a SQLite `sessions` table. `prefs` became per-account `user_prefs` and `shopping_list` gained a `user_id` with `UNIQUE (user_id, product_id)`. Save is implicit on every write, load is implicit on login — no named snapshots. Pre-accounts rows are adopted by the seeded demo account (`DEMO_USERNAME` / `DEMO_PASSWORD`) behind a `PRAGMA user_version` gate; old tables stay as `prefs_legacy` / `shopping_list_legacy`.
+  - **Acceptance**: Planner is unreachable without a session; register/login/logout work; prefs and list survive logout and return on the next login; a second account starts clean. Auth copy is EN/NL.
+  - **Smoke**: (1) load the app → login screen, no tabs. (2) Registreer a new user → tabs appear, header shows `Ingelogd als <name>`. (3) Tick Vegetarisch, match a recipe, add products to the list. (4) Uitloggen → back to the login screen. (5) Log back in → Vegetarisch still ticked and the same list/total. (6) Register a second account → default prefs, empty list.
 
 - [x] Translate recipe/ingredient names in EN mode (@cursor/translate-names-en-078b)
   - **ID**: translate-names-en

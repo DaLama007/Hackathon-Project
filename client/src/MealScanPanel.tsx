@@ -103,9 +103,7 @@ export default function MealScanPanel({ t, lang, userId, onError }: MealScanPane
   }
 
   async function loadMeals() {
-    const res = await fetch(`/api/meals?userId=${encodeURIComponent(userId)}`, {
-      headers: { "X-User-Id": userId },
-    });
+    const res = await fetch(`/api/meals`, { credentials: "include" });
     if (!res.ok) throw new Error(`GET /api/meals failed: ${res.status}`);
     const data = await res.json();
     setMeals(data.meals as MealLog[]);
@@ -165,15 +163,12 @@ export default function MealScanPanel({ t, lang, userId, onError }: MealScanPane
     try {
       const res = await fetch("/api/meals/scan", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-User-Id": userId,
-        },
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           imageBase64: parsed.base64,
           mimeType: parsed.mimeType,
           lang,
-          userId,
           save: true,
         }),
       });
