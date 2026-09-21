@@ -9,11 +9,11 @@ working, demoable product over "correct" architecture. Priority order:
 4. Everything else (perf, edge cases, coverage) — only if time remains
 
 ## Stack
-- Frontend: [FILL IN]
-- Backend: [FILL IN]
-- Database: [FILL IN]
-- Package manager: [npm/pnpm/uv/etc]
-- Deploy target: [Vercel/Railway/local demo only]
+- Frontend: Vite + React + TypeScript (client/)
+- Backend: Express + TypeScript (server/)
+- Database: SQLite via better-sqlite3
+- Package manager: npm (workspaces monorepo)
+- Deploy target: local demo only
 
 ## General principles
 - Simplest solution that works > "correct" solution — this is a 24-48hr build.
