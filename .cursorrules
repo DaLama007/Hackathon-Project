@@ -24,6 +24,8 @@ working, demoable product over "correct" architecture. Priority order:
 - Comments explain *why*, not *what*.
 
 ## Working with me / Cursor-specific
+- Shared backlog: `TASKS.md` (how to pick/claim: `AGENTS.md`). If the user did not name a task, pick one open unclaimed item and claim it before coding.
+- Slash command: `/pick-task` (`.cursor/commands/pick-task.md`).
 - Before multi-file changes, propose the file plan first, wait for a go-ahead.
 - Use @codebase before writing a new function — check one doesn't already exist.
 - Summarize the diff (what/why) above the code block on edits to existing files.

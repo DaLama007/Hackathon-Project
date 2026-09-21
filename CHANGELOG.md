@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add shared agent tasklist (`TASKS.md`) so any agent can pick/claim: frontend UI, camera AI scan, AH offers ↔ recipes with item filters.
 - Add EN/NL language switch (persisted); UI shows one language at a time.
 - UI copy bilingual EN/NL (e.g. Recipes / Recepten); .cursorrules language rule for agents.
 - Replace Notes demo with PlateWise diet planner (prefs, recipes, AH match, shopping list).
