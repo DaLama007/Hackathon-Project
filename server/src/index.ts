@@ -1,4 +1,3 @@
-import "dotenv/config";
 import cors from "cors";
 import express from "express";
 import {
@@ -19,6 +18,7 @@ import {
   removeShoppingItem,
   setPrefs,
 } from "./db.js";
+import { loadProjectEnv } from "./llm.js";
 import {
   analyzePlate,
   buildWeeklyReview,
@@ -33,6 +33,8 @@ import {
   uniqueIngredientSearchTerms,
   type UserPrefs,
 } from "./recipes.js";
+
+loadProjectEnv();
 
 const app = express();
 app.use(cors());

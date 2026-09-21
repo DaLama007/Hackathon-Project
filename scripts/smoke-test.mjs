@@ -133,10 +133,14 @@ const mealScan = await fetch(`${base}/api/meals/scan`, {
     userId: mealUser,
   }),
 }).then((r) => r.json());
-assert(mealScan.analysis?.usedStub === true, "meal scan without OPENAI_API_KEY uses stub");
 assert(mealScan.analysis?.description, "meal scan returns a description");
 assert(Array.isArray(mealScan.analysis?.missing) && mealScan.analysis.missing.length >= 1, "meal scan lists gaps");
 assert(mealScan.meal?.id, "meal scan saves a meal log row");
+assert(typeof mealScan.analysis.usedStub === "boolean", "meal scan reports stub/live flag");
+// Without a key → stub; with OpenRouter/OpenAI the flag may be false (or true if the live call failed).
+if (!process.env.OPENROUTER_API_KEY && !process.env["AI-KEY"] && !process.env.OPENAI_API_KEY) {
+  assert(mealScan.analysis.usedStub === true, "meal scan without AI key uses stub");
+}
 
 const mealsList = await fetch(`${base}/api/meals?userId=${encodeURIComponent(mealUser)}`, {
   headers: { "X-User-Id": mealUser },

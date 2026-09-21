@@ -6,6 +6,7 @@ import {
   type MealNutrition,
   type WeeklyReview,
 } from "./db.js";
+import { chatCompletions, resolveLlmConfig } from "./llm.js";
 
 export type MealLang = "en" | "nl";
 
@@ -19,7 +20,7 @@ export interface PlateAnalysis {
 }
 
 function stubAnalysis(lang: MealLang): PlateAnalysis {
-  // TODO(demo): fake plate analysis when OPENAI_API_KEY is unset
+  // TODO(demo): fake plate analysis when no OpenRouter/OpenAI key is set
   if (lang === "en") {
     return {
       description: "Plate with pasta in tomato sauce and a small side salad.",
@@ -69,58 +70,38 @@ function parseAnalysisJson(text: string): Omit<PlateAnalysis, "usedStub"> | null
   }
 }
 
-async function analyzeWithOpenAi(
+async function analyzeWithLlm(
   imageBase64: string,
   mimeType: string,
   lang: MealLang,
 ): Promise<Omit<PlateAnalysis, "usedStub">> {
-  const apiKey = process.env.OPENAI_API_KEY?.trim();
-  if (!apiKey) throw new Error("OPENAI_API_KEY missing");
-
-  const model = process.env.OPENAI_VISION_MODEL?.trim() || "gpt-4o-mini";
   const dataUrl = `data:${mimeType};base64,${imageBase64}`;
   const language = lang === "en" ? "English" : "Dutch";
 
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model,
-      temperature: 0.2,
-      response_format: { type: "json_object" },
-      messages: [
-        {
-          role: "system",
-          content:
-            `You analyze a photo of a plate of food. Reply ONLY JSON in ${language}: ` +
-            `{"description":"short","foods":["..."],"nutrition":{"kcal":0,"protein_g":0,"carbs_g":0,"fat_g":0,"fiber_g":0},` +
-            `"missing":["fiber|vegetables|protein|..."],"tips":"one short tip"}. ` +
-            `Estimate roughly; list nutrients/food groups that look underrepresented vs a balanced meal.`,
-        },
-        {
-          role: "user",
-          content: [
-            { type: "text", text: "Analyze this plate." },
-            { type: "image_url", image_url: { url: dataUrl } },
-          ],
-        },
-      ],
-    }),
+  const content = await chatCompletions({
+    temperature: 0.2,
+    json: true,
+    messages: [
+      {
+        role: "system",
+        content:
+          `You analyze a photo of a plate of food. Reply ONLY JSON in ${language}: ` +
+          `{"description":"short","foods":["..."],"nutrition":{"kcal":0,"protein_g":0,"carbs_g":0,"fat_g":0,"fiber_g":0},` +
+          `"missing":["fiber|vegetables|protein|..."],"tips":"one short tip"}. ` +
+          `Estimate roughly; list nutrients/food groups that look underrepresented vs a balanced meal.`,
+      },
+      {
+        role: "user",
+        content: [
+          { type: "text", text: "Analyze this plate." },
+          { type: "image_url", image_url: { url: dataUrl } },
+        ],
+      },
+    ],
   });
 
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`OpenAI vision HTTP ${res.status}: ${body.slice(0, 200)}`);
-  }
-
-  const data = (await res.json()) as {
-    choices?: Array<{ message?: { content?: string } }>;
-  };
-  const parsed = parseAnalysisJson(data.choices?.[0]?.message?.content ?? "");
-  if (!parsed) throw new Error("OpenAI returned unusable plate analysis");
+  const parsed = parseAnalysisJson(content);
+  if (!parsed) throw new Error("LLM returned unusable plate analysis");
   return parsed;
 }
 
@@ -131,14 +112,13 @@ export async function analyzePlate(options: {
 }): Promise<PlateAnalysis> {
   const mimeType = options.mimeType?.trim() || "image/jpeg";
   const lang = options.lang === "en" ? "en" : "nl";
-  const hasKey = Boolean(process.env.OPENAI_API_KEY?.trim());
 
-  if (hasKey) {
+  if (resolveLlmConfig()) {
     try {
-      const result = await analyzeWithOpenAi(options.imageBase64, mimeType, lang);
+      const result = await analyzeWithLlm(options.imageBase64, mimeType, lang);
       return { ...result, usedStub: false };
     } catch (err) {
-      console.warn("[meals] OpenAI plate analysis failed, using stub:", err);
+      console.warn("[meals] plate analysis failed, using stub:", err);
     }
   }
 
@@ -216,15 +196,11 @@ function stubWeeklySummary(meals: MealLog[], missing: string[], lang: MealLang):
   );
 }
 
-async function weeklySummaryWithOpenAi(
+async function weeklySummaryWithLlm(
   meals: MealLog[],
   missing: string[],
   lang: MealLang,
 ): Promise<string> {
-  const apiKey = process.env.OPENAI_API_KEY?.trim();
-  if (!apiKey) throw new Error("OPENAI_API_KEY missing");
-
-  const model = process.env.OPENAI_VISION_MODEL?.trim() || "gpt-4o-mini";
   const language = lang === "en" ? "English" : "Dutch";
   const mealLines = meals
     .map(
@@ -234,42 +210,22 @@ async function weeklySummaryWithOpenAi(
     )
     .join("\n");
 
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model,
-      temperature: 0.3,
-      messages: [
-        {
-          role: "system",
-          content:
-            `Write a short weekly nutrition review in ${language} (4-6 sentences). ` +
-            `Use the meal descriptions. Call out recurring gaps (fiber, veggies, protein, etc.). No medical claims.`,
-        },
-        {
-          role: "user",
-          content:
-            `Recurring gaps: ${missing.join(", ") || "none"}\nMeals:\n${mealLines || "(none)"}`,
-        },
-      ],
-    }),
+  return chatCompletions({
+    temperature: 0.3,
+    messages: [
+      {
+        role: "system",
+        content:
+          `Write a short weekly nutrition review in ${language} (4-6 sentences). ` +
+          `Use the meal descriptions. Call out recurring gaps (fiber, veggies, protein, etc.). No medical claims.`,
+      },
+      {
+        role: "user",
+        content:
+          `Recurring gaps: ${missing.join(", ") || "none"}\nMeals:\n${mealLines || "(none)"}`,
+      },
+    ],
   });
-
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`OpenAI weekly HTTP ${res.status}: ${body.slice(0, 200)}`);
-  }
-
-  const data = (await res.json()) as {
-    choices?: Array<{ message?: { content?: string } }>;
-  };
-  const text = data.choices?.[0]?.message?.content?.trim();
-  if (!text) throw new Error("OpenAI returned empty weekly review");
-  return text;
 }
 
 export async function buildWeeklyReview(options: {
@@ -284,13 +240,12 @@ export async function buildWeeklyReview(options: {
 
   let summary: string;
   let usedStub = true;
-  const hasKey = Boolean(process.env.OPENAI_API_KEY?.trim());
-  if (hasKey && meals.length > 0) {
+  if (resolveLlmConfig() && meals.length > 0) {
     try {
-      summary = await weeklySummaryWithOpenAi(meals, missing, lang);
+      summary = await weeklySummaryWithLlm(meals, missing, lang);
       usedStub = false;
     } catch (err) {
-      console.warn("[meals] OpenAI weekly review failed, using stub:", err);
+      console.warn("[meals] weekly review failed, using stub:", err);
       summary = stubWeeklySummary(meals, missing, lang);
     }
   } else {

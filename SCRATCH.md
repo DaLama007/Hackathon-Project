@@ -3,9 +3,10 @@
 ## camera-ai-scan (plate + weekly)
 
 1. **Bord / Plate** → Upload any plate photo → preview must show the image (not a blank black box).
-2. Stub banner OK without `OPENAI_API_KEY` → description, nutrition, missing (fiber/vezels…) → appears under Saved meals.
+2. With `OPENROUTER_API_KEY` or `AI-KEY` in repo-root `.env`, stub banner should disappear and analysis comes from OpenRouter (`usedStub: false`). Without a key, stub banner is OK.
 3. **Week / Weekly** → Refresh review → summary uses this week’s saved texts + common gaps.
 4. Soft user id in `localStorage` (`platewise-user-id`) / `X-User-Id` until auth merges.
+5. Restart `npm run dev` after editing `.env` (server cwd is `server/`; loader reads repo-root `.env`).
 
 ## offers-recipes-loop
 
