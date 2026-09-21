@@ -208,19 +208,30 @@ function ProductThumb({
   );
 }
 
-/** Anthropic-inspired geometric mark: radial spark + plate core. */
+/** Anthropic-inspired geometric mark: concentric dinner plate. */
 function PlateWiseLogo() {
   return (
     <svg className="brand-logo" viewBox="0 0 40 40" aria-hidden="true">
       <rect width="40" height="40" rx="10" fill="#16382c" />
-      <g transform="translate(20 20)" fill="#f4faf6">
-        <ellipse rx="2.6" ry="12.2" />
-        <ellipse rx="2.6" ry="12.2" transform="rotate(45)" />
-        <ellipse rx="2.6" ry="12.2" transform="rotate(90)" />
-        <ellipse rx="2.6" ry="12.2" transform="rotate(135)" />
-        <circle r="5.4" fill="#16382c" />
-        <circle r="3.2" fill="none" stroke="#f4faf6" strokeWidth="1.6" />
-        <circle r="1.15" fill="#f4faf6" />
+      <g
+        transform="translate(20 20)"
+        fill="none"
+        stroke="#f4faf6"
+        strokeLinecap="round"
+      >
+        {/* Outer edge + rim band + inner well = dinner plate */}
+        <circle r="14" strokeWidth="1.5" />
+        <circle r="11.15" strokeWidth="1.05" opacity="0.72" />
+        <circle r="7" strokeWidth="1.65" />
+        <circle r="7" fill="#f4faf6" fillOpacity="0.1" stroke="none" />
+        <circle r="1.35" fill="#f4faf6" stroke="none" />
+        {/* Short rim ticks — plate accent, not a spark/asterisk */}
+        <g strokeWidth="1.25" opacity="0.9">
+          <path d="M0 -13.85v2.1" />
+          <path d="M0 11.75v2.1" />
+          <path d="M-13.85 0h2.1" />
+          <path d="M11.75 0h2.1" />
+        </g>
       </g>
     </svg>
   );
