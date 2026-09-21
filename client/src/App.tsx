@@ -208,31 +208,44 @@ function ProductThumb({
   );
 }
 
-/** Anthropic-inspired geometric mark: concentric dinner plate. */
+/** Cartoon plate + sprout mark for the brand lockup. */
 function PlateWiseLogo() {
   return (
-    <svg className="brand-logo" viewBox="0 0 40 40" aria-hidden="true">
-      <rect width="40" height="40" rx="10" fill="#16382c" />
-      <g
-        transform="translate(20 20)"
-        fill="none"
-        stroke="#f4faf6"
-        strokeLinecap="round"
-      >
-        {/* Outer edge + rim band + inner well = dinner plate */}
-        <circle r="14" strokeWidth="1.5" />
-        <circle r="11.15" strokeWidth="1.05" opacity="0.72" />
-        <circle r="7" strokeWidth="1.65" />
-        <circle r="7" fill="#f4faf6" fillOpacity="0.1" stroke="none" />
-        <circle r="1.35" fill="#f4faf6" stroke="none" />
-        {/* Short rim ticks — plate accent, not a spark/asterisk */}
-        <g strokeWidth="1.25" opacity="0.9">
-          <path d="M0 -13.85v2.1" />
-          <path d="M0 11.75v2.1" />
-          <path d="M-13.85 0h2.1" />
-          <path d="M11.75 0h2.1" />
-        </g>
-      </g>
+    <svg className="brand-logo" viewBox="0 0 72 72" aria-hidden="true">
+      <defs>
+        <radialGradient id="pwPlateShine" cx="32%" cy="28%" r="65%">
+          <stop offset="0%" stopColor="#ffffff" />
+          <stop offset="55%" stopColor="#f4faf6" />
+          <stop offset="100%" stopColor="#d7ebe0" />
+        </radialGradient>
+        <linearGradient id="pwLeaf" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#7adf9a" />
+          <stop offset="100%" stopColor="#1f8a5b" />
+        </linearGradient>
+        <linearGradient id="pwCarrot" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#ffb347" />
+          <stop offset="100%" stopColor="#f07820" />
+        </linearGradient>
+      </defs>
+      <circle cx="36" cy="38" r="26" fill="#2f9a66" />
+      <circle cx="36" cy="38" r="22" fill="url(#pwPlateShine)" stroke="#1f8a5b" strokeWidth="2.2" />
+      <ellipse cx="36" cy="40" rx="14" ry="9" fill="#e7f6ee" stroke="#9dceb4" strokeWidth="1.4" />
+      <path
+        d="M36 18c1.2 4.2 1.5 8.2 0 13.2-1.5-5-1.2-9 0-13.2z"
+        fill="url(#pwLeaf)"
+      />
+      <path
+        d="M36 20c4.8 2.2 8.2 1.6 10.8-1.2-3.8.6-7.4-.4-10.8 1.2z"
+        fill="#5ecf8e"
+      />
+      <path
+        d="M36 20c-4.8 2.2-8.2 1.6-10.8-1.2 3.8.6 7.4-.4 10.8 1.2z"
+        fill="#3db87a"
+      />
+      <path d="M44 34l6 14c.4 1-.2 1.8-1.2 1.8h-1.4c-.8 0-1.3-.5-1.5-1.2L42 34.4z" fill="url(#pwCarrot)" />
+      <path d="M44 34c2.2-.2 3.6-1.4 4.2-3.2-1.6.8-3 .6-4.2 3.2z" fill="#3db87a" />
+      <circle cx="28" cy="36" r="3.2" fill="#ff6b6b" />
+      <circle cx="27.2" cy="35.2" r="1" fill="#ffc9c9" />
     </svg>
   );
 }

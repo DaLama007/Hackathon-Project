@@ -2,7 +2,6 @@
 
 ## Unreleased
 
-- Refine PlateWise mark into a geometric dinner plate (concentric rim + well; Anthropic-precise, no cartoon food / no logo wobble).
 - Polish PlateWise UI: cartoon farm backdrop + plate/sprout logo, liquid-glass panels, recipe cards, product thumbs, empty/loading states (EN/NL).
 - Add List-tab Share/Copy to iPhone Reminders (newline grocery text, clipboard fallback).
 - Add shared agent tasklist (`TASKS.md`) so any agent can pick/claim: frontend UI, camera AI scan, AH offers ↔ recipes with item filters.

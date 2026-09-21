@@ -346,11 +346,11 @@ body::after {
 }
 
 .brand-logo {
-  width: clamp(2.6rem, 8vw, 3.1rem);
-  height: clamp(2.6rem, 8vw, 3.1rem);
+  width: clamp(3.1rem, 10vw, 3.75rem);
+  height: clamp(3.1rem, 10vw, 3.75rem);
   flex-shrink: 0;
-  border-radius: 0.7rem;
-  box-shadow: 0 8px 22px rgba(22, 56, 44, 0.22);
+  filter: drop-shadow(0 6px 14px rgba(31, 138, 91, 0.28));
+  animation: logo-float 4.5s ease-in-out infinite;
 }
 
 .brand {
@@ -374,6 +374,16 @@ body::after {
   text-transform: uppercase;
   color: var(--accent-deep);
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+@keyframes logo-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(2deg);
+  }
 }
 
 .hero h1 {
