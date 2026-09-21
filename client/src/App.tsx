@@ -87,6 +87,11 @@ const copy = {
     remove: "Remove",
     total: "Estimated total",
     selectOne: "Select at least one product",
+    reminders: "Reminders",
+    remindersCopied: "Copied — paste into a Groceries list in Reminders.",
+    remindersHint:
+      "On iPhone: share and pick Reminders, or paste into a Groceries list (one item per line).",
+    remindersFailed: "Could not copy the list. Select and copy the items manually.",
     switchTo: "NL",
     switchAria: "Switch to Dutch",
   },
@@ -116,6 +121,11 @@ const copy = {
     remove: "Verwijderen",
     total: "Geschat totaal",
     selectOne: "Selecteer minstens één product",
+    reminders: "Herinneringen",
+    remindersCopied: "Gekopieerd — plak in een Boodschappen-lijst in Herinneringen.",
+    remindersHint:
+      "Op iPhone: deel en kies Herinneringen, of plak in een Boodschappen-lijst (één regel per product).",
+    remindersFailed: "Lijst kopiëren mislukt. Kopieer de items handmatig.",
     switchTo: "EN",
     switchAria: "Schakel naar Engels",
   },
@@ -129,6 +139,32 @@ function readStoredLang(): Lang {
 function formatPrice(price: number | null | undefined): string {
   if (price == null) return "—";
   return `€${price.toFixed(2)}`;
+}
+
+function formatGroceryLine(item: ShoppingItem): string {
+  return item.quantity > 1 ? `${item.title} ×${item.quantity}` : item.title;
+}
+
+function formatGroceryText(items: ShoppingItem[]): string {
+  return items.map(formatGroceryLine).join("\n");
+}
+
+function copyTextWithFallback(text: string): boolean {
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.left = "-9999px";
+  document.body.appendChild(textarea);
+  textarea.select();
+  try {
+    return document.execCommand("copy");
+  } catch (err) {
+    console.error("Copy fallback failed", err);
+    return false;
+  } finally {
+    document.body.removeChild(textarea);
+  }
 }
 
 export default function App() {
@@ -148,6 +184,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [matching, setMatching] = useState(false);
   const [adding, setAdding] = useState(false);
+  const [shareStatus, setShareStatus] = useState<string | null>(null);
 
   function setLanguage(next: Lang) {
     setLang(next);
@@ -308,8 +345,47 @@ export default function App() {
       const res = await fetch("/api/shopping-list", { method: "DELETE" });
       if (!res.ok && res.status !== 204) throw new Error(`Clear failed: ${res.status}`);
       await loadShoppingList();
+      setShareStatus(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to clear list");
+    }
+  }
+
+  async function copyGroceryText(text: string): Promise<boolean> {
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch (err) {
+      console.error("Clipboard write failed", err);
+    }
+    return copyTextWithFallback(text);
+  }
+
+  // Smoke: List tab → Reminders → share sheet or "Copied" banner; text is one product per line.
+  async function shareToReminders() {
+    if (shoppingList.length === 0) return;
+    const text = formatGroceryText(shoppingList);
+    if (typeof navigator.share === "function") {
+      try {
+        await navigator.share({ title: t.shoppingList, text });
+        setShareStatus(null);
+        setError(null);
+        return;
+      } catch (err) {
+        const aborted = err instanceof Error && err.name === "AbortError";
+        if (aborted) return;
+        console.error("Share failed", err);
+      }
+    }
+    const copied = await copyGroceryText(text);
+    if (copied) {
+      setShareStatus(t.remindersCopied);
+      setError(null);
+    } else {
+      setShareStatus(null);
+      setError(t.remindersFailed);
     }
   }
 
@@ -478,15 +554,22 @@ export default function App() {
           <div className="list-header">
             <h2>{t.shoppingList}</h2>
             {shoppingList.length > 0 && (
-              <button className="ghost" onClick={clearList}>
-                {t.clear}
-              </button>
+              <div className="list-actions">
+                <button className="ghost" onClick={shareToReminders}>
+                  {t.reminders}
+                </button>
+                <button className="ghost" onClick={clearList}>
+                  {t.clear}
+                </button>
+              </div>
             )}
           </div>
           {shoppingList.length === 0 ? (
             <p className="empty">{t.emptyList}</p>
           ) : (
             <>
+              <p className="hint">{t.remindersHint}</p>
+              {shareStatus && <p className="banner">{shareStatus}</p>}
               <ul className="shop-list">
                 {shoppingList.map((item) => (
                   <li key={item.id}>

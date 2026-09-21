@@ -14,6 +14,7 @@ Full-stack demo built on the Vite + Express + SQLite starter.
 3. Match ingredients to Albert Heijn products (live search, **mock fallback** if AH is down)
 4. Review / swap products (bonus & cheap ranked first)
 5. Add selections to an in-app shopping list
+6. Share/copy the list to iPhone Reminders (paste into a Groceries list)
 
 ## Agent tasklist
 
@@ -68,3 +69,4 @@ AH_FORCE_MOCK=1 npm run dev:server
 2. Open **Linzen dal** → Match — products appear (mock banner OK) / producten verschijnen
 3. Swap a product / uncheck one → add to list / wissel of vink uit → voeg toe aan lijst
 4. Confirm list shows bonus labels / controleer bonuslabels op de lijst
+5. List → **Reminders / Herinneringen** — share sheet or copied text, one product per line / deel of kopieer, één product per regel
