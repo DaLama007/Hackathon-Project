@@ -53,63 +53,139 @@ body {
   margin: 0;
   min-height: 100vh;
   color: var(--ink);
-  background-color: #d8ebe0;
-  background-image:
-    radial-gradient(ellipse 90% 60% at 8% -5%, rgba(110, 210, 160, 0.55), transparent 55%),
-    radial-gradient(ellipse 70% 55% at 95% 5%, rgba(150, 220, 190, 0.5), transparent 50%),
-    radial-gradient(ellipse 55% 45% at 70% 85%, rgba(90, 180, 140, 0.35), transparent 55%),
-    radial-gradient(ellipse 50% 40% at 20% 70%, rgba(200, 235, 210, 0.55), transparent 50%),
-    linear-gradient(165deg, #eaf7ef 0%, #d5ebdf 42%, #cfe6d8 100%);
-  background-attachment: fixed;
+  background-color: #8ec8e8;
   overflow-x: hidden;
 }
 
-/* Floating liquid orbs — give the glass something to refract */
+/* Cartoon farm scene lives in .farm-backdrop (App.tsx) */
 body::before,
 body::after {
-  content: "";
-  position: fixed;
-  pointer-events: none;
-  z-index: 0;
-  border-radius: 50%;
-  filter: blur(2px);
-}
-
-body::before {
-  width: min(420px, 70vw);
-  height: min(420px, 70vw);
-  top: -8%;
-  right: -12%;
-  background:
-    radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.75), transparent 42%),
-    radial-gradient(circle at 55% 60%, rgba(95, 200, 145, 0.55), rgba(40, 140, 95, 0.15) 70%);
-  animation: liquid-drift 16s ease-in-out infinite alternate;
-}
-
-body::after {
-  width: min(360px, 65vw);
-  height: min(360px, 65vw);
-  bottom: 5%;
-  left: -15%;
-  background:
-    radial-gradient(circle at 40% 30%, rgba(255, 255, 255, 0.65), transparent 45%),
-    radial-gradient(circle at 60% 65%, rgba(130, 210, 170, 0.5), rgba(60, 150, 110, 0.12) 72%);
-  animation: liquid-drift 20s ease-in-out infinite alternate-reverse;
+  content: none;
 }
 
 #root {
   position: relative;
   z-index: 1;
+  min-height: 100vh;
 }
 
 #root::before {
-  content: "";
+  content: none;
+}
+
+/* —— Cartoon farm backdrop —— */
+.farm-backdrop {
   position: fixed;
   inset: 0;
-  pointer-events: none;
-  opacity: 0.28;
-  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%231f8a5b' stroke-opacity='0.08' stroke-width='1'%3E%3Cpath d='M40 8c8 10 10 20 0 32-10-12-8-22 0-32z'/%3E%3Cpath d='M40 40c12 6 22 4 28-4-10 2-20-2-28 4z'/%3E%3Cpath d='M40 40c-12 6-22 4-28-4 10 2 20-2 28 4z'/%3E%3C/g%3E%3C/svg%3E");
   z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.farm-sky {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #9ad4f0 0%, #b7e4f7 38%, #d9f0c8 72%, #b7df8e 100%);
+}
+
+.farm-sun {
+  position: absolute;
+  top: 4%;
+  right: 10%;
+  width: clamp(72px, 14vw, 120px);
+  height: clamp(72px, 14vw, 120px);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 35%, #fff7b0 0%, #ffe566 45%, #ffc93c 100%);
+  box-shadow:
+    0 0 0 10px rgba(255, 229, 102, 0.35),
+    0 0 0 22px rgba(255, 229, 102, 0.18);
+  animation: sun-bob 8s ease-in-out infinite;
+}
+
+.farm-cloud {
+  position: absolute;
+  background: #ffffff;
+  border-radius: 999px;
+  box-shadow: 18px 8px 0 #ffffff, 36px 4px 0 #ffffff, 10px -10px 0 #ffffff;
+  opacity: 0.92;
+  animation: cloud-drift 28s linear infinite;
+}
+
+.farm-cloud::after {
+  content: "";
+  position: absolute;
+  inset: -6px -10px auto auto;
+  width: 70%;
+  height: 70%;
+  border-radius: 999px;
+  background: rgba(180, 220, 240, 0.35);
+}
+
+.farm-cloud-a {
+  width: 70px;
+  height: 28px;
+  top: 9%;
+  left: -10%;
+  animation-duration: 36s;
+}
+
+.farm-cloud-b {
+  width: 54px;
+  height: 22px;
+  top: 16%;
+  left: 20%;
+  animation-duration: 42s;
+  animation-delay: -12s;
+}
+
+.farm-cloud-c {
+  width: 64px;
+  height: 24px;
+  top: 7%;
+  left: 55%;
+  animation-duration: 48s;
+  animation-delay: -22s;
+}
+
+.farm-scene {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: min(52vh, 460px);
+}
+
+.farm-hill-back {
+  fill: #7ecf7a;
+}
+
+.farm-hill-mid {
+  fill: #57b85d;
+}
+
+.farm-hill-front {
+  fill: #3fa34a;
+}
+
+@keyframes sun-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+@keyframes cloud-drift {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(120vw);
+  }
 }
 
 .app {
@@ -204,15 +280,15 @@ body::after {
   z-index: 1;
 }
 
-/* —— Hero as liquid slab —— */
+/* —— Hero as liquid slab over cartoon farm —— */
 .hero {
   position: relative;
   margin-bottom: 1.2rem;
   padding: 1.25rem 1.15rem 1.15rem;
   border-radius: calc(var(--radius) + 0.15rem);
   background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.18) 45%, rgba(210, 240, 222, 0.4) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.65);
+    linear-gradient(145deg, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0.42) 48%, rgba(232, 248, 220, 0.5) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.75);
   backdrop-filter: var(--blur-strong);
   -webkit-backdrop-filter: var(--blur-strong);
   box-shadow: var(--shadow-glass-lg);
@@ -235,20 +311,7 @@ body::after {
 }
 
 .hero::after {
-  content: "";
-  position: absolute;
-  right: -6%;
-  top: -30%;
-  width: min(240px, 50vw);
-  height: min(240px, 50vw);
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.85), transparent 50%),
-    radial-gradient(circle at 60% 60%, rgba(95, 200, 145, 0.45), transparent 70%);
-  filter: blur(1px);
-  pointer-events: none;
-  z-index: 0;
-  animation: liquid-drift 12s ease-in-out infinite alternate;
+  content: none;
 }
 
 .hero-top,
@@ -271,8 +334,23 @@ body::after {
 .brand-block {
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  gap: 0.35rem;
   min-width: 0;
+}
+
+.brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.brand-logo {
+  width: clamp(3.1rem, 10vw, 3.75rem);
+  height: clamp(3.1rem, 10vw, 3.75rem);
+  flex-shrink: 0;
+  filter: drop-shadow(0 6px 14px rgba(31, 138, 91, 0.28));
+  animation: logo-float 4.5s ease-in-out infinite;
 }
 
 .brand {
@@ -288,30 +366,24 @@ body::after {
   color: transparent;
 }
 
-.brand-mark {
-  display: inline-block;
-  width: 0.55em;
-  height: 0.55em;
-  margin-right: 0.12em;
-  border-radius: 40% 60% 55% 45%;
-  background:
-    radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.85), transparent 42%),
-    linear-gradient(145deg, #7adfad, var(--accent-deep));
-  box-shadow:
-    0 0 0 3px var(--accent-glow),
-    0 6px 16px rgba(31, 138, 91, 0.28),
-    inset 0 1px 0 rgba(255, 255, 255, 0.55);
-  vertical-align: 0.08em;
-  animation: soft-pulse 3.2s ease-in-out infinite;
-}
-
 .eyebrow {
   margin: 0;
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--accent-deep);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+@keyframes logo-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(2deg);
+  }
 }
 
 .hero h1 {
