@@ -86,6 +86,7 @@ export default function MealScanPanel({ t, lang, userId, onError }: MealScanPane
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewBroken, setPreviewBroken] = useState(false);
   const [cameraOn, setCameraOn] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [analysis, setAnalysis] = useState<PlateAnalysis | null>(null);
   const [meals, setMeals] = useState<MealLog[]>([]);
@@ -94,7 +95,10 @@ export default function MealScanPanel({ t, lang, userId, onError }: MealScanPane
   function stopCamera() {
     streamRef.current?.getTracks().forEach((track) => track.stop());
     streamRef.current = null;
-    if (videoRef.current) videoRef.current.srcObject = null;
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+    setVideoReady(false);
     setCameraOn(false);
   }
 
@@ -112,9 +116,42 @@ export default function MealScanPanel({ t, lang, userId, onError }: MealScanPane
       console.error(err);
       onError(err instanceof Error ? err.message : "Failed to load meals");
     });
-    return () => stopCamera();
+    return () => {
+      streamRef.current?.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
+
+  // Attach stream AFTER <video> mounts (cameraOn true). Previously srcObject was set
+  // while videoRef was still null because the element is conditionally rendered.
+  useEffect(() => {
+    if (!cameraOn) return;
+    const video = videoRef.current;
+    const stream = streamRef.current;
+    if (!video || !stream) return;
+
+    let cancelled = false;
+    setVideoReady(false);
+    video.srcObject = stream;
+
+    const onReady = () => {
+      if (!cancelled) setVideoReady(true);
+    };
+    video.addEventListener("loadedmetadata", onReady);
+    video.addEventListener("playing", onReady);
+
+    void video.play().catch((err) => {
+      console.error("Video play failed", err);
+      if (!cancelled) onError(t.cameraDenied);
+    });
+
+    return () => {
+      cancelled = true;
+      video.removeEventListener("loadedmetadata", onReady);
+      video.removeEventListener("playing", onReady);
+    };
+  }, [cameraOn, onError, t.cameraDenied]);
 
   async function runScan(dataUrl: string) {
     const parsed = parseDataUrl(dataUrl);
@@ -167,21 +204,28 @@ export default function MealScanPanel({ t, lang, userId, onError }: MealScanPane
 
   async function startCamera() {
     onError(null);
+    setPreviewUrl(null);
+    setPreviewBroken(false);
     try {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        onError(t.cameraDenied);
+        return;
+      }
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: "environment" } },
+        video: {
+          facingMode: { ideal: "environment" },
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+        },
         audio: false,
       });
       streamRef.current = stream;
+      // Mount <video> first; useEffect attaches stream to videoRef.
       setCameraOn(true);
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
-      }
     } catch (err) {
       console.error("Camera denied", err);
       onError(t.cameraDenied);
-      setCameraOn(false);
+      stopCamera();
     }
   }
 
@@ -191,9 +235,25 @@ export default function MealScanPanel({ t, lang, userId, onError }: MealScanPane
       onError(t.needPhoto);
       return;
     }
+    // Wait for a real frame — otherwise canvas is black (0×0 → fallback size empty).
+    if (!video.videoWidth || !video.videoHeight) {
+      await new Promise<void>((resolve) => {
+        const done = () => {
+          video.removeEventListener("loadeddata", done);
+          resolve();
+        };
+        video.addEventListener("loadeddata", done);
+        window.setTimeout(done, 800);
+      });
+    }
+    if (!video.videoWidth || !video.videoHeight) {
+      onError(t.needPhoto);
+      return;
+    }
+
     const canvas = document.createElement("canvas");
-    canvas.width = video.videoWidth || 640;
-    canvas.height = video.videoHeight || 480;
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
     const ctx = canvas.getContext("2d");
     if (!ctx) {
       onError(t.needPhoto);
@@ -208,6 +268,8 @@ export default function MealScanPanel({ t, lang, userId, onError }: MealScanPane
   }
 
   const nutrition = analysis?.nutrition;
+  const showLive = cameraOn;
+  const showStill = !cameraOn && Boolean(previewUrl);
 
   return (
     <section className="meal-scan" aria-label={t.scan}>
@@ -222,7 +284,12 @@ export default function MealScanPanel({ t, lang, userId, onError }: MealScanPane
           {cameraOn ? t.stopCamera : t.useCamera}
         </button>
         {cameraOn && (
-          <button type="button" className="primary inline" disabled={scanning} onClick={captureFromCamera}>
+          <button
+            type="button"
+            className="primary inline"
+            disabled={scanning || !videoReady}
+            onClick={captureFromCamera}
+          >
             {scanning ? t.scanning : t.capture}
           </button>
         )}
@@ -241,19 +308,30 @@ export default function MealScanPanel({ t, lang, userId, onError }: MealScanPane
         }}
       />
 
-      {cameraOn && (
+      {showLive && (
         <div className="scan-preview live">
-          <video ref={videoRef} playsInline muted autoPlay className="scan-video" />
+          <video
+            ref={videoRef}
+            playsInline
+            muted
+            autoPlay
+            className="scan-video"
+          />
+          {!videoReady && (
+            <p className="scan-preview-status">
+              {lang === "en" ? "Starting camera…" : "Camera starten…"}
+            </p>
+          )}
         </div>
       )}
 
-      {!cameraOn && previewUrl && (
+      {showStill && (
         <div className="scan-preview">
           {previewBroken ? (
             <p className="empty">{t.needPhoto}</p>
           ) : (
             <img
-              src={previewUrl}
+              src={previewUrl!}
               alt={t.previewAlt}
               className="scan-image"
               onError={() => setPreviewBroken(true)}
@@ -347,3 +425,4 @@ export default function MealScanPanel({ t, lang, userId, onError }: MealScanPane
     </section>
   );
 }
+

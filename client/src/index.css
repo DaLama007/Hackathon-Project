@@ -421,23 +421,45 @@ button {
   border-radius: 0.55rem;
   overflow: hidden;
   background: #eef3ee;
-  min-height: 160px;
+  min-height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .scan-preview.live {
-  background: #101810;
+  background: #1a241c;
 }
 
-.scan-video,
+.scan-video {
+  display: block;
+  width: 100%;
+  min-height: 220px;
+  max-height: 360px;
+  object-fit: cover;
+  background: #1a241c;
+}
+
 .scan-image {
   display: block;
   width: 100%;
-  max-height: 320px;
+  max-height: 360px;
   object-fit: contain;
   background: #eef3ee;
+}
+
+.scan-preview-status {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #d7e3d9;
+  font-weight: 600;
+  pointer-events: none;
+  background: rgba(26, 36, 28, 0.45);
 }
 
 .meal-result,
