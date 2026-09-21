@@ -28,9 +28,9 @@ Open tasks are available to any agent. Claimed tasks show `(@branch-name)` on th
 
 ## P1
 
-- [ ] Share shopping list to iPhone Reminders (@cursor/reminders-grocery-share-30e4)
+- [x] Share shopping list to iPhone Reminders (@cursor/reminders-grocery-share-30e4)
   - **ID**: reminders-grocery-share
-  - **Status**: claimed
+  - **Status**: done
   - **Tags**: frontend, shopping-list, ios
   - **Files**: `client/src/App.tsx`, `client/src/index.css`, `CHANGELOG.md`
   - **Details**: Web apps cannot write into a named Reminders grocery list. Add a List-tab Share/Copy action that sends newline-separated product titles (quantity suffix when > 1) via `navigator.share` (iPhone share sheet) with clipboard fallback. Hint copy: paste into a Groceries list, or pick Reminders in the share sheet. EN/NL. Overlaps `frontend-ui` on App.tsx / index.css — do not edit those files in parallel.

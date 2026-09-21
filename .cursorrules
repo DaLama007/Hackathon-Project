@@ -8,15 +8,6 @@ working, demoable product over "correct" architecture. Priority order:
 3. Readable (teammates jump into code they didn't write)
 4. Everything else (perf, edge cases, coverage) — only if time remains
 
-## WIP — other agents
-Another agent is building List-tab Share/Copy to iPhone Reminders
-(`cursor/reminders-grocery-share-30e4`).
-Do not edit in parallel:
-- client/src/App.tsx
-- client/src/index.css
-- CHANGELOG.md
-Remove this section when that PR lands.
-
 ## Stack
 - Frontend: Vite + React + TypeScript (client/)
 - Backend: Express + TypeScript (server/)
