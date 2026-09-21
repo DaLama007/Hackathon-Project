@@ -1,7 +1,13 @@
 import "dotenv/config";
 import cors from "cors";
 import express from "express";
-import { searchProducts, type Product } from "./ah.js";
+import {
+  applyCatalogFilter,
+  listBonusOffers,
+  parseCatalogFilter,
+  searchProducts,
+  type Product,
+} from "./ah.js";
 import {
   addShoppingItem,
   clearShoppingList,
@@ -10,7 +16,13 @@ import {
   removeShoppingItem,
   setPrefs,
 } from "./db.js";
-import { getRecipe, listRecipes, type UserPrefs } from "./recipes.js";
+import {
+  getRecipe,
+  listRecipes,
+  recipesUsingProduct,
+  uniqueIngredientSearchTerms,
+  type UserPrefs,
+} from "./recipes.js";
 
 const app = express();
 app.use(cors());
@@ -63,15 +75,20 @@ app.post("/api/recipes/:id/match", async (req, res) => {
 
   const ingredients = recipe.ingredients.filter((ing) => includeOptional || !ing.optional);
 
+  const catalogFilter = parseCatalogFilter(req.body?.filter);
+
   const matches = await Promise.all(
     ingredients.map(async (ingredient) => {
       const { products, usedMock } = await searchProducts(ingredient.searchTerm, prefs);
-      const product = products[0] ?? null;
-      const alternatives = products.slice(1, 4);
+      const filtered = applyCatalogFilter(products, catalogFilter);
+      const ranked = filtered.length > 0 ? filtered : products;
+      const product = ranked[0] ?? null;
+      const alternatives = ranked.slice(1, 8);
       return {
         ingredient,
         product,
         alternatives,
+        products: ranked.slice(0, 8),
         usedMock,
       };
     }),
@@ -132,13 +149,34 @@ app.delete("/api/shopping-list", (_req, res) => {
   res.status(204).end();
 });
 
-/** Quick product search for a single gap/term (meal stretch / debug). */
+/** Current AH bonus/offers with seeded recipes that can use each item. */
+app.get("/api/offers", async (_req, res) => {
+  const prefs = getPrefs();
+  const { products, usedMock } = await listBonusOffers(prefs, uniqueIngredientSearchTerms());
+  const offers = products
+    .map((product) => ({
+      product,
+      recipes: recipesUsingProduct(product.title, prefs).map(({ recipe, matchedIngredient }) => ({
+        id: recipe.id,
+        title: recipe.title,
+        summary: recipe.summary,
+        matchedIngredient: matchedIngredient.name,
+      })),
+    }))
+    .filter((offer) => offer.recipes.length > 0)
+    .slice(0, 16);
+  res.json({ usedMock, offers });
+});
+
+/** Quick product search for a single gap/term (meal stretch / add-item). */
 app.get("/api/products/suggest", async (req, res) => {
   const query = typeof req.query.q === "string" ? req.query.q.trim() : "";
   if (!query) return res.status(400).json({ error: "q is required" });
   const prefs = getPrefs();
+  const catalogFilter = parseCatalogFilter(req.query.filter);
   const { products, usedMock } = await searchProducts(query, prefs);
-  res.json({ query, products: products.slice(0, 8), usedMock });
+  const filtered = applyCatalogFilter(products, catalogFilter);
+  res.json({ query, filter: catalogFilter, products: filtered.slice(0, 8), usedMock });
 });
 
 const port = Number(process.env.PORT ?? 3001);
