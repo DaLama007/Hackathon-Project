@@ -1,4 +1,5 @@
 import "dotenv/config";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 import {
@@ -8,6 +9,7 @@ import {
   searchProducts,
   type Product,
 } from "./ah.js";
+import { authRouter, requireUser, seedDemoUser, sessionSecret } from "./auth.js";
 import {
   addShoppingItem,
   clearShoppingList,
@@ -25,8 +27,9 @@ import {
 } from "./recipes.js";
 
 const app = express();
-app.use(cors());
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
+app.use(cookieParser(sessionSecret));
 
 function parsePrefsBody(body: unknown): UserPrefs | null {
   if (!body || typeof body !== "object") return null;
@@ -38,12 +41,26 @@ function parsePrefsBody(body: unknown): UserPrefs | null {
   };
 }
 
+/** Safe on any route mounted behind `requireUser`. */
+function userIdOf(req: express.Request): number {
+  if (req.userId === undefined) throw new Error("route is missing requireUser");
+  return req.userId;
+}
+
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", time: new Date().toISOString() });
 });
 
-app.get("/api/prefs", (_req, res) => {
-  res.json(getPrefs());
+app.use("/api/auth", authRouter);
+
+// Everything below is account-scoped: prefs, pref-filtered recipes, and the list.
+app.use(
+  ["/api/prefs", "/api/recipes", "/api/shopping-list", "/api/offers", "/api/products"],
+  requireUser,
+);
+
+app.get("/api/prefs", (req, res) => {
+  res.json(getPrefs(userIdOf(req)));
 });
 
 app.put("/api/prefs", (req, res) => {
@@ -51,11 +68,11 @@ app.put("/api/prefs", (req, res) => {
   if (!prefs) {
     return res.status(400).json({ error: "invalid prefs body" });
   }
-  res.json(setPrefs(prefs));
+  res.json(setPrefs(userIdOf(req), prefs));
 });
 
 app.get("/api/recipes", (req, res) => {
-  const prefs = getPrefs();
+  const prefs = getPrefs(userIdOf(req));
   const filter = req.query.filter !== "0";
   res.json(filter ? listRecipes(prefs) : listRecipes());
 });
@@ -70,7 +87,7 @@ app.post("/api/recipes/:id/match", async (req, res) => {
   const recipe = getRecipe(req.params.id);
   if (!recipe) return res.status(404).json({ error: "recipe not found" });
 
-  const prefs = getPrefs();
+  const prefs = getPrefs(userIdOf(req));
   const includeOptional = Boolean(req.body?.includeOptional);
 
   const ingredients = recipe.ingredients.filter((ing) => includeOptional || !ing.optional);
@@ -102,11 +119,12 @@ app.post("/api/recipes/:id/match", async (req, res) => {
   });
 });
 
-app.get("/api/shopping-list", (_req, res) => {
-  res.json(listShoppingItems());
+app.get("/api/shopping-list", (req, res) => {
+  res.json(listShoppingItems(userIdOf(req)));
 });
 
 app.post("/api/shopping-list/items", (req, res) => {
+  const userId = userIdOf(req);
   const items = Array.isArray(req.body?.items) ? req.body.items : [req.body];
   const added = [];
 
@@ -117,7 +135,7 @@ app.post("/api/shopping-list/items", (req, res) => {
       return res.status(400).json({ error: "each item needs productId and title" });
     }
     added.push(
-      addShoppingItem({
+      addShoppingItem(userId, {
         productId: String(productId),
         title,
         price: typeof item.price === "number" ? item.price : null,
@@ -138,20 +156,20 @@ app.delete("/api/shopping-list/items/:id", (req, res) => {
   if (!Number.isInteger(id)) {
     return res.status(400).json({ error: "invalid id" });
   }
-  if (!removeShoppingItem(id)) {
+  if (!removeShoppingItem(userIdOf(req), id)) {
     return res.status(404).json({ error: "not found" });
   }
   res.status(204).end();
 });
 
-app.delete("/api/shopping-list", (_req, res) => {
-  clearShoppingList();
+app.delete("/api/shopping-list", (req, res) => {
+  clearShoppingList(userIdOf(req));
   res.status(204).end();
 });
 
 /** Current AH bonus/offers with seeded recipes that can use each item. */
-app.get("/api/offers", async (_req, res) => {
-  const prefs = getPrefs();
+app.get("/api/offers", async (req, res) => {
+  const prefs = getPrefs(userIdOf(req));
   const { products, usedMock } = await listBonusOffers(prefs, uniqueIngredientSearchTerms());
   const offers = products
     .map((product) => ({
@@ -172,7 +190,7 @@ app.get("/api/offers", async (_req, res) => {
 app.get("/api/products/suggest", async (req, res) => {
   const query = typeof req.query.q === "string" ? req.query.q.trim() : "";
   if (!query) return res.status(400).json({ error: "q is required" });
-  const prefs = getPrefs();
+  const prefs = getPrefs(userIdOf(req));
   const catalogFilter = parseCatalogFilter(req.query.filter);
   const { products, usedMock } = await searchProducts(query, prefs);
   const filtered = applyCatalogFilter(products, catalogFilter);
@@ -180,8 +198,10 @@ app.get("/api/products/suggest", async (req, res) => {
 });
 
 const port = Number(process.env.PORT ?? 3001);
-app.listen(port, () => {
-  console.log(`API listening on http://localhost:${port}`);
+seedDemoUser().finally(() => {
+  app.listen(port, () => {
+    console.log(`API listening on http://localhost:${port}`);
+  });
 });
 
 export type { Product };
