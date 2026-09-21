@@ -1,4 +1,4 @@
-import "dotenv/config";
+import "./env.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
@@ -14,10 +14,20 @@ import {
   addShoppingItem,
   clearShoppingList,
   getPrefs,
+  getWeeklyReview,
+  listMealLogs,
   listShoppingItems,
+  listWeeklyReviews,
   removeShoppingItem,
   setPrefs,
 } from "./db.js";
+import {
+  analyzePlate,
+  buildWeeklyReview,
+  savePlateMeal,
+  weekStartMonday,
+  type MealLang,
+} from "./meals.js";
 import {
   getRecipe,
   listRecipes,
@@ -28,7 +38,8 @@ import {
 
 const app = express();
 app.use(cors({ origin: true, credentials: true }));
-app.use(express.json());
+// Plate photos arrive as base64; the default body limit is too small.
+app.use(express.json({ limit: "8mb" }));
 app.use(cookieParser(sessionSecret));
 
 function parsePrefsBody(body: unknown): UserPrefs | null {
@@ -47,15 +58,31 @@ function userIdOf(req: express.Request): number {
   return req.userId;
 }
 
+/** Meal tables key on TEXT, so scope them by the signed-in account id. */
+function mealUserIdOf(req: express.Request): string {
+  return String(userIdOf(req));
+}
+
+function parseLang(value: unknown): MealLang {
+  return value === "en" ? "en" : "nl";
+}
+
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", time: new Date().toISOString() });
 });
 
 app.use("/api/auth", authRouter);
 
-// Everything below is account-scoped: prefs, pref-filtered recipes, and the list.
+// Everything below is account-scoped: prefs, pref-filtered recipes, the list, and meals.
 app.use(
-  ["/api/prefs", "/api/recipes", "/api/shopping-list", "/api/offers", "/api/products"],
+  [
+    "/api/prefs",
+    "/api/recipes",
+    "/api/shopping-list",
+    "/api/offers",
+    "/api/products",
+    "/api/meals",
+  ],
   requireUser,
 );
 
@@ -195,6 +222,79 @@ app.get("/api/products/suggest", async (req, res) => {
   const { products, usedMock } = await searchProducts(query, prefs);
   const filtered = applyCatalogFilter(products, catalogFilter);
   res.json({ query, filter: catalogFilter, products: filtered.slice(0, 8), usedMock });
+});
+
+/** Plate photo → description + nutrition + gaps, saved for the soft user id. */
+app.post("/api/meals/scan", async (req, res) => {
+  const imageBase64 =
+    typeof req.body?.imageBase64 === "string"
+      ? req.body.imageBase64.replace(/^data:[^;]+;base64,/, "")
+      : "";
+  if (!imageBase64) {
+    return res.status(400).json({ error: "imageBase64 required" });
+  }
+  const mimeType = typeof req.body?.mimeType === "string" ? req.body.mimeType : "image/jpeg";
+  const lang = parseLang(req.body?.lang);
+  const userId = mealUserIdOf(req);
+  const save = req.body?.save !== false;
+
+  try {
+    const analysis = await analyzePlate({ imageBase64, mimeType, lang });
+    const meal = save ? savePlateMeal({ userId, analysis }) : null;
+    res.status(save ? 201 : 200).json({ analysis, meal, userId });
+  } catch (err) {
+    console.error("[meals] scan failed:", err);
+    res.status(500).json({ error: "meal scan failed" });
+  }
+});
+
+app.get("/api/meals", (req, res) => {
+  const userId = mealUserIdOf(req);
+  const since = typeof req.query.since === "string" ? req.query.since : undefined;
+  res.json({ userId, meals: listMealLogs(userId, since) });
+});
+
+/** Build or refresh this week's review from saved meal texts. */
+app.post("/api/meals/weekly-review", async (req, res) => {
+  const userId = mealUserIdOf(req);
+  const lang = parseLang(req.body?.lang ?? req.query.lang);
+  const weekStart =
+    typeof req.body?.weekStart === "string" && /^\d{4}-\d{2}-\d{2}$/.test(req.body.weekStart)
+      ? req.body.weekStart
+      : weekStartMonday();
+
+  try {
+    const review = await buildWeeklyReview({ userId, lang, weekStart });
+    res.json({ review, meals: listMealLogs(userId, `${weekStart} 00:00:00`) });
+  } catch (err) {
+    console.error("[meals] weekly review failed:", err);
+    res.status(500).json({ error: "weekly review failed" });
+  }
+});
+
+app.get("/api/meals/weekly-review", async (req, res) => {
+  const userId = mealUserIdOf(req);
+  const lang = parseLang(req.query.lang);
+  const weekStart =
+    typeof req.query.weekStart === "string" && /^\d{4}-\d{2}-\d{2}$/.test(req.query.weekStart)
+      ? req.query.weekStart
+      : weekStartMonday();
+  const refresh = req.query.refresh === "1";
+
+  try {
+    let review = getWeeklyReview(userId, weekStart);
+    if (!review || refresh) {
+      review = await buildWeeklyReview({ userId, lang, weekStart });
+    }
+    res.json({
+      review,
+      history: listWeeklyReviews(userId),
+      meals: listMealLogs(userId, `${weekStart} 00:00:00`),
+    });
+  } catch (err) {
+    console.error("[meals] weekly review get failed:", err);
+    res.status(500).json({ error: "weekly review failed" });
+  }
 });
 
 const port = Number(process.env.PORT ?? 3001);

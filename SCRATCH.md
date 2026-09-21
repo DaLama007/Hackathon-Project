@@ -1,5 +1,13 @@
 # Scratch / smoke notes
 
+## camera-ai-scan (plate + weekly)
+
+1. **Bord / Plate** → Upload any plate photo → preview must show the image (not a blank black box).
+2. With `OPENROUTER_API_KEY` or `AI-KEY` in repo-root `.env`, stub banner should disappear and analysis comes from OpenRouter (`usedStub: false`). Without a key, stub banner is OK.
+3. **Week / Weekly** → Refresh review → summary uses this week’s saved texts + common gaps.
+4. Meals are keyed to the signed-in account; logging in as another user shows that user's meals.
+5. Restart `npm run dev` after editing `.env` (loader reads repo-root `.env` and `server/.env`).
+
 ## frontend-ui (liquid glass + arc atmosphere)
 
 1. `npm run dev` — open client; PlateWise plate logo + frosted glass panels on soft animated arc background.

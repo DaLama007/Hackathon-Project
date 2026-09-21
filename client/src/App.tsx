@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import Login, { type AuthUser } from "./Login";
+import MealScanPanel from "./MealScanPanel";
 import {
   ingredientName,
   ingredientUnit,
@@ -7,6 +8,7 @@ import {
   recipeTitle,
   type Lang,
 } from "./recipeI18n";
+import WeeklyReviewPanel from "./WeeklyReviewPanel";
 
 type DietTag = "vegetarian" | "vegan" | "halal";
 type CatalogFilter = "all" | "bonus" | "bio" | "cheap" | "storeBrand";
@@ -78,7 +80,7 @@ interface ShoppingItem {
   image_url?: string | null;
 }
 
-type View = "offers" | "recipes" | "match" | "list";
+type View = "offers" | "recipes" | "match" | "list" | "scan" | "weekly";
 
 const emptyPrefs: UserPrefs = { vegetarian: false, vegan: false, halal: false };
 const LANG_KEY = "platewise-lang";
@@ -144,6 +146,39 @@ const copy = {
     searching: "Searching…",
     noItemResults: "No products for that search.",
     itemAdded: "Added to list",
+    scan: "Plate",
+    scanHint: "Photo of your plate → description, nutrition estimate, and what’s missing.",
+    uploadPhoto: "Upload photo",
+    useCamera: "Use camera",
+    stopCamera: "Stop camera",
+    capture: "Capture & analyze",
+    scanning: "Analyzing plate…",
+    stubBanner: "No AI key configured — using demo plate analysis (stub).",
+    description: "Description",
+    foods: "Foods seen",
+    nutrition: "Estimated nutrition",
+    missing: "Likely missing",
+    tips: "Tip",
+    recentMeals: "Saved meals",
+    emptyMeals: "No meals saved yet — scan a plate to start.",
+    cameraDenied: "Camera permission denied — upload a photo instead.",
+    needPhoto: "Take or upload a plate photo first.",
+    previewAlt: "Plate photo preview",
+    kcal: "kcal",
+    protein: "Protein",
+    carbs: "Carbs",
+    fat: "Fat",
+    fiber: "Fiber",
+    saved: "Saved to your meal log.",
+    weekly: "Weekly",
+    weeklyHint: "End-of-week overview from your saved plate descriptions.",
+    refreshReview: "Refresh review",
+    refreshing: "Building review…",
+    thisWeek: "This week",
+    mealsThisWeek: "Meals this week",
+    commonGaps: "Common gaps",
+    noMealsWeek: "No meals logged this week yet.",
+    pastReviews: "Earlier reviews",
     loggedInAs: "Signed in as",
     logOut: "Log out",
     loggingOut: "Logging out…",
@@ -209,6 +244,39 @@ const copy = {
     searching: "Zoeken…",
     noItemResults: "Geen producten voor deze zoekterm.",
     itemAdded: "Toegevoegd aan lijst",
+    scan: "Bord",
+    scanHint: "Foto van je bord → beschrijving, voedingsschatting en wat er tekort lijkt.",
+    uploadPhoto: "Upload foto",
+    useCamera: "Gebruik camera",
+    stopCamera: "Stop camera",
+    capture: "Maak foto & analyseer",
+    scanning: "Bord analyseren…",
+    stubBanner: "Geen AI-sleutel — demodata voor bordanalyse (stub).",
+    description: "Beschrijving",
+    foods: "Geziene voedingsmiddelen",
+    nutrition: "Geschatte voeding",
+    missing: "Waarschijnlijk tekort",
+    tips: "Tip",
+    recentMeals: "Opgeslagen maaltijden",
+    emptyMeals: "Nog geen maaltijden — scan een bord om te starten.",
+    cameraDenied: "Cameratoegang geweigerd — upload in plaats daarvan een foto.",
+    needPhoto: "Maak of upload eerst een bordfoto.",
+    previewAlt: "Voorbeeld bordfoto",
+    kcal: "kcal",
+    protein: "Eiwit",
+    carbs: "Koolhydraten",
+    fat: "Vet",
+    fiber: "Vezels",
+    saved: "Opgeslagen in je maaltijdlog.",
+    weekly: "Week",
+    weeklyHint: "Weekoverzicht op basis van je opgeslagen bordbeschrijvingen.",
+    refreshReview: "Vernieuw review",
+    refreshing: "Review maken…",
+    thisWeek: "Deze week",
+    mealsThisWeek: "Maaltijden deze week",
+    commonGaps: "Veelvoorkomende tekorten",
+    noMealsWeek: "Nog geen maaltijden deze week.",
+    pastReviews: "Eerdere reviews",
     loggedInAs: "Ingelogd als",
     logOut: "Uitloggen",
     loggingOut: "Uitloggen…",
@@ -967,6 +1035,12 @@ export default function App() {
         <button type="button" className={view === "recipes" ? "active" : ""} onClick={() => setView("recipes")}>
           {t.recipes}
         </button>
+        <button className={view === "scan" ? "active" : ""} onClick={() => setView("scan")}>
+          {t.scan}
+        </button>
+        <button className={view === "weekly" ? "active" : ""} onClick={() => setView("weekly")}>
+          {t.weekly}
+        </button>
         <button
           type="button"
           className={view === "match" ? "active" : ""}
@@ -1019,6 +1093,12 @@ export default function App() {
             {t.loading}
           </p>
         </div>
+      ) : view === "scan" && user ? (
+        // Smoke: Plate → upload image → preview + description/nutrition/gaps → appears under Saved meals.
+        <MealScanPanel t={t} lang={lang} userId={String(user.id)} onError={setError} />
+      ) : view === "weekly" && user ? (
+        // Smoke: Weekly → refresh → summary from saved meal texts + common gaps.
+        <WeeklyReviewPanel t={t} lang={lang} userId={String(user.id)} onError={setError} />
       ) : view === "offers" ? (
         <section>
           <div className="view-header">

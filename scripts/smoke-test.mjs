@@ -219,6 +219,33 @@ assert(
 
 // --- a second account gets a clean slate -------------------------------
 
+// --- meal scan is account-scoped ---------------------------------------
+
+const mealScan = await aliceClient(
+  "/api/meals/scan",
+  postJson({
+    imageBase64: "dGVzdA==",
+    mimeType: "image/jpeg",
+    lang: "nl",
+  }),
+).then((r) => r.json());
+assert(mealScan.analysis?.description, "meal scan returns a description");
+assert(Array.isArray(mealScan.analysis?.missing) && mealScan.analysis.missing.length >= 1, "meal scan lists gaps");
+assert(mealScan.meal?.id, "meal scan saves a meal log row");
+assert(typeof mealScan.analysis.usedStub === "boolean", "meal scan reports stub/live flag");
+
+const mealsList = await aliceClient("/api/meals").then((r) => r.json());
+assert(
+  Array.isArray(mealsList.meals) && mealsList.meals.some((m) => m.id === mealScan.meal.id),
+  "GET /api/meals returns saved plate meals",
+);
+
+const weekly = await aliceClient("/api/meals/weekly-review?lang=nl&refresh=1").then((r) => r.json());
+assert(weekly.review?.summary, "weekly review returns a summary");
+assert(weekly.review?.meal_count >= 1, "weekly review counts saved meals");
+
+assert((await createClient()("/api/meals")).status === 401, "meal routes require a session");
+
 const bobClient = createClient();
 assert(
   (await bobClient("/api/auth/register", postJson(bob))).status === 201,
@@ -233,6 +260,9 @@ assert(
 
 const bobList = await bobClient("/api/shopping-list").then((r) => r.json());
 assert(bobList.length === 0, "a new account starts with an empty shopping list");
+
+const bobMeals = await bobClient("/api/meals").then((r) => r.json());
+assert(Array.isArray(bobMeals.meals) && bobMeals.meals.length === 0, "a new account starts with no meal logs");
 
 const bobAdded = await bobClient(
   "/api/shopping-list/items",

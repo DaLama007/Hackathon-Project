@@ -27,7 +27,7 @@ Current backlog:
 
 | ID | Task |
 | --- | --- |
-| `camera-ai-scan` | Camera + AI scan of ingredients/products |
+| `camera-ai-scan` | Plate photo → nutrition/gaps + weekly review |
 
 Accounts are handled by `auth-save-load` (done) — see `TASKS.md` for its smoke checklist.
 
@@ -74,6 +74,9 @@ Everything except `/api/health` and `/api/auth/*` requires a session cookie and 
 | POST | `/api/shopping-list/items` | Add `{ items: [...] }` (recipe optional) |
 | DELETE | `/api/shopping-list/items/:id` | Remove one item |
 | GET | `/api/products/suggest?q=` | Search a single term (`filter` same as match) |
+| POST | `/api/meals/scan` | Plate photo → description/nutrition/gaps; saves meal log (`X-User-Id`) |
+| GET | `/api/meals` | Saved plate meals for soft user id |
+| GET/POST | `/api/meals/weekly-review` | Weekly overview from saved meal texts |
 
 ## Demo checklist / Demochecklist
 
@@ -86,5 +89,7 @@ Everything except `/api/health` and `/api/auth/*` requires a session cookie and 
 7. Swap a product / uncheck one → add to list / wissel of vink uit → voeg toe aan lijst
 8. Confirm list shows bonus labels / controleer bonuslabels op de lijst
 9. List → **Reminders / Herinneringen** — share sheet or copied text, one product per line / deel of kopieer, één product per regel
-10. **Log out / Uitloggen**, log back in — prefs and the list are exactly as you left them / voorkeuren en lijst staan er weer
-11. Sign up a second account — clean prefs and an empty list / tweede account start leeg
+10. **Bord / Plate** → upload plate photo → preview visible + description/nutrition/gaps saved / preview + voedingstekorten
+11. **Week / Weekly** → refresh → overview from this week’s meal texts / weekoverzicht
+12. **Log out / Uitloggen**, log back in — prefs and the list are exactly as you left them / voorkeuren en lijst staan er weer
+13. Sign up a second account — clean prefs and an empty list / tweede account start leeg
