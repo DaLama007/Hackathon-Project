@@ -63,7 +63,7 @@ const LANG_KEY = "platewise-lang";
 
 const copy = {
   en: {
-    brandEyebrow: "Healthy eating, planned",
+    brandEyebrow: "Farm-fresh planning",
     title: "Eat well. Shop smart.",
     subtitle: "Pick a recipe, match Albert Heijn products (bonus first), fill your list.",
     recipes: "Recipes",
@@ -104,7 +104,7 @@ const copy = {
     ah: "AH",
   },
   nl: {
-    brandEyebrow: "Gezond eten, gepland",
+    brandEyebrow: "Vers van de boer",
     title: "Eet goed. Koop slim.",
     subtitle: "Kies een recept, match AH-producten (bonus eerst), vul je lijst.",
     recipes: "Recepten",
@@ -208,69 +208,97 @@ function ProductThumb({
   );
 }
 
-/** Anthropic-inspired geometric mark: concentric dinner plate. */
+/** Cartoon plate + sprout mark for the brand lockup. */
 function PlateWiseLogo() {
   return (
-    <svg className="brand-logo" viewBox="0 0 40 40" aria-hidden="true">
-      <rect width="40" height="40" rx="10" fill="#16382c" />
-      <g
-        transform="translate(20 20)"
-        fill="none"
-        stroke="#f4faf6"
-        strokeLinecap="round"
-      >
-        {/* Outer edge + rim band + inner well = dinner plate */}
-        <circle r="14" strokeWidth="1.5" />
-        <circle r="11.15" strokeWidth="1.05" opacity="0.72" />
-        <circle r="7" strokeWidth="1.65" />
-        <circle r="7" fill="#f4faf6" fillOpacity="0.1" stroke="none" />
-        <circle r="1.35" fill="#f4faf6" stroke="none" />
-        {/* Short rim ticks — plate accent, not a spark/asterisk */}
-        <g strokeWidth="1.25" opacity="0.9">
-          <path d="M0 -13.85v2.1" />
-          <path d="M0 11.75v2.1" />
-          <path d="M-13.85 0h2.1" />
-          <path d="M11.75 0h2.1" />
-        </g>
-      </g>
+    <svg className="brand-logo" viewBox="0 0 72 72" aria-hidden="true">
+      <defs>
+        <radialGradient id="pwPlateShine" cx="32%" cy="28%" r="65%">
+          <stop offset="0%" stopColor="#ffffff" />
+          <stop offset="55%" stopColor="#f4faf6" />
+          <stop offset="100%" stopColor="#d7ebe0" />
+        </radialGradient>
+        <linearGradient id="pwLeaf" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#7adf9a" />
+          <stop offset="100%" stopColor="#1f8a5b" />
+        </linearGradient>
+        <linearGradient id="pwCarrot" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#ffb347" />
+          <stop offset="100%" stopColor="#f07820" />
+        </linearGradient>
+      </defs>
+      <circle cx="36" cy="38" r="26" fill="#2f9a66" />
+      <circle cx="36" cy="38" r="22" fill="url(#pwPlateShine)" stroke="#1f8a5b" strokeWidth="2.2" />
+      <ellipse cx="36" cy="40" rx="14" ry="9" fill="#e7f6ee" stroke="#9dceb4" strokeWidth="1.4" />
+      <path
+        d="M36 18c1.2 4.2 1.5 8.2 0 13.2-1.5-5-1.2-9 0-13.2z"
+        fill="url(#pwLeaf)"
+      />
+      <path
+        d="M36 20c4.8 2.2 8.2 1.6 10.8-1.2-3.8.6-7.4-.4-10.8 1.2z"
+        fill="#5ecf8e"
+      />
+      <path
+        d="M36 20c-4.8 2.2-8.2 1.6-10.8-1.2 3.8.6 7.4-.4 10.8 1.2z"
+        fill="#3db87a"
+      />
+      <path d="M44 34l6 14c.4 1-.2 1.8-1.2 1.8h-1.4c-.8 0-1.3-.5-1.5-1.2L42 34.4z" fill="url(#pwCarrot)" />
+      <path d="M44 34c2.2-.2 3.6-1.4 4.2-3.2-1.6.8-3 .6-4.2 3.2z" fill="#3db87a" />
+      <circle cx="28" cy="36" r="3.2" fill="#ff6b6b" />
+      <circle cx="27.2" cy="35.2" r="1" fill="#ffc9c9" />
     </svg>
   );
 }
 
-/** Calm wellness / botanical backdrop — spa greens & soft blues, no farmyard cues. */
-function WellnessBackdrop() {
+function FarmBackdrop() {
   return (
-    <div className="wellness-backdrop" aria-hidden="true">
-      <div className="wellness-sky" />
-      <div className="wellness-mist wellness-mist-top" />
-      <div className="wellness-glow wellness-glow-a" />
-      <div className="wellness-glow wellness-glow-b" />
-      <div className="wellness-glow wellness-glow-c" />
-      <svg className="wellness-scene" viewBox="0 0 800 420" preserveAspectRatio="xMidYMax slice">
-        {/* Soft ground wash — foggy meadow wash, not hills/fields */}
-        <ellipse className="wellness-wash wellness-wash-back" cx="400" cy="400" rx="520" ry="120" />
-        <ellipse className="wellness-wash wellness-wash-front" cx="400" cy="430" rx="480" ry="90" />
-        {/* Abstract botanical silhouettes */}
-        <g className="wellness-botanicals">
-          <g className="wellness-leaf-cluster wellness-leaf-left" fill="#2a7a5c" opacity="0.38">
-            <path d="M90 360 C70 300 95 250 130 220 C145 280 140 330 90 360 Z" />
-            <path d="M130 360 C115 295 145 245 185 215 C190 285 175 335 130 360 Z" />
-            <path d="M155 365 C150 310 175 265 215 240 C210 305 190 345 155 365 Z" />
-            <path d="M112 250 C118 280 125 310 120 340" fill="none" stroke="#1a5c42" strokeWidth="2.5" opacity="0.5" />
-          </g>
-          <g className="wellness-leaf-cluster wellness-leaf-right" fill="#2f8a68" opacity="0.34">
-            <path d="M710 355 C730 295 705 245 670 215 C655 275 660 325 710 355 Z" />
-            <path d="M670 358 C685 290 655 240 615 212 C610 285 625 335 670 358 Z" />
-            <path d="M645 365 C650 310 625 265 585 242 C590 305 610 345 645 365 Z" />
-            <path d="M688 245 C682 275 675 305 680 338" fill="none" stroke="#1a5c42" strokeWidth="2.5" opacity="0.45" />
-          </g>
-          <g className="wellness-fronds" fill="none" stroke="#3a9a72" strokeWidth="2" opacity="0.28">
-            <path d="M320 420 C310 360 280 320 250 290" />
-            <path d="M340 420 C345 355 360 310 390 275" />
-            <path d="M460 420 C455 355 440 310 410 275" />
-            <path d="M480 420 C490 360 520 320 550 290" />
-          </g>
+    <div className="farm-backdrop" aria-hidden="true">
+      <div className="farm-sky" />
+      <div className="farm-sun" />
+      <div className="farm-cloud farm-cloud-a" />
+      <div className="farm-cloud farm-cloud-b" />
+      <div className="farm-cloud farm-cloud-c" />
+      <svg className="farm-scene" viewBox="0 0 800 420" preserveAspectRatio="xMidYMax slice">
+        <path
+          className="farm-hill farm-hill-back"
+          d="M0 260 C120 210 220 230 340 250 C480 275 560 200 800 230 L800 420 L0 420 Z"
+        />
+        <path
+          className="farm-hill farm-hill-mid"
+          d="M0 300 C140 250 260 280 400 295 C560 315 650 255 800 285 L800 420 L0 420 Z"
+        />
+        <path
+          className="farm-hill farm-hill-front"
+          d="M0 345 C180 310 300 335 460 340 C620 346 700 315 800 330 L800 420 L0 420 Z"
+        />
+        {/* Cartoon barn */}
+        <g className="farm-barn" transform="translate(590 238)">
+          <rect x="18" y="36" width="88" height="70" rx="4" fill="#e4574d" />
+          <path d="M12 40 L62 4 L112 40 Z" fill="#c73f38" />
+          <rect x="48" y="58" width="28" height="48" rx="3" fill="#ffe8a3" />
+          <rect x="28" y="48" width="18" height="16" rx="2" fill="#7ec8e3" />
+          <rect x="78" y="48" width="18" height="16" rx="2" fill="#7ec8e3" />
+          <rect x="8" y="100" width="108" height="10" rx="2" fill="#8b5a2b" />
         </g>
+        {/* Fence posts */}
+        <g className="farm-fence" fill="none" stroke="#8b5a2b" strokeWidth="4" strokeLinecap="round">
+          <path d="M40 360 V318 M70 360 V318 M100 360 V318 M130 360 V318 M160 360 V318" />
+          <path d="M36 328 H164 M36 348 H164" />
+        </g>
+        {/* Cartoon crops */}
+        <g className="farm-crops">
+          <ellipse cx="220" cy="352" rx="10" ry="16" fill="#4caf50" />
+          <ellipse cx="246" cy="348" rx="11" ry="18" fill="#66bb6a" />
+          <ellipse cx="272" cy="354" rx="9" ry="15" fill="#43a047" />
+          <ellipse cx="300" cy="350" rx="12" ry="19" fill="#57b85d" />
+          <rect x="216" y="360" width="90" height="8" rx="3" fill="#7a5a2b" opacity="0.35" />
+        </g>
+        {/* Path */}
+        <path
+          d="M310 420 C360 380 420 370 480 360 C540 350 580 355 640 420"
+          fill="#e6d2a0"
+          opacity="0.85"
+        />
       </svg>
     </div>
   );
@@ -517,7 +545,7 @@ export default function App() {
   return (
     <>
       {/* Outside .app so fixed positioning isn't trapped by the rise-in transform. */}
-      <WellnessBackdrop />
+      <FarmBackdrop />
       <main className="app">
       <header className="hero">
         <div className="hero-top">
@@ -818,7 +846,7 @@ export default function App() {
 
 /*
  * Smoke checklist (frontend-ui):
- * 1. npm run dev → open app at phone width + ~720px; PlateWise brand reads first, liquid-glass meadow atmosphere.
+ * 1. npm run dev → open app at phone width + ~720px; cartoon farm backdrop (sun/clouds/hills/barn) + plate logo; liquid-glass panels readable.
  * 2. Toggle EN/NL; prefs chips update recipes; empty state if filters too strict.
  * 3. Recipe card → Match at AH → swap/uncheck products (thumbnails when present) → Add selected.
  * 4. List shows items + total; Reminders share/copy; Clear empties list.
