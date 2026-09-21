@@ -1,0 +1,14 @@
+{
+  "name": "Hackathon Project (Vite + Express + SQLite)",
+  "install": "npm install",
+  "terminals": [
+    {
+      "name": "api",
+      "command": "npm run dev:server"
+    },
+    {
+      "name": "web",
+      "command": "npm run dev:client"
+    }
+  ]
+}

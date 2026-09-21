@@ -1,0 +1,23 @@
+node_modules/
+dist/
+*.tsbuildinfo
+*.local
+
+# SQLite database files (regenerated at runtime)
+*.sqlite
+*.sqlite3
+*.db
+data/
+
+# Env files (never commit real secrets)
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor/OS
+.DS_Store
+.vscode/
