@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Polish PlateWise UI: Apple-like glass surfaces + farm-fresh meadow greens, stronger brand hero, recipe cards, product thumbs, empty/loading states (EN/NL).
+- Polish PlateWise UI: liquid-glass panels (blur/saturate, specular rims) + farm-fresh meadow greens, stronger brand hero, recipe cards, product thumbs, empty/loading states (EN/NL).
 - Add List-tab Share/Copy to iPhone Reminders (newline grocery text, clipboard fallback).
 - Add shared agent tasklist (`TASKS.md`) so any agent can pick/claim: frontend UI, camera AI scan, AH offers ↔ recipes with item filters.
 - Add EN/NL language switch (persisted); UI shows one language at a time.
