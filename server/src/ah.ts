@@ -11,11 +11,15 @@ export interface Product {
   unitPrice: number | null;
   isBonus: boolean;
   bonusLabel: string | null;
+  isBio: boolean;
   imageUrl: string | null;
   source: "ah" | "mock";
 }
 
-type MockCatalog = Record<string, Array<Omit<Product, "source">>>;
+/** Filters already expressible from catalog fields — not extra AH query params. */
+export type CatalogFilter = "all" | "bonus" | "bio" | "cheap" | "storeBrand";
+
+type MockCatalog = Record<string, Array<Omit<Product, "source" | "isBio">>>;
 
 const dataDir = resolve(dirname(fileURLToPath(import.meta.url)), "../data");
 const mockCatalog = JSON.parse(
@@ -23,6 +27,7 @@ const mockCatalog = JSON.parse(
 ) as MockCatalog;
 
 const AH_SEARCH_URL = "https://api.ah.nl/mobile-services/product/search/v2";
+const OFFER_SEARCH_BATCH = 8;
 
 function prefsFacetParams(prefs: UserPrefs): string {
   const filters: string[] = [];
@@ -33,9 +38,34 @@ function prefsFacetParams(prefs: UserPrefs): string {
   return filters.length ? `&${filters.join("&")}` : "";
 }
 
+export function titleLooksBio(title: string): boolean {
+  const lower = title.toLowerCase();
+  return (
+    lower.includes("biologisch") ||
+    lower.includes("organic") ||
+    /(^|\s)bio(\s|$|-)/.test(lower)
+  );
+}
+
+function rawLooksBio(raw: Record<string, unknown>): boolean {
+  const blob = JSON.stringify(raw.properties ?? raw.diet ?? "").toLowerCase();
+  return blob.includes("biologisch") || blob.includes("organic");
+}
+
+function withBioFlags(
+  product: Omit<Product, "isBio">,
+  extraBio = false,
+): Product {
+  return {
+    ...product,
+    isBio: extraBio || titleLooksBio(product.title),
+  };
+}
+
 function scoreProduct(product: Product, searchTerm: string): number {
   let score = 0;
   if (product.isBonus) score += 100;
+  if (product.isBio) score += 10;
   const tokens = searchTerm.toLowerCase().split(/\s+/).filter(Boolean);
   const title = product.title.toLowerCase();
   for (const token of tokens) {
@@ -54,20 +84,50 @@ export function rankProducts(products: Product[], searchTerm: string): Product[]
   );
 }
 
+export function parseCatalogFilter(value: unknown): CatalogFilter {
+  if (value === "bonus" || value === "bio" || value === "cheap" || value === "storeBrand") {
+    return value;
+  }
+  return "all";
+}
+
+export function isStoreBrand(product: Product): boolean {
+  return /^AH\s/i.test(product.title);
+}
+
+/** Subset ranked products; does not replace bonus-then-cheap order. */
+export function applyCatalogFilter(products: Product[], filter: CatalogFilter): Product[] {
+  if (filter === "all") return products;
+  if (filter === "bonus") return products.filter((product) => product.isBonus);
+  if (filter === "bio") return products.filter((product) => product.isBio);
+  if (filter === "storeBrand") return products.filter(isStoreBrand);
+  if (filter === "cheap") {
+    const priced = products.filter((product) => product.price != null);
+    if (priced.length === 0) return [];
+    const min = Math.min(...priced.map((product) => product.price as number));
+    return products.filter((product) => product.price != null && product.price <= min + 0.4);
+  }
+  return products;
+}
+
+function toMockProduct(product: Omit<Product, "source" | "isBio">): Product {
+  return withBioFlags({ ...product, source: "mock" });
+}
+
 function mockProductsFor(searchTerm: string): Product[] {
   const exact = mockCatalog[searchTerm];
   if (exact?.length) {
-    return exact.map((p) => ({ ...p, source: "mock" as const }));
+    return exact.map(toMockProduct);
   }
   // Fuzzy: find catalog key contained in search term or vice versa
   const lower = searchTerm.toLowerCase();
   for (const [key, products] of Object.entries(mockCatalog)) {
     if (lower.includes(key.toLowerCase()) || key.toLowerCase().includes(lower)) {
-      return products.map((p) => ({ ...p, source: "mock" as const }));
+      return products.map(toMockProduct);
     }
   }
   return [
-    {
+    withBioFlags({
       id: `mock-fallback-${encodeURIComponent(searchTerm)}`,
       title: `AH ${searchTerm}`,
       price: 1.99,
@@ -76,8 +136,29 @@ function mockProductsFor(searchTerm: string): Product[] {
       bonusLabel: null,
       imageUrl: null,
       source: "mock",
-    },
+    }),
   ];
+}
+
+function mockBonusProducts(): Product[] {
+  const bonus: Product[] = [];
+  for (const products of Object.values(mockCatalog)) {
+    for (const product of products) {
+      if (product.isBonus) bonus.push(toMockProduct(product));
+    }
+  }
+  return dedupeById(bonus);
+}
+
+function dedupeById(products: Product[]): Product[] {
+  const seen = new Set<string>();
+  const unique: Product[] = [];
+  for (const product of products) {
+    if (seen.has(product.id)) continue;
+    seen.add(product.id);
+    unique.push(product);
+  }
+  return unique;
 }
 
 function mapAhProduct(raw: Record<string, unknown>): Product | null {
@@ -107,16 +188,19 @@ function mapAhProduct(raw: Record<string, unknown>): Product | null {
   const images = raw.images as Array<{ url?: string }> | undefined;
   const imageUrl = images?.[0]?.url ?? null;
 
-  return {
-    id,
-    title,
-    price,
-    unitPrice: null,
-    isBonus,
-    bonusLabel,
-    imageUrl,
-    source: "ah",
-  };
+  return withBioFlags(
+    {
+      id,
+      title,
+      price,
+      unitPrice: null,
+      isBonus,
+      bonusLabel,
+      imageUrl,
+      source: "ah",
+    },
+    rawLooksBio(raw),
+  );
 }
 
 async function fetchAhProducts(searchTerm: string, prefs: UserPrefs): Promise<Product[]> {
@@ -126,7 +210,12 @@ async function fetchAhProducts(searchTerm: string, prefs: UserPrefs): Promise<Pr
   const cacheKey = `ah:${searchTerm}:${prefs.vegetarian}:${prefs.vegan}:${prefs.halal}`;
   const cached = getCachedSearch(cacheKey);
   if (cached) {
-    return JSON.parse(cached) as Product[];
+    const parsed = JSON.parse(cached) as Product[];
+    return parsed.map((product) =>
+      typeof product.isBio === "boolean"
+        ? product
+        : { ...product, isBio: titleLooksBio(product.title) },
+    );
   }
 
   const url =
@@ -186,4 +275,46 @@ export async function searchProducts(
     const products = rankProducts(mockProductsFor(searchTerm), searchTerm);
     return { products, usedMock: true };
   }
+}
+
+function mockBonusSearchTerms(): string[] {
+  return Object.entries(mockCatalog)
+    .filter(([, products]) => products.some((product) => product.isBonus))
+    .map(([term]) => term);
+}
+
+/** Current bonus/offers via existing search (no new AH query params). Mock if AH is down. */
+export async function listBonusOffers(
+  prefs: UserPrefs,
+  searchTerms: string[],
+): Promise<{ products: Product[]; usedMock: boolean }> {
+  if (process.env.AH_FORCE_MOCK === "1") {
+    return { products: rankProducts(mockBonusProducts(), ""), usedMock: true };
+  }
+
+  const bonusTerms = mockBonusSearchTerms();
+  const overlapping = searchTerms.filter((term) => bonusTerms.includes(term));
+  const terms = (overlapping.length ? overlapping : bonusTerms).slice(0, 16);
+  const found: Product[] = [];
+  let usedMock = false;
+
+  try {
+    for (let index = 0; index < terms.length; index += OFFER_SEARCH_BATCH) {
+      const chunk = terms.slice(index, index + OFFER_SEARCH_BATCH);
+      const results = await Promise.all(chunk.map((term) => searchProducts(term, prefs)));
+      for (const result of results) {
+        if (result.usedMock) usedMock = true;
+        found.push(...result.products.filter((product) => product.isBonus));
+      }
+    }
+  } catch (err) {
+    console.warn("[ah] offers search failed, using mock:", err);
+    return { products: rankProducts(mockBonusProducts(), ""), usedMock: true };
+  }
+
+  const bonus = rankProducts(dedupeById(found), "");
+  if (bonus.length === 0) {
+    return { products: rankProducts(mockBonusProducts(), ""), usedMock: true };
+  }
+  return { products: bonus, usedMock };
 }

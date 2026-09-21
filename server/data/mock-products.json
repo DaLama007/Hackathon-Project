@@ -6,11 +6,13 @@
   ],
   "spinazie": [
     { "id": "mock-spin-1", "title": "AH Spinazie gewassen 300g", "price": 1.19, "unitPrice": 3.97, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null },
-    { "id": "mock-spin-2", "title": "AH Baby spinazie 100g", "price": 1.49, "unitPrice": 14.9, "isBonus": false, "bonusLabel": null, "imageUrl": null }
+    { "id": "mock-spin-2", "title": "AH Baby spinazie 100g", "price": 1.49, "unitPrice": 14.9, "isBonus": false, "bonusLabel": null, "imageUrl": null },
+    { "id": "mock-spin-3", "title": "AH Biologisch spinazie 300g", "price": 1.79, "unitPrice": 5.97, "isBonus": false, "bonusLabel": null, "imageUrl": null }
   ],
   "ui": [
     { "id": "mock-ui-1", "title": "AH Uien 1kg", "price": 0.99, "unitPrice": 0.99, "isBonus": false, "bonusLabel": null, "imageUrl": null },
-    { "id": "mock-ui-2", "title": "AH Zoete ui 500g", "price": 1.29, "unitPrice": 2.58, "isBonus": true, "bonusLabel": "25% korting", "imageUrl": null }
+    { "id": "mock-ui-2", "title": "AH Zoete ui 500g", "price": 1.29, "unitPrice": 2.58, "isBonus": true, "bonusLabel": "25% korting", "imageUrl": null },
+    { "id": "mock-ui-3", "title": "AH Biologisch uien 1kg", "price": 1.49, "unitPrice": 1.49, "isBonus": false, "bonusLabel": null, "imageUrl": null }
   ],
   "knoflook": [
     { "id": "mock-knof-1", "title": "AH Knoflook 3 stuks", "price": 0.89, "unitPrice": 0.3, "isBonus": false, "bonusLabel": null, "imageUrl": null }
@@ -21,7 +23,8 @@
   ],
   "olijfolie": [
     { "id": "mock-olie-1", "title": "AH Olijfolie extra vierge 500ml", "price": 4.99, "unitPrice": 9.98, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null },
-    { "id": "mock-olie-2", "title": "Bertolli Classico 500ml", "price": 5.49, "unitPrice": 10.98, "isBonus": false, "bonusLabel": null, "imageUrl": null }
+    { "id": "mock-olie-2", "title": "Bertolli Classico 500ml", "price": 5.49, "unitPrice": 10.98, "isBonus": false, "bonusLabel": null, "imageUrl": null },
+    { "id": "mock-olie-3", "title": "AH Biologisch olijfolie 500ml", "price": 6.49, "unitPrice": 12.98, "isBonus": false, "bonusLabel": null, "imageUrl": null }
   ],
   "kurkuma": [
     { "id": "mock-kurk-1", "title": "Verstegen Kurkuma 30g", "price": 1.59, "unitPrice": 53.0, "isBonus": false, "bonusLabel": null, "imageUrl": null }
@@ -85,7 +88,8 @@
     { "id": "mock-komijn-1", "title": "Verstegen Komijnzaad 25g", "price": 1.49, "unitPrice": 59.6, "isBonus": false, "bonusLabel": null, "imageUrl": null }
   ],
   "tofu naturel": [
-    { "id": "mock-tofu-1", "title": "AH Tofu naturel 300g", "price": 1.59, "unitPrice": 5.3, "isBonus": false, "bonusLabel": null, "imageUrl": null }
+    { "id": "mock-tofu-1", "title": "AH Tofu naturel 300g", "price": 1.59, "unitPrice": 5.3, "isBonus": false, "bonusLabel": null, "imageUrl": null },
+    { "id": "mock-tofu-2", "title": "AH Biologisch tofu 300g", "price": 1.99, "unitPrice": 6.63, "isBonus": false, "bonusLabel": null, "imageUrl": null }
   ],
   "wokgroente": [
     { "id": "mock-wok-1", "title": "AH Wokgroente 400g", "price": 2.29, "unitPrice": 5.73, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null }

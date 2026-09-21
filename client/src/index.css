@@ -106,6 +106,7 @@ h3 {
 
 .tabs {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.4rem;
   margin-bottom: 1rem;
 }
@@ -135,7 +136,9 @@ h3 {
 .prefs,
 .recipe-list li,
 .match-list li,
-.shop-list li {
+.shop-list li,
+.offer-list li,
+.suggest-list li {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 0.55rem;
@@ -166,7 +169,9 @@ h3 {
 
 .recipe-list,
 .match-list,
-.shop-list {
+.shop-list,
+.offer-list,
+.suggest-list {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -197,6 +202,9 @@ button {
 }
 
 .recipe-list button,
+.offer-recipes button,
+.suggest-list button,
+.item-search button,
 .primary {
   border: none;
   background: var(--accent);
@@ -209,6 +217,9 @@ button {
 }
 
 .recipe-list button:hover,
+.offer-recipes button:hover,
+.suggest-list button:hover,
+.item-search button:hover,
 .primary:hover {
   background: var(--accent-dark);
 }
@@ -262,11 +273,89 @@ button {
   background: white;
 }
 
-.bonus {
+.bonus,
+.bio {
   font-size: 0.75rem;
   font-weight: 700;
-  color: var(--bonus);
   text-transform: uppercase;
+}
+
+.bonus {
+  color: var(--bonus);
+}
+
+.bio {
+  color: var(--accent-dark);
+}
+
+.badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.25rem;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.55rem 0 0.75rem;
+}
+
+.chip {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.chip.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.offer-list li,
+.suggest-list li {
+  padding: 0.9rem 1rem;
+}
+
+.offer-recipes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.55rem;
+}
+
+.offer-recipes button {
+  width: 100%;
+  white-space: normal;
+  text-align: left;
+}
+
+.suggest-list li {
+  display: flex;
+  gap: 0.85rem;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.item-search {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.item-search input {
+  flex: 1;
+  padding: 0.5rem 0.65rem;
+  border-radius: 0.35rem;
+  border: 1px solid var(--line);
+  background: white;
 }
 
 .list-header {
@@ -315,11 +404,13 @@ button {
 }
 
 @media (max-width: 600px) {
-  .recipe-list li {
+  .recipe-list li,
+  .suggest-list li {
     flex-direction: column;
   }
 
-  .recipe-list button {
+  .recipe-list button,
+  .suggest-list button {
     width: 100%;
   }
 }
