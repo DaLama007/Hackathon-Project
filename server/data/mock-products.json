@@ -1,991 +1,215 @@
 {
   "rode linzen": [
-    {
-      "id": "mock-linzen-1",
-      "title": "AH Rode linzen 500g",
-      "price": 1.49,
-      "unitPrice": 2.98,
-      "isBonus": true,
-      "bonusLabel": "2e halve prijs",
-      "imageUrl": null
-    },
-    {
-      "id": "mock-linzen-2",
-      "title": "Jumbo Rode linzen 400g",
-      "price": 1.29,
-      "unitPrice": 3.23,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    },
-    {
-      "id": "mock-linzen-3",
-      "title": "AH Biologisch rode linzen 400g",
-      "price": 1.89,
-      "unitPrice": 4.73,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-linzen-1", "title": "AH Rode linzen 500g", "price": 1.49, "unitPrice": 2.98, "isBonus": true, "bonusLabel": "2e halve prijs", "imageUrl": null},
+    {"id": "mock-linzen-2", "title": "Jumbo Rode linzen 400g", "price": 1.29, "unitPrice": 3.23, "isBonus": false, "bonusLabel": null, "imageUrl": null},
+    {"id": "mock-linzen-3", "title": "AH Biologisch rode linzen 400g", "price": 1.89, "unitPrice": 4.73, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "spinazie": [
-    {
-      "id": "mock-spin-1",
-      "title": "AH Spinazie gewassen 300g",
-      "price": 1.19,
-      "unitPrice": 3.97,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    },
-    {
-      "id": "mock-spin-2",
-      "title": "AH Baby spinazie 100g",
-      "price": 1.49,
-      "unitPrice": 14.9,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    },
-    {
-      "id": "mock-spin-3",
-      "title": "AH Biologisch spinazie 300g",
-      "price": 1.79,
-      "unitPrice": 5.97,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-spin-1", "title": "AH Spinazie gewassen 300g", "price": 1.19, "unitPrice": 3.97, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null},
+    {"id": "mock-spin-2", "title": "AH Baby spinazie 100g", "price": 1.49, "unitPrice": 14.9, "isBonus": false, "bonusLabel": null, "imageUrl": null},
+    {"id": "mock-spin-3", "title": "AH Biologisch spinazie 300g", "price": 1.79, "unitPrice": 5.97, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "ui": [
-    {
-      "id": "mock-ui-1",
-      "title": "AH Uien 1kg",
-      "price": 0.99,
-      "unitPrice": 0.99,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    },
-    {
-      "id": "mock-ui-2",
-      "title": "AH Zoete ui 500g",
-      "price": 1.29,
-      "unitPrice": 2.58,
-      "isBonus": true,
-      "bonusLabel": "25% korting",
-      "imageUrl": null
-    },
-    {
-      "id": "mock-ui-3",
-      "title": "AH Biologisch uien 1kg",
-      "price": 1.49,
-      "unitPrice": 1.49,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-ui-1", "title": "AH Uien 1kg", "price": 0.99, "unitPrice": 0.99, "isBonus": false, "bonusLabel": null, "imageUrl": null},
+    {"id": "mock-ui-2", "title": "AH Zoete ui 500g", "price": 1.29, "unitPrice": 2.58, "isBonus": true, "bonusLabel": "25% korting", "imageUrl": null},
+    {"id": "mock-ui-3", "title": "AH Biologisch uien 1kg", "price": 1.49, "unitPrice": 1.49, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "knoflook": [
-    {
-      "id": "mock-knof-1",
-      "title": "AH Knoflook 3 stuks",
-      "price": 0.89,
-      "unitPrice": 0.3,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-knof-1", "title": "AH Knoflook 3 stuks", "price": 0.89, "unitPrice": 0.3, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "tomatenblokjes": [
-    {
-      "id": "mock-tomaat-1",
-      "title": "AH Tomatenblokjes 400g",
-      "price": 0.55,
-      "unitPrice": 1.38,
-      "isBonus": true,
-      "bonusLabel": "3 voor 1.50",
-      "imageUrl": null
-    },
-    {
-      "id": "mock-tomaat-2",
-      "title": "Mutti Polpa 400g",
-      "price": 1.49,
-      "unitPrice": 3.73,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-tomaat-1", "title": "AH Tomatenblokjes 400g", "price": 0.55, "unitPrice": 1.38, "isBonus": true, "bonusLabel": "3 voor 1.50", "imageUrl": null},
+    {"id": "mock-tomaat-2", "title": "Mutti Polpa 400g", "price": 1.49, "unitPrice": 3.73, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "olijfolie": [
-    {
-      "id": "mock-olie-1",
-      "title": "AH Olijfolie extra vierge 500ml",
-      "price": 4.99,
-      "unitPrice": 9.98,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    },
-    {
-      "id": "mock-olie-2",
-      "title": "Bertolli Classico 500ml",
-      "price": 5.49,
-      "unitPrice": 10.98,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    },
-    {
-      "id": "mock-olie-3",
-      "title": "AH Biologisch olijfolie 500ml",
-      "price": 6.49,
-      "unitPrice": 12.98,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-olie-1", "title": "AH Olijfolie extra vierge 500ml", "price": 4.99, "unitPrice": 9.98, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null},
+    {"id": "mock-olie-2", "title": "Bertolli Classico 500ml", "price": 5.49, "unitPrice": 10.98, "isBonus": false, "bonusLabel": null, "imageUrl": null},
+    {"id": "mock-olie-3", "title": "AH Biologisch olijfolie 500ml", "price": 6.49, "unitPrice": 12.98, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "kurkuma": [
-    {
-      "id": "mock-kurk-1",
-      "title": "Verstegen Kurkuma 30g",
-      "price": 1.59,
-      "unitPrice": 53.0,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-kurk-1", "title": "Verstegen Kurkuma 30g", "price": 1.59, "unitPrice": 53.0, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "kikkererwten": [
-    {
-      "id": "mock-kik-1",
-      "title": "AH Kikkererwten 400g",
-      "price": 0.69,
-      "unitPrice": 1.73,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    },
-    {
-      "id": "mock-kik-2",
-      "title": "AH Biologisch kikkererwten 400g",
-      "price": 0.99,
-      "unitPrice": 2.48,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-kik-1", "title": "AH Kikkererwten 400g", "price": 0.69, "unitPrice": 1.73, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null},
+    {"id": "mock-kik-2", "title": "AH Biologisch kikkererwten 400g", "price": 0.99, "unitPrice": 2.48, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "kokosmelk": [
-    {
-      "id": "mock-kokos-1",
-      "title": "AH Kokosmelk 400ml",
-      "price": 1.19,
-      "unitPrice": 2.98,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    },
-    {
-      "id": "mock-kokos-2",
-      "title": "AH Biologisch kokosmelk 400ml",
-      "price": 1.59,
-      "unitPrice": 3.98,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    }
+    {"id": "mock-kokos-1", "title": "AH Kokosmelk 400ml", "price": 1.19, "unitPrice": 2.98, "isBonus": false, "bonusLabel": null, "imageUrl": null},
+    {"id": "mock-kokos-2", "title": "AH Biologisch kokosmelk 400ml", "price": 1.59, "unitPrice": 3.98, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null}
   ],
   "currypasta": [
-    {
-      "id": "mock-curry-1",
-      "title": "AH Thai rode currypasta 100g",
-      "price": 1.49,
-      "unitPrice": 14.9,
-      "isBonus": true,
-      "bonusLabel": "2e gratis",
-      "imageUrl": null
-    }
+    {"id": "mock-curry-1", "title": "AH Thai rode currypasta 100g", "price": 1.49, "unitPrice": 14.9, "isBonus": true, "bonusLabel": "2e gratis", "imageUrl": null}
   ],
   "basmatirijst": [
-    {
-      "id": "mock-basmati-1",
-      "title": "AH Basmatirijst 1kg",
-      "price": 2.49,
-      "unitPrice": 2.49,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-basmati-1", "title": "AH Basmatirijst 1kg", "price": 2.49, "unitPrice": 2.49, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "zalmfilet": [
-    {
-      "id": "mock-zalm-1",
-      "title": "AH Zalmfilet 2 stuks",
-      "price": 6.99,
-      "unitPrice": 17.48,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    }
+    {"id": "mock-zalm-1", "title": "AH Zalmfilet 2 stuks", "price": 6.99, "unitPrice": 17.48, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null}
   ],
   "broccoli": [
-    {
-      "id": "mock-broc-1",
-      "title": "AH Broccoli 1 stuk",
-      "price": 1.29,
-      "unitPrice": 1.29,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-broc-1", "title": "AH Broccoli 1 stuk", "price": 1.29, "unitPrice": 1.29, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "krieltjes": [
-    {
-      "id": "mock-kriel-1",
-      "title": "AH Krieltjes 1kg",
-      "price": 1.79,
-      "unitPrice": 1.79,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    }
+    {"id": "mock-kriel-1", "title": "AH Krieltjes 1kg", "price": 1.79, "unitPrice": 1.79, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null}
   ],
   "citroen": [
-    {
-      "id": "mock-citroen-1",
-      "title": "AH Citroenen 2 stuks",
-      "price": 0.89,
-      "unitPrice": 0.45,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-citroen-1", "title": "AH Citroenen 2 stuks", "price": 0.89, "unitPrice": 0.45, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "kipfilet": [
-    {
-      "id": "mock-kip-1",
-      "title": "AH Kipfilet 400g",
-      "price": 4.49,
-      "unitPrice": 11.23,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    },
-    {
-      "id": "mock-kip-2",
-      "title": "AH Biologisch kipfilet 300g",
-      "price": 5.99,
-      "unitPrice": 19.97,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    },
-    {
-      "id": "mock-kip-3",
-      "title": "AH Kipreepjes 300g",
-      "price": 3.49,
-      "unitPrice": 11.63,
-      "isBonus": true,
-      "bonusLabel": "25% korting",
-      "imageUrl": null
-    }
+    {"id": "mock-kip-1", "title": "AH Kipfilet 400g", "price": 4.49, "unitPrice": 11.23, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null},
+    {"id": "mock-kip-2", "title": "AH Biologisch kipfilet 300g", "price": 5.99, "unitPrice": 19.97, "isBonus": false, "bonusLabel": null, "imageUrl": null},
+    {"id": "mock-kip-3", "title": "AH Kipreepjes 300g", "price": 3.49, "unitPrice": 11.63, "isBonus": true, "bonusLabel": "25% korting", "imageUrl": null}
   ],
   "paprika": [
-    {
-      "id": "mock-pap-1",
-      "title": "AH Paprika 3 stuks",
-      "price": 1.99,
-      "unitPrice": 0.66,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-pap-1", "title": "AH Paprika 3 stuks", "price": 1.99, "unitPrice": 0.66, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "rijst": [
-    {
-      "id": "mock-rijst-1",
-      "title": "AH Zilvervliesrijst 1kg",
-      "price": 1.69,
-      "unitPrice": 1.69,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    },
-    {
-      "id": "mock-rijst-2",
-      "title": "AH Pandanrijst 1kg",
-      "price": 1.99,
-      "unitPrice": 1.99,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    },
-    {
-      "id": "mock-rijst-3",
-      "title": "AH Biologisch zilvervliesrijst 1kg",
-      "price": 2.49,
-      "unitPrice": 2.49,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-rijst-1", "title": "AH Zilvervliesrijst 1kg", "price": 1.69, "unitPrice": 1.69, "isBonus": false, "bonusLabel": null, "imageUrl": null},
+    {"id": "mock-rijst-2", "title": "AH Pandanrijst 1kg", "price": 1.99, "unitPrice": 1.99, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null},
+    {"id": "mock-rijst-3", "title": "AH Biologisch zilvervliesrijst 1kg", "price": 2.49, "unitPrice": 2.49, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "kippenbouillon": [
-    {
-      "id": "mock-bouillon-1",
-      "title": "AH Kippenbouillon blokjes",
-      "price": 0.95,
-      "unitPrice": 0.95,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-bouillon-1", "title": "AH Kippenbouillon blokjes", "price": 0.95, "unitPrice": 0.95, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "pasta penne": [
-    {
-      "id": "mock-pasta-1",
-      "title": "AH Penne 500g",
-      "price": 0.79,
-      "unitPrice": 1.58,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    }
+    {"id": "mock-pasta-1", "title": "AH Penne 500g", "price": 0.79, "unitPrice": 1.58, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null}
   ],
   "groene pesto": [
-    {
-      "id": "mock-pesto-1",
-      "title": "AH Groene pesto 190g",
-      "price": 1.69,
-      "unitPrice": 8.89,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-pesto-1", "title": "AH Groene pesto 190g", "price": 1.69, "unitPrice": 8.89, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "cherrytomaten": [
-    {
-      "id": "mock-cherry-1",
-      "title": "AH Cherrytomaten 250g",
-      "price": 1.49,
-      "unitPrice": 5.96,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    }
+    {"id": "mock-cherry-1", "title": "AH Cherrytomaten 250g", "price": 1.49, "unitPrice": 5.96, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null}
   ],
   "mozzarella": [
-    {
-      "id": "mock-mozz-1",
-      "title": "AH Mozzarella 125g",
-      "price": 0.79,
-      "unitPrice": 6.32,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-mozz-1", "title": "AH Mozzarella 125g", "price": 0.79, "unitPrice": 6.32, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "basilicum": [
-    {
-      "id": "mock-basil-1",
-      "title": "AH Basilicum potje",
-      "price": 1.49,
-      "unitPrice": 1.49,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-basil-1", "title": "AH Basilicum potje", "price": 1.49, "unitPrice": 1.49, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "scharreleieren": [
-    {
-      "id": "mock-ei-1",
-      "title": "AH Scharreleieren 6 stuks",
-      "price": 1.99,
-      "unitPrice": 0.33,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    },
-    {
-      "id": "mock-ei-2",
-      "title": "AH Biologisch eieren 6 stuks",
-      "price": 2.99,
-      "unitPrice": 0.5,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-ei-1", "title": "AH Scharreleieren 6 stuks", "price": 1.99, "unitPrice": 0.33, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null},
+    {"id": "mock-ei-2", "title": "AH Biologisch eieren 6 stuks", "price": 2.99, "unitPrice": 0.5, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "komijn": [
-    {
-      "id": "mock-komijn-1",
-      "title": "Verstegen Komijnzaad 25g",
-      "price": 1.49,
-      "unitPrice": 59.6,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-komijn-1", "title": "Verstegen Komijnzaad 25g", "price": 1.49, "unitPrice": 59.6, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "tofu naturel": [
-    {
-      "id": "mock-tofu-1",
-      "title": "AH Tofu naturel 300g",
-      "price": 1.59,
-      "unitPrice": 5.3,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    },
-    {
-      "id": "mock-tofu-2",
-      "title": "AH Biologisch tofu 300g",
-      "price": 1.99,
-      "unitPrice": 6.63,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-tofu-1", "title": "AH Tofu naturel 300g", "price": 1.59, "unitPrice": 5.3, "isBonus": false, "bonusLabel": null, "imageUrl": null},
+    {"id": "mock-tofu-2", "title": "AH Biologisch tofu 300g", "price": 1.99, "unitPrice": 6.63, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "wokgroente": [
-    {
-      "id": "mock-wok-1",
-      "title": "AH Wokgroente 400g",
-      "price": 2.29,
-      "unitPrice": 5.73,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    }
+    {"id": "mock-wok-1", "title": "AH Wokgroente 400g", "price": 2.29, "unitPrice": 5.73, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null}
   ],
   "sojasaus": [
-    {
-      "id": "mock-soja-1",
-      "title": "Kikkoman Sojasaus 150ml",
-      "price": 2.49,
-      "unitPrice": 16.6,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-soja-1", "title": "Kikkoman Sojasaus 150ml", "price": 2.49, "unitPrice": 16.6, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "sesamolie": [
-    {
-      "id": "mock-sesam-1",
-      "title": "AH Sesamolie 100ml",
-      "price": 2.19,
-      "unitPrice": 21.9,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-sesam-1", "title": "AH Sesamolie 100ml", "price": 2.19, "unitPrice": 21.9, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "zwarte bonen": [
-    {
-      "id": "mock-bonen-1",
-      "title": "AH Zwarte bonen 400g",
-      "price": 0.69,
-      "unitPrice": 1.73,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    }
+    {"id": "mock-bonen-1", "title": "AH Zwarte bonen 400g", "price": 0.69, "unitPrice": 1.73, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null}
   ],
   "mais": [
-    {
-      "id": "mock-mais-1",
-      "title": "AH Mais 150g",
-      "price": 0.65,
-      "unitPrice": 4.33,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-mais-1", "title": "AH Mais 150g", "price": 0.65, "unitPrice": 4.33, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "tortilla": [
-    {
-      "id": "mock-tort-1",
-      "title": "AH Tortilla wraps 6 stuks",
-      "price": 1.49,
-      "unitPrice": 0.25,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    }
+    {"id": "mock-tort-1", "title": "AH Tortilla wraps 6 stuks", "price": 1.49, "unitPrice": 0.25, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null}
   ],
   "avocado": [
-    {
-      "id": "mock-avo-1",
-      "title": "AH Avocado ready to eat",
-      "price": 1.29,
-      "unitPrice": 1.29,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    },
-    {
-      "id": "mock-avo-2",
-      "title": "AH Biologisch avocado 2 stuks",
-      "price": 2.49,
-      "unitPrice": 1.25,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    }
+    {"id": "mock-avo-1", "title": "AH Avocado ready to eat", "price": 1.29, "unitPrice": 1.29, "isBonus": false, "bonusLabel": null, "imageUrl": null},
+    {"id": "mock-avo-2", "title": "AH Biologisch avocado 2 stuks", "price": 2.49, "unitPrice": 1.25, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null}
   ],
   "pompoen": [
-    {
-      "id": "mock-pomp-1",
-      "title": "AH Pompoen stuk",
-      "price": 1.99,
-      "unitPrice": 1.99,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    },
-    {
-      "id": "mock-pomp-2",
-      "title": "AH Biologisch pompoen",
-      "price": 2.49,
-      "unitPrice": 2.49,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-pomp-1", "title": "AH Pompoen stuk", "price": 1.99, "unitPrice": 1.99, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null},
+    {"id": "mock-pomp-2", "title": "AH Biologisch pompoen", "price": 2.49, "unitPrice": 2.49, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "groentebouillon": [
-    {
-      "id": "mock-gbouillon-1",
-      "title": "AH Groentebouillon blokjes 8 stuks",
-      "price": 0.89,
-      "unitPrice": 0.11,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    },
-    {
-      "id": "mock-gbouillon-2",
-      "title": "AH Biologisch groentebouillon",
-      "price": 1.29,
-      "unitPrice": 1.29,
-      "isBonus": true,
-      "bonusLabel": "2e gratis",
-      "imageUrl": null
-    }
+    {"id": "mock-gbouillon-1", "title": "AH Groentebouillon blokjes 8 stuks", "price": 0.89, "unitPrice": 0.11, "isBonus": false, "bonusLabel": null, "imageUrl": null},
+    {"id": "mock-gbouillon-2", "title": "AH Biologisch groentebouillon", "price": 1.29, "unitPrice": 1.29, "isBonus": true, "bonusLabel": "2e gratis", "imageUrl": null}
   ],
   "gember": [
-    {
-      "id": "mock-gember-1",
-      "title": "AH Gember vers",
-      "price": 0.99,
-      "unitPrice": 9.9,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    },
-    {
-      "id": "mock-gember-2",
-      "title": "Verstegen Gemalen gember 30g",
-      "price": 1.59,
-      "unitPrice": 53.0,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-gember-1", "title": "AH Gember vers", "price": 0.99, "unitPrice": 9.9, "isBonus": false, "bonusLabel": null, "imageUrl": null},
+    {"id": "mock-gember-2", "title": "Verstegen Gemalen gember 30g", "price": 1.59, "unitPrice": 53.0, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "falafel": [
-    {
-      "id": "mock-fala-1",
-      "title": "AH Falafel 240g",
-      "price": 2.29,
-      "unitPrice": 9.54,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    },
-    {
-      "id": "mock-fala-2",
-      "title": "AH Biologisch falafel 200g",
-      "price": 2.79,
-      "unitPrice": 13.95,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-fala-1", "title": "AH Falafel 240g", "price": 2.29, "unitPrice": 9.54, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null},
+    {"id": "mock-fala-2", "title": "AH Biologisch falafel 200g", "price": 2.79, "unitPrice": 13.95, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "wraps": [
-    {
-      "id": "mock-wrap-1",
-      "title": "AH Wraps original 6 stuks",
-      "price": 1.49,
-      "unitPrice": 0.25,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    },
-    {
-      "id": "mock-wrap-2",
-      "title": "AH Wraps volkoren 6 stuks",
-      "price": 1.69,
-      "unitPrice": 0.28,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-wrap-1", "title": "AH Wraps original 6 stuks", "price": 1.49, "unitPrice": 0.25, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null},
+    {"id": "mock-wrap-2", "title": "AH Wraps volkoren 6 stuks", "price": 1.69, "unitPrice": 0.28, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "komkommer": [
-    {
-      "id": "mock-komk-1",
-      "title": "AH Komkommer 1 stuk",
-      "price": 0.89,
-      "unitPrice": 0.89,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    },
-    {
-      "id": "mock-komk-2",
-      "title": "AH Biologisch komkommer",
-      "price": 1.19,
-      "unitPrice": 1.19,
-      "isBonus": true,
-      "bonusLabel": "25% korting",
-      "imageUrl": null
-    }
+    {"id": "mock-komk-1", "title": "AH Komkommer 1 stuk", "price": 0.89, "unitPrice": 0.89, "isBonus": false, "bonusLabel": null, "imageUrl": null},
+    {"id": "mock-komk-2", "title": "AH Biologisch komkommer", "price": 1.19, "unitPrice": 1.19, "isBonus": true, "bonusLabel": "25% korting", "imageUrl": null}
   ],
   "ijsbergsla": [
-    {
-      "id": "mock-sla-1",
-      "title": "AH IJsbergsla gesneden 200g",
-      "price": 1.29,
-      "unitPrice": 6.45,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-sla-1", "title": "AH IJsbergsla gesneden 200g", "price": 1.29, "unitPrice": 6.45, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "tahin": [
-    {
-      "id": "mock-tahin-1",
-      "title": "AH Tahin 170g",
-      "price": 2.49,
-      "unitPrice": 14.65,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-tahin-1", "title": "AH Tahin 170g", "price": 2.49, "unitPrice": 14.65, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "risotto rijst": [
-    {
-      "id": "mock-riso-1",
-      "title": "AH Risotto rijst 500g",
-      "price": 1.79,
-      "unitPrice": 3.58,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    },
-    {
-      "id": "mock-riso-2",
-      "title": "AH Biologisch risotto rijst 500g",
-      "price": 2.29,
-      "unitPrice": 4.58,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-riso-1", "title": "AH Risotto rijst 500g", "price": 1.79, "unitPrice": 3.58, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null},
+    {"id": "mock-riso-2", "title": "AH Biologisch risotto rijst 500g", "price": 2.29, "unitPrice": 4.58, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "champignons": [
-    {
-      "id": "mock-champ-1",
-      "title": "AH Champignons 250g",
-      "price": 1.19,
-      "unitPrice": 4.76,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    },
-    {
-      "id": "mock-champ-2",
-      "title": "AH Kastanjechampignons 250g",
-      "price": 1.49,
-      "unitPrice": 5.96,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-champ-1", "title": "AH Champignons 250g", "price": 1.19, "unitPrice": 4.76, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null},
+    {"id": "mock-champ-2", "title": "AH Kastanjechampignons 250g", "price": 1.49, "unitPrice": 5.96, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "parmezaanse kaas": [
-    {
-      "id": "mock-parm-1",
-      "title": "AH Parmezaanse kaas geraspt 100g",
-      "price": 1.99,
-      "unitPrice": 19.9,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    },
-    {
-      "id": "mock-parm-2",
-      "title": "AH Biologisch Parmezaanse kaas 100g",
-      "price": 2.79,
-      "unitPrice": 27.9,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    }
+    {"id": "mock-parm-1", "title": "AH Parmezaanse kaas geraspt 100g", "price": 1.99, "unitPrice": 19.9, "isBonus": false, "bonusLabel": null, "imageUrl": null},
+    {"id": "mock-parm-2", "title": "AH Biologisch Parmezaanse kaas 100g", "price": 2.79, "unitPrice": 27.9, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null}
   ],
   "boter": [
-    {
-      "id": "mock-boter-1",
-      "title": "AH Roomboter ongezouten 250g",
-      "price": 2.19,
-      "unitPrice": 8.76,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    },
-    {
-      "id": "mock-boter-2",
-      "title": "AH Biologisch roomboter 250g",
-      "price": 2.89,
-      "unitPrice": 11.56,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-boter-1", "title": "AH Roomboter ongezouten 250g", "price": 2.19, "unitPrice": 8.76, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null},
+    {"id": "mock-boter-2", "title": "AH Biologisch roomboter 250g", "price": 2.89, "unitPrice": 11.56, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "aardappelen": [
-    {
-      "id": "mock-aard-1",
-      "title": "AH Kruimige aardappelen 1.5kg",
-      "price": 1.99,
-      "unitPrice": 1.33,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    },
-    {
-      "id": "mock-aard-2",
-      "title": "AH Biologisch aardappelen 1kg",
-      "price": 2.49,
-      "unitPrice": 2.49,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    }
+    {"id": "mock-aard-1", "title": "AH Kruimige aardappelen 1.5kg", "price": 1.99, "unitPrice": 1.33, "isBonus": false, "bonusLabel": null, "imageUrl": null},
+    {"id": "mock-aard-2", "title": "AH Biologisch aardappelen 1kg", "price": 2.49, "unitPrice": 2.49, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null}
   ],
   "wortelen": [
-    {
-      "id": "mock-wort-1",
-      "title": "AH Wortelen 1kg",
-      "price": 0.99,
-      "unitPrice": 0.99,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    },
-    {
-      "id": "mock-wort-2",
-      "title": "AH Biologisch wortelen 750g",
-      "price": 1.49,
-      "unitPrice": 1.99,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-wort-1", "title": "AH Wortelen 1kg", "price": 0.99, "unitPrice": 0.99, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null},
+    {"id": "mock-wort-2", "title": "AH Biologisch wortelen 750g", "price": 1.49, "unitPrice": 1.99, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "rundergehakt": [
-    {
-      "id": "mock-gehakt-1",
-      "title": "AH Rundergehakt 400g",
-      "price": 3.99,
-      "unitPrice": 9.98,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    },
-    {
-      "id": "mock-gehakt-2",
-      "title": "AH Biologisch rundergehakt 300g",
-      "price": 4.49,
-      "unitPrice": 14.97,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-gehakt-1", "title": "AH Rundergehakt 400g", "price": 3.99, "unitPrice": 9.98, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null},
+    {"id": "mock-gehakt-2", "title": "AH Biologisch rundergehakt 300g", "price": 4.49, "unitPrice": 14.97, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "melk": [
-    {
-      "id": "mock-melk-1",
-      "title": "AH Halfvolle melk 1L",
-      "price": 1.09,
-      "unitPrice": 1.09,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    },
-    {
-      "id": "mock-melk-2",
-      "title": "AH Biologisch halfvolle melk 1L",
-      "price": 1.39,
-      "unitPrice": 1.39,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    }
+    {"id": "mock-melk-1", "title": "AH Halfvolle melk 1L", "price": 1.09, "unitPrice": 1.09, "isBonus": false, "bonusLabel": null, "imageUrl": null},
+    {"id": "mock-melk-2", "title": "AH Biologisch halfvolle melk 1L", "price": 1.39, "unitPrice": 1.39, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null}
   ],
   "zoete aardappel": [
-    {
-      "id": "mock-zoet-1",
-      "title": "AH Zoete aardappel 500g",
-      "price": 1.79,
-      "unitPrice": 3.58,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    },
-    {
-      "id": "mock-zoet-2",
-      "title": "AH Biologisch zoete aardappel 500g",
-      "price": 2.29,
-      "unitPrice": 4.58,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-zoet-1", "title": "AH Zoete aardappel 500g", "price": 1.79, "unitPrice": 3.58, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null},
+    {"id": "mock-zoet-2", "title": "AH Biologisch zoete aardappel 500g", "price": 2.29, "unitPrice": 4.58, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "quinoa": [
-    {
-      "id": "mock-quin-1",
-      "title": "AH Quinoa 300g",
-      "price": 2.49,
-      "unitPrice": 8.3,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    },
-    {
-      "id": "mock-quin-2",
-      "title": "AH Biologisch quinoa 300g",
-      "price": 2.99,
-      "unitPrice": 9.97,
-      "isBonus": true,
-      "bonusLabel": "2e gratis",
-      "imageUrl": null
-    }
+    {"id": "mock-quin-1", "title": "AH Quinoa 300g", "price": 2.49, "unitPrice": 8.3, "isBonus": false, "bonusLabel": null, "imageUrl": null},
+    {"id": "mock-quin-2", "title": "AH Biologisch quinoa 300g", "price": 2.99, "unitPrice": 9.97, "isBonus": true, "bonusLabel": "2e gratis", "imageUrl": null}
   ],
   "macaroni": [
-    {
-      "id": "mock-mac-1",
-      "title": "AH Macaroni 500g",
-      "price": 0.69,
-      "unitPrice": 1.38,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    },
-    {
-      "id": "mock-mac-2",
-      "title": "AH Biologisch macaroni 500g",
-      "price": 1.19,
-      "unitPrice": 2.38,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-mac-1", "title": "AH Macaroni 500g", "price": 0.69, "unitPrice": 1.38, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null},
+    {"id": "mock-mac-2", "title": "AH Biologisch macaroni 500g", "price": 1.19, "unitPrice": 2.38, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "tomatensaus": [
-    {
-      "id": "mock-tsaus-1",
-      "title": "AH Tomatensaus basis 400g",
-      "price": 0.79,
-      "unitPrice": 1.98,
-      "isBonus": true,
-      "bonusLabel": "3 voor 2",
-      "imageUrl": null
-    },
-    {
-      "id": "mock-tsaus-2",
-      "title": "AH Biologisch tomatensaus 400g",
-      "price": 1.29,
-      "unitPrice": 3.23,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    }
+    {"id": "mock-tsaus-1", "title": "AH Tomatensaus basis 400g", "price": 0.79, "unitPrice": 1.98, "isBonus": true, "bonusLabel": "3 voor 2", "imageUrl": null},
+    {"id": "mock-tsaus-2", "title": "AH Biologisch tomatensaus 400g", "price": 1.29, "unitPrice": 3.23, "isBonus": false, "bonusLabel": null, "imageUrl": null}
   ],
   "geraspte kaas": [
-    {
-      "id": "mock-gkaas-1",
-      "title": "AH Geraspte kaas jong belegen 200g",
-      "price": 1.89,
-      "unitPrice": 9.45,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    },
-    {
-      "id": "mock-gkaas-2",
-      "title": "AH Biologisch geraspte kaas 150g",
-      "price": 2.49,
-      "unitPrice": 16.6,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    }
+    {"id": "mock-gkaas-1", "title": "AH Geraspte kaas jong belegen 200g", "price": 1.89, "unitPrice": 9.45, "isBonus": false, "bonusLabel": null, "imageUrl": null},
+    {"id": "mock-gkaas-2", "title": "AH Biologisch geraspte kaas 150g", "price": 2.49, "unitPrice": 16.6, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null}
   ],
   "bloem": [
-    {
-      "id": "mock-bloem-1",
-      "title": "AH Tarwebloem 1kg",
-      "price": 0.79,
-      "unitPrice": 0.79,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    },
-    {
-      "id": "mock-bloem-2",
-      "title": "AH Biologisch tarwebloem 1kg",
-      "price": 1.29,
-      "unitPrice": 1.29,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    }
+    {"id": "mock-bloem-1", "title": "AH Tarwebloem 1kg", "price": 0.79, "unitPrice": 0.79, "isBonus": false, "bonusLabel": null, "imageUrl": null},
+    {"id": "mock-bloem-2", "title": "AH Biologisch tarwebloem 1kg", "price": 1.29, "unitPrice": 1.29, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null}
   ],
   "stroop": [
-    {
-      "id": "mock-stroop-1",
-      "title": "AH Stroop 450g",
-      "price": 1.49,
-      "unitPrice": 3.31,
-      "isBonus": true,
-      "bonusLabel": "Bonus",
-      "imageUrl": null
-    }
+    {"id": "mock-stroop-1", "title": "AH Stroop 450g", "price": 1.49, "unitPrice": 3.31, "isBonus": true, "bonusLabel": "Bonus", "imageUrl": null}
   ],
   "ketjap": [
-    {
-      "id": "mock-ketjap-1",
-      "title": "AH Ketjap manis 250ml",
-      "price": 1.69,
-      "unitPrice": 6.76,
-      "isBonus": false,
-      "bonusLabel": null,
-      "imageUrl": null
-    },
-    {
-      "id": "mock-ketjap-2",
-      "title": "Conimex Ketjap manis 250ml",
-      "price": 2.19,
-      "unitPrice": 8.76,
-      "isBonus": true,
-      "bonusLabel": "2e gratis",
-      "imageUrl": null
-    }
+    {"id": "mock-ketjap-1", "title": "AH Ketjap manis 250ml", "price": 1.69, "unitPrice": 6.76, "isBonus": false, "bonusLabel": null, "imageUrl": null},
+    {"id": "mock-ketjap-2", "title": "Conimex Ketjap manis 250ml", "price": 2.19, "unitPrice": 8.76, "isBonus": true, "bonusLabel": "2e gratis", "imageUrl": null}
   ]
 }

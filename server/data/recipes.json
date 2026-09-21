@@ -4,11 +4,7 @@
     "title": "Linzen dal met spinazie",
     "servings": 2,
     "timeMinutes": 30,
-    "dietTags": [
-      "vegetarian",
-      "halal",
-      "vegan"
-    ],
+    "dietTags": ["vegetarian", "halal", "vegan"],
     "summary": "Eiwitrijk, goedkoop weeknight gerecht met rode linzen.",
     "steps": [
       "Fruit ui en knoflook in olie.",
@@ -16,55 +12,13 @@
       "Roer spinazie erdoor tot geslonken."
     ],
     "ingredients": [
-      {
-        "name": "rode linzen",
-        "quantity": 200,
-        "unit": "g",
-        "searchTerm": "rode linzen",
-        "optional": false
-      },
-      {
-        "name": "spinazie",
-        "quantity": 300,
-        "unit": "g",
-        "searchTerm": "spinazie",
-        "optional": false
-      },
-      {
-        "name": "ui",
-        "quantity": 1,
-        "unit": "stuk",
-        "searchTerm": "ui",
-        "optional": false
-      },
-      {
-        "name": "knoflook",
-        "quantity": 2,
-        "unit": "teen",
-        "searchTerm": "knoflook",
-        "optional": false
-      },
-      {
-        "name": "tomatenblokjes",
-        "quantity": 400,
-        "unit": "g",
-        "searchTerm": "tomatenblokjes",
-        "optional": false
-      },
-      {
-        "name": "olijfolie",
-        "quantity": 1,
-        "unit": "el",
-        "searchTerm": "olijfolie",
-        "optional": false
-      },
-      {
-        "name": "kurkuma",
-        "quantity": 1,
-        "unit": "tl",
-        "searchTerm": "kurkuma",
-        "optional": true
-      }
+      {"name": "rode linzen", "quantity": 200, "unit": "g", "searchTerm": "rode linzen", "optional": false},
+      {"name": "spinazie", "quantity": 300, "unit": "g", "searchTerm": "spinazie", "optional": false},
+      {"name": "ui", "quantity": 1, "unit": "stuk", "searchTerm": "ui", "optional": false},
+      {"name": "knoflook", "quantity": 2, "unit": "teen", "searchTerm": "knoflook", "optional": false},
+      {"name": "tomatenblokjes", "quantity": 400, "unit": "g", "searchTerm": "tomatenblokjes", "optional": false},
+      {"name": "olijfolie", "quantity": 1, "unit": "el", "searchTerm": "olijfolie", "optional": false},
+      {"name": "kurkuma", "quantity": 1, "unit": "tl", "searchTerm": "kurkuma", "optional": true}
     ]
   },
   {
@@ -72,11 +26,7 @@
     "title": "Kikkererwten curry",
     "servings": 2,
     "timeMinutes": 25,
-    "dietTags": [
-      "vegetarian",
-      "vegan",
-      "halal"
-    ],
+    "dietTags": ["vegetarian", "vegan", "halal"],
     "summary": "Romige curry met kikkererwten en kokosmelk.",
     "steps": [
       "Fruit ui en knoflook.",
@@ -84,48 +34,12 @@
       "Laat 15 min sudderen; serveer met rijst."
     ],
     "ingredients": [
-      {
-        "name": "kikkererwten",
-        "quantity": 400,
-        "unit": "g",
-        "searchTerm": "kikkererwten",
-        "optional": false
-      },
-      {
-        "name": "kokosmelk",
-        "quantity": 250,
-        "unit": "ml",
-        "searchTerm": "kokosmelk",
-        "optional": false
-      },
-      {
-        "name": "currypasta",
-        "quantity": 2,
-        "unit": "el",
-        "searchTerm": "currypasta",
-        "optional": false
-      },
-      {
-        "name": "basmatirijst",
-        "quantity": 150,
-        "unit": "g",
-        "searchTerm": "basmatirijst",
-        "optional": false
-      },
-      {
-        "name": "ui",
-        "quantity": 1,
-        "unit": "stuk",
-        "searchTerm": "ui",
-        "optional": false
-      },
-      {
-        "name": "spinazie",
-        "quantity": 200,
-        "unit": "g",
-        "searchTerm": "spinazie",
-        "optional": false
-      }
+      {"name": "kikkererwten", "quantity": 400, "unit": "g", "searchTerm": "kikkererwten", "optional": false},
+      {"name": "kokosmelk", "quantity": 250, "unit": "ml", "searchTerm": "kokosmelk", "optional": false},
+      {"name": "currypasta", "quantity": 2, "unit": "el", "searchTerm": "currypasta", "optional": false},
+      {"name": "basmatirijst", "quantity": 150, "unit": "g", "searchTerm": "basmatirijst", "optional": false},
+      {"name": "ui", "quantity": 1, "unit": "stuk", "searchTerm": "ui", "optional": false},
+      {"name": "spinazie", "quantity": 200, "unit": "g", "searchTerm": "spinazie", "optional": false}
     ]
   },
   {
@@ -133,9 +47,7 @@
     "title": "Zalm met broccoli en aardappel",
     "servings": 2,
     "timeMinutes": 35,
-    "dietTags": [
-      "halal"
-    ],
+    "dietTags": ["halal"],
     "summary": "Eenvoudige ovenzalm met groente en krieltjes.",
     "steps": [
       "Kook of rooster krieltjes.",
@@ -143,41 +55,11 @@
       "Stoom broccoli en serveer samen."
     ],
     "ingredients": [
-      {
-        "name": "zalmfilet",
-        "quantity": 2,
-        "unit": "stuk",
-        "searchTerm": "zalmfilet",
-        "optional": false
-      },
-      {
-        "name": "broccoli",
-        "quantity": 1,
-        "unit": "stuk",
-        "searchTerm": "broccoli",
-        "optional": false
-      },
-      {
-        "name": "krieltjes",
-        "quantity": 500,
-        "unit": "g",
-        "searchTerm": "krieltjes",
-        "optional": false
-      },
-      {
-        "name": "citroen",
-        "quantity": 1,
-        "unit": "stuk",
-        "searchTerm": "citroen",
-        "optional": false
-      },
-      {
-        "name": "olijfolie",
-        "quantity": 1,
-        "unit": "el",
-        "searchTerm": "olijfolie",
-        "optional": false
-      }
+      {"name": "zalmfilet", "quantity": 2, "unit": "stuk", "searchTerm": "zalmfilet", "optional": false},
+      {"name": "broccoli", "quantity": 1, "unit": "stuk", "searchTerm": "broccoli", "optional": false},
+      {"name": "krieltjes", "quantity": 500, "unit": "g", "searchTerm": "krieltjes", "optional": false},
+      {"name": "citroen", "quantity": 1, "unit": "stuk", "searchTerm": "citroen", "optional": false},
+      {"name": "olijfolie", "quantity": 1, "unit": "el", "searchTerm": "olijfolie", "optional": false}
     ]
   },
   {
@@ -185,9 +67,7 @@
     "title": "Kiprijstschotel met paprika",
     "servings": 3,
     "timeMinutes": 40,
-    "dietTags": [
-      "halal"
-    ],
+    "dietTags": ["halal"],
     "summary": "Halal-vriendelijke kip met paprika en rijst uit één pan.",
     "steps": [
       "Bak kipstukjes goudbruin.",
@@ -195,48 +75,12 @@
       "Laat gaar sudderen tot rijst klaar is."
     ],
     "ingredients": [
-      {
-        "name": "kipfilet",
-        "quantity": 400,
-        "unit": "g",
-        "searchTerm": "kipfilet",
-        "optional": false
-      },
-      {
-        "name": "paprika",
-        "quantity": 2,
-        "unit": "stuk",
-        "searchTerm": "paprika",
-        "optional": false
-      },
-      {
-        "name": "ui",
-        "quantity": 1,
-        "unit": "stuk",
-        "searchTerm": "ui",
-        "optional": false
-      },
-      {
-        "name": "rijst",
-        "quantity": 250,
-        "unit": "g",
-        "searchTerm": "rijst",
-        "optional": false
-      },
-      {
-        "name": "kippenbouillon",
-        "quantity": 500,
-        "unit": "ml",
-        "searchTerm": "kippenbouillon",
-        "optional": false
-      },
-      {
-        "name": "olijfolie",
-        "quantity": 1,
-        "unit": "el",
-        "searchTerm": "olijfolie",
-        "optional": false
-      }
+      {"name": "kipfilet", "quantity": 400, "unit": "g", "searchTerm": "kipfilet", "optional": false},
+      {"name": "paprika", "quantity": 2, "unit": "stuk", "searchTerm": "paprika", "optional": false},
+      {"name": "ui", "quantity": 1, "unit": "stuk", "searchTerm": "ui", "optional": false},
+      {"name": "rijst", "quantity": 250, "unit": "g", "searchTerm": "rijst", "optional": false},
+      {"name": "kippenbouillon", "quantity": 500, "unit": "ml", "searchTerm": "kippenbouillon", "optional": false},
+      {"name": "olijfolie", "quantity": 1, "unit": "el", "searchTerm": "olijfolie", "optional": false}
     ]
   },
   {
@@ -244,9 +88,7 @@
     "title": "Pasta pesto met cherrytomaat",
     "servings": 2,
     "timeMinutes": 20,
-    "dietTags": [
-      "vegetarian"
-    ],
+    "dietTags": ["vegetarian"],
     "summary": "Snelle pasta met pesto, tomaat en mozzarella.",
     "steps": [
       "Kook pasta al dente.",
@@ -254,41 +96,11 @@
       "Werk af met mozzarella."
     ],
     "ingredients": [
-      {
-        "name": "pasta",
-        "quantity": 250,
-        "unit": "g",
-        "searchTerm": "pasta penne",
-        "optional": false
-      },
-      {
-        "name": "groene pesto",
-        "quantity": 1,
-        "unit": "pot",
-        "searchTerm": "groene pesto",
-        "optional": false
-      },
-      {
-        "name": "cherrytomaten",
-        "quantity": 250,
-        "unit": "g",
-        "searchTerm": "cherrytomaten",
-        "optional": false
-      },
-      {
-        "name": "mozzarella",
-        "quantity": 125,
-        "unit": "g",
-        "searchTerm": "mozzarella",
-        "optional": false
-      },
-      {
-        "name": "basilicum",
-        "quantity": 1,
-        "unit": "bosje",
-        "searchTerm": "basilicum",
-        "optional": true
-      }
+      {"name": "pasta", "quantity": 250, "unit": "g", "searchTerm": "pasta penne", "optional": false},
+      {"name": "groene pesto", "quantity": 1, "unit": "pot", "searchTerm": "groene pesto", "optional": false},
+      {"name": "cherrytomaten", "quantity": 250, "unit": "g", "searchTerm": "cherrytomaten", "optional": false},
+      {"name": "mozzarella", "quantity": 125, "unit": "g", "searchTerm": "mozzarella", "optional": false},
+      {"name": "basilicum", "quantity": 1, "unit": "bosje", "searchTerm": "basilicum", "optional": true}
     ]
   },
   {
@@ -296,10 +108,7 @@
     "title": "Shakshuka",
     "servings": 2,
     "timeMinutes": 25,
-    "dietTags": [
-      "vegetarian",
-      "halal"
-    ],
+    "dietTags": ["vegetarian", "halal"],
     "summary": "Eieren in kruidige tomatensaus — goedkoop en vullend.",
     "steps": [
       "Fruit ui, paprika en knoflook.",
@@ -307,48 +116,12 @@
       "Breek eieren erin en laat stollen."
     ],
     "ingredients": [
-      {
-        "name": "eieren",
-        "quantity": 4,
-        "unit": "stuk",
-        "searchTerm": "scharreleieren",
-        "optional": false
-      },
-      {
-        "name": "tomatenblokjes",
-        "quantity": 400,
-        "unit": "g",
-        "searchTerm": "tomatenblokjes",
-        "optional": false
-      },
-      {
-        "name": "paprika",
-        "quantity": 1,
-        "unit": "stuk",
-        "searchTerm": "paprika",
-        "optional": false
-      },
-      {
-        "name": "ui",
-        "quantity": 1,
-        "unit": "stuk",
-        "searchTerm": "ui",
-        "optional": false
-      },
-      {
-        "name": "knoflook",
-        "quantity": 2,
-        "unit": "teen",
-        "searchTerm": "knoflook",
-        "optional": false
-      },
-      {
-        "name": "komijn",
-        "quantity": 1,
-        "unit": "tl",
-        "searchTerm": "komijn",
-        "optional": true
-      }
+      {"name": "eieren", "quantity": 4, "unit": "stuk", "searchTerm": "scharreleieren", "optional": false},
+      {"name": "tomatenblokjes", "quantity": 400, "unit": "g", "searchTerm": "tomatenblokjes", "optional": false},
+      {"name": "paprika", "quantity": 1, "unit": "stuk", "searchTerm": "paprika", "optional": false},
+      {"name": "ui", "quantity": 1, "unit": "stuk", "searchTerm": "ui", "optional": false},
+      {"name": "knoflook", "quantity": 2, "unit": "teen", "searchTerm": "knoflook", "optional": false},
+      {"name": "komijn", "quantity": 1, "unit": "tl", "searchTerm": "komijn", "optional": true}
     ]
   },
   {
@@ -356,11 +129,7 @@
     "title": "Tofu roerbak met groente",
     "servings": 2,
     "timeMinutes": 25,
-    "dietTags": [
-      "vegetarian",
-      "vegan",
-      "halal"
-    ],
+    "dietTags": ["vegetarian", "vegan", "halal"],
     "summary": "Plantaardige roerbak met tofu, wokgroente en sojasaus.",
     "steps": [
       "Pers tofu droog en bak krokant.",
@@ -368,41 +137,11 @@
       "Voeg sojasaus en tofu toe; serveer met rijst."
     ],
     "ingredients": [
-      {
-        "name": "tofu",
-        "quantity": 300,
-        "unit": "g",
-        "searchTerm": "tofu naturel",
-        "optional": false
-      },
-      {
-        "name": "wokgroente",
-        "quantity": 400,
-        "unit": "g",
-        "searchTerm": "wokgroente",
-        "optional": false
-      },
-      {
-        "name": "sojasaus",
-        "quantity": 2,
-        "unit": "el",
-        "searchTerm": "sojasaus",
-        "optional": false
-      },
-      {
-        "name": "rijst",
-        "quantity": 150,
-        "unit": "g",
-        "searchTerm": "rijst",
-        "optional": false
-      },
-      {
-        "name": "sesamolie",
-        "quantity": 1,
-        "unit": "el",
-        "searchTerm": "sesamolie",
-        "optional": true
-      }
+      {"name": "tofu", "quantity": 300, "unit": "g", "searchTerm": "tofu naturel", "optional": false},
+      {"name": "wokgroente", "quantity": 400, "unit": "g", "searchTerm": "wokgroente", "optional": false},
+      {"name": "sojasaus", "quantity": 2, "unit": "el", "searchTerm": "sojasaus", "optional": false},
+      {"name": "rijst", "quantity": 150, "unit": "g", "searchTerm": "rijst", "optional": false},
+      {"name": "sesamolie", "quantity": 1, "unit": "el", "searchTerm": "sesamolie", "optional": true}
     ]
   },
   {
@@ -410,11 +149,7 @@
     "title": "Mexicaanse bonenschotel",
     "servings": 3,
     "timeMinutes": 30,
-    "dietTags": [
-      "vegetarian",
-      "vegan",
-      "halal"
-    ],
+    "dietTags": ["vegetarian", "vegan", "halal"],
     "summary": "Budgetvriendelijke schotel met zwarte bonen en mais.",
     "steps": [
       "Fruit ui en knoflook.",
@@ -422,48 +157,12 @@
       "Serveer met tortilla's of rijst."
     ],
     "ingredients": [
-      {
-        "name": "zwarte bonen",
-        "quantity": 400,
-        "unit": "g",
-        "searchTerm": "zwarte bonen",
-        "optional": false
-      },
-      {
-        "name": "mais",
-        "quantity": 150,
-        "unit": "g",
-        "searchTerm": "mais",
-        "optional": false
-      },
-      {
-        "name": "tomatenblokjes",
-        "quantity": 400,
-        "unit": "g",
-        "searchTerm": "tomatenblokjes",
-        "optional": false
-      },
-      {
-        "name": "ui",
-        "quantity": 1,
-        "unit": "stuk",
-        "searchTerm": "ui",
-        "optional": false
-      },
-      {
-        "name": "tortilla's",
-        "quantity": 6,
-        "unit": "stuk",
-        "searchTerm": "tortilla",
-        "optional": false
-      },
-      {
-        "name": "avocados",
-        "quantity": 1,
-        "unit": "stuk",
-        "searchTerm": "avocado",
-        "optional": true
-      }
+      {"name": "zwarte bonen", "quantity": 400, "unit": "g", "searchTerm": "zwarte bonen", "optional": false},
+      {"name": "mais", "quantity": 150, "unit": "g", "searchTerm": "mais", "optional": false},
+      {"name": "tomatenblokjes", "quantity": 400, "unit": "g", "searchTerm": "tomatenblokjes", "optional": false},
+      {"name": "ui", "quantity": 1, "unit": "stuk", "searchTerm": "ui", "optional": false},
+      {"name": "tortilla's", "quantity": 6, "unit": "stuk", "searchTerm": "tortilla", "optional": false},
+      {"name": "avocados", "quantity": 1, "unit": "stuk", "searchTerm": "avocado", "optional": true}
     ]
   },
   {
@@ -471,11 +170,7 @@
     "title": "Romige pompoensoep",
     "servings": 4,
     "timeMinutes": 35,
-    "dietTags": [
-      "vegetarian",
-      "vegan",
-      "halal"
-    ],
+    "dietTags": ["vegetarian", "vegan", "halal"],
     "summary": "Zoete pompoensoep met kokosmelk — makkelijk voor doordeweeks.",
     "steps": [
       "Snijd pompoen, ui en knoflook grof.",
@@ -483,55 +178,13 @@
       "Pureer glad, roer kokosmelk erdoor en breng op smaak."
     ],
     "ingredients": [
-      {
-        "name": "pompoen",
-        "quantity": 800,
-        "unit": "g",
-        "searchTerm": "pompoen",
-        "optional": false
-      },
-      {
-        "name": "ui",
-        "quantity": 1,
-        "unit": "stuk",
-        "searchTerm": "ui",
-        "optional": false
-      },
-      {
-        "name": "knoflook",
-        "quantity": 2,
-        "unit": "teen",
-        "searchTerm": "knoflook",
-        "optional": false
-      },
-      {
-        "name": "groentebouillon",
-        "quantity": 750,
-        "unit": "ml",
-        "searchTerm": "groentebouillon",
-        "optional": false
-      },
-      {
-        "name": "kokosmelk",
-        "quantity": 200,
-        "unit": "ml",
-        "searchTerm": "kokosmelk",
-        "optional": false
-      },
-      {
-        "name": "olijfolie",
-        "quantity": 1,
-        "unit": "el",
-        "searchTerm": "olijfolie",
-        "optional": false
-      },
-      {
-        "name": "gember",
-        "quantity": 1,
-        "unit": "tl",
-        "searchTerm": "gember",
-        "optional": true
-      }
+      {"name": "pompoen", "quantity": 800, "unit": "g", "searchTerm": "pompoen", "optional": false},
+      {"name": "ui", "quantity": 1, "unit": "stuk", "searchTerm": "ui", "optional": false},
+      {"name": "knoflook", "quantity": 2, "unit": "teen", "searchTerm": "knoflook", "optional": false},
+      {"name": "groentebouillon", "quantity": 750, "unit": "ml", "searchTerm": "groentebouillon", "optional": false},
+      {"name": "kokosmelk", "quantity": 200, "unit": "ml", "searchTerm": "kokosmelk", "optional": false},
+      {"name": "olijfolie", "quantity": 1, "unit": "el", "searchTerm": "olijfolie", "optional": false},
+      {"name": "gember", "quantity": 1, "unit": "tl", "searchTerm": "gember", "optional": true}
     ]
   },
   {
@@ -539,11 +192,7 @@
     "title": "Falafel wrap met komkommer",
     "servings": 2,
     "timeMinutes": 20,
-    "dietTags": [
-      "vegetarian",
-      "vegan",
-      "halal"
-    ],
+    "dietTags": ["vegetarian", "vegan", "halal"],
     "summary": "Snelle wraps met falafel, sla en tahin-yoghurt dip.",
     "steps": [
       "Warm falafel op in de oven of pan.",
@@ -551,48 +200,12 @@
       "Rol in en serveer met citroen."
     ],
     "ingredients": [
-      {
-        "name": "falafel",
-        "quantity": 8,
-        "unit": "stuk",
-        "searchTerm": "falafel",
-        "optional": false
-      },
-      {
-        "name": "wraps",
-        "quantity": 4,
-        "unit": "stuk",
-        "searchTerm": "wraps",
-        "optional": false
-      },
-      {
-        "name": "komkommer",
-        "quantity": 0.5,
-        "unit": "stuk",
-        "searchTerm": "komkommer",
-        "optional": false
-      },
-      {
-        "name": "ijsbergsla",
-        "quantity": 100,
-        "unit": "g",
-        "searchTerm": "ijsbergsla",
-        "optional": false
-      },
-      {
-        "name": "tahin",
-        "quantity": 2,
-        "unit": "el",
-        "searchTerm": "tahin",
-        "optional": false
-      },
-      {
-        "name": "citroen",
-        "quantity": 1,
-        "unit": "stuk",
-        "searchTerm": "citroen",
-        "optional": true
-      }
+      {"name": "falafel", "quantity": 8, "unit": "stuk", "searchTerm": "falafel", "optional": false},
+      {"name": "wraps", "quantity": 4, "unit": "stuk", "searchTerm": "wraps", "optional": false},
+      {"name": "komkommer", "quantity": 0.5, "unit": "stuk", "searchTerm": "komkommer", "optional": false},
+      {"name": "ijsbergsla", "quantity": 100, "unit": "g", "searchTerm": "ijsbergsla", "optional": false},
+      {"name": "tahin", "quantity": 2, "unit": "el", "searchTerm": "tahin", "optional": false},
+      {"name": "citroen", "quantity": 1, "unit": "stuk", "searchTerm": "citroen", "optional": true}
     ]
   },
   {
@@ -600,10 +213,7 @@
     "title": "Paddenstoelenrisotto",
     "servings": 2,
     "timeMinutes": 40,
-    "dietTags": [
-      "vegetarian",
-      "halal"
-    ],
+    "dietTags": ["vegetarian", "halal"],
     "summary": "Romige risotto met champignons en Parmezaanse kaas.",
     "steps": [
       "Fruit ui in boter, voeg risotto rijst toe.",
@@ -611,48 +221,12 @@
       "Roer gebakken champignons en Parmezaan erdoor."
     ],
     "ingredients": [
-      {
-        "name": "risotto rijst",
-        "quantity": 200,
-        "unit": "g",
-        "searchTerm": "risotto rijst",
-        "optional": false
-      },
-      {
-        "name": "champignons",
-        "quantity": 250,
-        "unit": "g",
-        "searchTerm": "champignons",
-        "optional": false
-      },
-      {
-        "name": "ui",
-        "quantity": 1,
-        "unit": "stuk",
-        "searchTerm": "ui",
-        "optional": false
-      },
-      {
-        "name": "groentebouillon",
-        "quantity": 750,
-        "unit": "ml",
-        "searchTerm": "groentebouillon",
-        "optional": false
-      },
-      {
-        "name": "Parmezaanse kaas",
-        "quantity": 50,
-        "unit": "g",
-        "searchTerm": "parmezaanse kaas",
-        "optional": false
-      },
-      {
-        "name": "boter",
-        "quantity": 20,
-        "unit": "g",
-        "searchTerm": "boter",
-        "optional": false
-      }
+      {"name": "risotto rijst", "quantity": 200, "unit": "g", "searchTerm": "risotto rijst", "optional": false},
+      {"name": "champignons", "quantity": 250, "unit": "g", "searchTerm": "champignons", "optional": false},
+      {"name": "ui", "quantity": 1, "unit": "stuk", "searchTerm": "ui", "optional": false},
+      {"name": "groentebouillon", "quantity": 750, "unit": "ml", "searchTerm": "groentebouillon", "optional": false},
+      {"name": "Parmezaanse kaas", "quantity": 50, "unit": "g", "searchTerm": "parmezaanse kaas", "optional": false},
+      {"name": "boter", "quantity": 20, "unit": "g", "searchTerm": "boter", "optional": false}
     ]
   },
   {
@@ -660,9 +234,7 @@
     "title": "Hutspot met gehakt",
     "servings": 3,
     "timeMinutes": 45,
-    "dietTags": [
-      "halal"
-    ],
+    "dietTags": ["halal"],
     "summary": "Hollandse hutspot van wortel, ui en aardappel met kruidig gehakt.",
     "steps": [
       "Kook aardappel, wortel en ui tot zacht; stamp grof.",
@@ -670,48 +242,12 @@
       "Serveer hutspot met gehakt erover."
     ],
     "ingredients": [
-      {
-        "name": "aardappelen",
-        "quantity": 800,
-        "unit": "g",
-        "searchTerm": "aardappelen",
-        "optional": false
-      },
-      {
-        "name": "wortelen",
-        "quantity": 500,
-        "unit": "g",
-        "searchTerm": "wortelen",
-        "optional": false
-      },
-      {
-        "name": "ui",
-        "quantity": 2,
-        "unit": "stuk",
-        "searchTerm": "ui",
-        "optional": false
-      },
-      {
-        "name": "rundergehakt",
-        "quantity": 400,
-        "unit": "g",
-        "searchTerm": "rundergehakt",
-        "optional": false
-      },
-      {
-        "name": "boter",
-        "quantity": 20,
-        "unit": "g",
-        "searchTerm": "boter",
-        "optional": false
-      },
-      {
-        "name": "melk",
-        "quantity": 100,
-        "unit": "ml",
-        "searchTerm": "melk",
-        "optional": true
-      }
+      {"name": "aardappelen", "quantity": 800, "unit": "g", "searchTerm": "aardappelen", "optional": false},
+      {"name": "wortelen", "quantity": 500, "unit": "g", "searchTerm": "wortelen", "optional": false},
+      {"name": "ui", "quantity": 2, "unit": "stuk", "searchTerm": "ui", "optional": false},
+      {"name": "rundergehakt", "quantity": 400, "unit": "g", "searchTerm": "rundergehakt", "optional": false},
+      {"name": "boter", "quantity": 20, "unit": "g", "searchTerm": "boter", "optional": false},
+      {"name": "melk", "quantity": 100, "unit": "ml", "searchTerm": "melk", "optional": true}
     ]
   },
   {
@@ -719,11 +255,7 @@
     "title": "Zoete-aardappel bowl",
     "servings": 2,
     "timeMinutes": 35,
-    "dietTags": [
-      "vegetarian",
-      "vegan",
-      "halal"
-    ],
+    "dietTags": ["vegetarian", "vegan", "halal"],
     "summary": "Geroosterde zoete aardappel met kikkererwten, quinoa en avocado.",
     "steps": [
       "Rooster zoete aardappelblokjes in de oven.",
@@ -731,48 +263,12 @@
       "Bouw bowl op met avocado en citroen."
     ],
     "ingredients": [
-      {
-        "name": "zoete aardappel",
-        "quantity": 500,
-        "unit": "g",
-        "searchTerm": "zoete aardappel",
-        "optional": false
-      },
-      {
-        "name": "quinoa",
-        "quantity": 150,
-        "unit": "g",
-        "searchTerm": "quinoa",
-        "optional": false
-      },
-      {
-        "name": "kikkererwten",
-        "quantity": 400,
-        "unit": "g",
-        "searchTerm": "kikkererwten",
-        "optional": false
-      },
-      {
-        "name": "avocado",
-        "quantity": 1,
-        "unit": "stuk",
-        "searchTerm": "avocado",
-        "optional": false
-      },
-      {
-        "name": "olijfolie",
-        "quantity": 1,
-        "unit": "el",
-        "searchTerm": "olijfolie",
-        "optional": false
-      },
-      {
-        "name": "citroen",
-        "quantity": 1,
-        "unit": "stuk",
-        "searchTerm": "citroen",
-        "optional": true
-      }
+      {"name": "zoete aardappel", "quantity": 500, "unit": "g", "searchTerm": "zoete aardappel", "optional": false},
+      {"name": "quinoa", "quantity": 150, "unit": "g", "searchTerm": "quinoa", "optional": false},
+      {"name": "kikkererwten", "quantity": 400, "unit": "g", "searchTerm": "kikkererwten", "optional": false},
+      {"name": "avocado", "quantity": 1, "unit": "stuk", "searchTerm": "avocado", "optional": false},
+      {"name": "olijfolie", "quantity": 1, "unit": "el", "searchTerm": "olijfolie", "optional": false},
+      {"name": "citroen", "quantity": 1, "unit": "stuk", "searchTerm": "citroen", "optional": true}
     ]
   },
   {
@@ -780,9 +276,7 @@
     "title": "Macaroni met gehakt",
     "servings": 3,
     "timeMinutes": 30,
-    "dietTags": [
-      "halal"
-    ],
+    "dietTags": ["halal"],
     "summary": "Klassieke macaroni in tomatensaus met gehakt — kindvriendelijk.",
     "steps": [
       "Bak gehakt met ui en knoflook.",
@@ -790,48 +284,12 @@
       "Meng met gekookte macaroni."
     ],
     "ingredients": [
-      {
-        "name": "macaroni",
-        "quantity": 300,
-        "unit": "g",
-        "searchTerm": "macaroni",
-        "optional": false
-      },
-      {
-        "name": "rundergehakt",
-        "quantity": 400,
-        "unit": "g",
-        "searchTerm": "rundergehakt",
-        "optional": false
-      },
-      {
-        "name": "tomatensaus",
-        "quantity": 400,
-        "unit": "g",
-        "searchTerm": "tomatensaus",
-        "optional": false
-      },
-      {
-        "name": "ui",
-        "quantity": 1,
-        "unit": "stuk",
-        "searchTerm": "ui",
-        "optional": false
-      },
-      {
-        "name": "knoflook",
-        "quantity": 2,
-        "unit": "teen",
-        "searchTerm": "knoflook",
-        "optional": false
-      },
-      {
-        "name": "geraspte kaas",
-        "quantity": 75,
-        "unit": "g",
-        "searchTerm": "geraspte kaas",
-        "optional": true
-      }
+      {"name": "macaroni", "quantity": 300, "unit": "g", "searchTerm": "macaroni", "optional": false},
+      {"name": "rundergehakt", "quantity": 400, "unit": "g", "searchTerm": "rundergehakt", "optional": false},
+      {"name": "tomatensaus", "quantity": 400, "unit": "g", "searchTerm": "tomatensaus", "optional": false},
+      {"name": "ui", "quantity": 1, "unit": "stuk", "searchTerm": "ui", "optional": false},
+      {"name": "knoflook", "quantity": 2, "unit": "teen", "searchTerm": "knoflook", "optional": false},
+      {"name": "geraspte kaas", "quantity": 75, "unit": "g", "searchTerm": "geraspte kaas", "optional": true}
     ]
   },
   {
@@ -839,10 +297,7 @@
     "title": "Hollandse pannenkoeken",
     "servings": 2,
     "timeMinutes": 25,
-    "dietTags": [
-      "vegetarian",
-      "halal"
-    ],
+    "dietTags": ["vegetarian", "halal"],
     "summary": "Dunne pannenkoeken van bloem, melk en ei — zoet of hartig.",
     "steps": [
       "Klop bloem, melk en eieren tot een glad beslag.",
@@ -850,41 +305,11 @@
       "Serveer met stroop of poedersuiker."
     ],
     "ingredients": [
-      {
-        "name": "bloem",
-        "quantity": 250,
-        "unit": "g",
-        "searchTerm": "bloem",
-        "optional": false
-      },
-      {
-        "name": "melk",
-        "quantity": 500,
-        "unit": "ml",
-        "searchTerm": "melk",
-        "optional": false
-      },
-      {
-        "name": "eieren",
-        "quantity": 2,
-        "unit": "stuk",
-        "searchTerm": "scharreleieren",
-        "optional": false
-      },
-      {
-        "name": "boter",
-        "quantity": 30,
-        "unit": "g",
-        "searchTerm": "boter",
-        "optional": false
-      },
-      {
-        "name": "stroop",
-        "quantity": 1,
-        "unit": "fles",
-        "searchTerm": "stroop",
-        "optional": true
-      }
+      {"name": "bloem", "quantity": 250, "unit": "g", "searchTerm": "bloem", "optional": false},
+      {"name": "melk", "quantity": 500, "unit": "ml", "searchTerm": "melk", "optional": false},
+      {"name": "eieren", "quantity": 2, "unit": "stuk", "searchTerm": "scharreleieren", "optional": false},
+      {"name": "boter", "quantity": 30, "unit": "g", "searchTerm": "boter", "optional": false},
+      {"name": "stroop", "quantity": 1, "unit": "fles", "searchTerm": "stroop", "optional": true}
     ]
   },
   {
@@ -892,9 +317,7 @@
     "title": "Nasi goreng met kip",
     "servings": 3,
     "timeMinutes": 30,
-    "dietTags": [
-      "halal"
-    ],
+    "dietTags": ["halal"],
     "summary": "Indische nasi met kip, groente en ketjap — restjesvriendelijk.",
     "steps": [
       "Bak kipreepjes gaar; zet apart.",
@@ -902,48 +325,12 @@
       "Meng kip erdoor; optioneel een gebakken ei erbij."
     ],
     "ingredients": [
-      {
-        "name": "kipfilet",
-        "quantity": 300,
-        "unit": "g",
-        "searchTerm": "kipfilet",
-        "optional": false
-      },
-      {
-        "name": "rijst",
-        "quantity": 250,
-        "unit": "g",
-        "searchTerm": "rijst",
-        "optional": false
-      },
-      {
-        "name": "wokgroente",
-        "quantity": 300,
-        "unit": "g",
-        "searchTerm": "wokgroente",
-        "optional": false
-      },
-      {
-        "name": "ketjap",
-        "quantity": 3,
-        "unit": "el",
-        "searchTerm": "ketjap",
-        "optional": false
-      },
-      {
-        "name": "ui",
-        "quantity": 1,
-        "unit": "stuk",
-        "searchTerm": "ui",
-        "optional": false
-      },
-      {
-        "name": "eieren",
-        "quantity": 2,
-        "unit": "stuk",
-        "searchTerm": "scharreleieren",
-        "optional": true
-      }
+      {"name": "kipfilet", "quantity": 300, "unit": "g", "searchTerm": "kipfilet", "optional": false},
+      {"name": "rijst", "quantity": 250, "unit": "g", "searchTerm": "rijst", "optional": false},
+      {"name": "wokgroente", "quantity": 300, "unit": "g", "searchTerm": "wokgroente", "optional": false},
+      {"name": "ketjap", "quantity": 3, "unit": "el", "searchTerm": "ketjap", "optional": false},
+      {"name": "ui", "quantity": 1, "unit": "stuk", "searchTerm": "ui", "optional": false},
+      {"name": "eieren", "quantity": 2, "unit": "stuk", "searchTerm": "scharreleieren", "optional": true}
     ]
   }
 ]
