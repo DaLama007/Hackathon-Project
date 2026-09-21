@@ -10,7 +10,7 @@ Full-stack demo built on the Vite + Express + SQLite starter.
 ## What it does
 
 1. Set dietary prefs (vegetarian / vegan / halal)
-2. Browse ~8 seeded Dutch recipes (filtered by prefs)
+2. Browse ~16 seeded Dutch recipes (filtered by prefs)
 3. Match ingredients to Albert Heijn products (live search with anonymous token, **mock fallback** if AH is down)
 4. Start from AH **bonus/offers** and jump into a recipe that uses that item
 5. Filter match alternatives (bonus / bio / cheap / AH brand) or add a catalog item with no recipe
