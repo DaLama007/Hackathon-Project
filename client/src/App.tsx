@@ -63,7 +63,7 @@ const LANG_KEY = "platewise-lang";
 
 const copy = {
   en: {
-    brandEyebrow: "Farm-fresh planning",
+    brandEyebrow: "Healthy eating, planned",
     title: "Eat well. Shop smart.",
     subtitle: "Pick a recipe, match Albert Heijn products (bonus first), fill your list.",
     recipes: "Recipes",
@@ -104,7 +104,7 @@ const copy = {
     ah: "AH",
   },
   nl: {
-    brandEyebrow: "Vers van de boer",
+    brandEyebrow: "Gezond eten, gepland",
     title: "Eet goed. Koop slim.",
     subtitle: "Kies een recept, match AH-producten (bonus eerst), vul je lijst.",
     recipes: "Recepten",
@@ -208,97 +208,51 @@ function ProductThumb({
   );
 }
 
-/** Cartoon plate + sprout mark for the brand lockup. */
+/** Anthropic-inspired geometric mark: radial spark + plate core. */
 function PlateWiseLogo() {
   return (
-    <svg className="brand-logo" viewBox="0 0 72 72" aria-hidden="true">
-      <defs>
-        <radialGradient id="pwPlateShine" cx="32%" cy="28%" r="65%">
-          <stop offset="0%" stopColor="#ffffff" />
-          <stop offset="55%" stopColor="#f4faf6" />
-          <stop offset="100%" stopColor="#d7ebe0" />
-        </radialGradient>
-        <linearGradient id="pwLeaf" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#7adf9a" />
-          <stop offset="100%" stopColor="#1f8a5b" />
-        </linearGradient>
-        <linearGradient id="pwCarrot" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#ffb347" />
-          <stop offset="100%" stopColor="#f07820" />
-        </linearGradient>
-      </defs>
-      <circle cx="36" cy="38" r="26" fill="#2f9a66" />
-      <circle cx="36" cy="38" r="22" fill="url(#pwPlateShine)" stroke="#1f8a5b" strokeWidth="2.2" />
-      <ellipse cx="36" cy="40" rx="14" ry="9" fill="#e7f6ee" stroke="#9dceb4" strokeWidth="1.4" />
-      <path
-        d="M36 18c1.2 4.2 1.5 8.2 0 13.2-1.5-5-1.2-9 0-13.2z"
-        fill="url(#pwLeaf)"
-      />
-      <path
-        d="M36 20c4.8 2.2 8.2 1.6 10.8-1.2-3.8.6-7.4-.4-10.8 1.2z"
-        fill="#5ecf8e"
-      />
-      <path
-        d="M36 20c-4.8 2.2-8.2 1.6-10.8-1.2 3.8.6 7.4-.4 10.8 1.2z"
-        fill="#3db87a"
-      />
-      <path d="M44 34l6 14c.4 1-.2 1.8-1.2 1.8h-1.4c-.8 0-1.3-.5-1.5-1.2L42 34.4z" fill="url(#pwCarrot)" />
-      <path d="M44 34c2.2-.2 3.6-1.4 4.2-3.2-1.6.8-3 .6-4.2 3.2z" fill="#3db87a" />
-      <circle cx="28" cy="36" r="3.2" fill="#ff6b6b" />
-      <circle cx="27.2" cy="35.2" r="1" fill="#ffc9c9" />
+    <svg className="brand-logo" viewBox="0 0 40 40" aria-hidden="true">
+      <rect width="40" height="40" rx="10" fill="#16382c" />
+      <g transform="translate(20 20)" fill="#f4faf6">
+        <ellipse rx="2.6" ry="12.2" />
+        <ellipse rx="2.6" ry="12.2" transform="rotate(45)" />
+        <ellipse rx="2.6" ry="12.2" transform="rotate(90)" />
+        <ellipse rx="2.6" ry="12.2" transform="rotate(135)" />
+        <circle r="5.4" fill="#16382c" />
+        <circle r="3.2" fill="none" stroke="#f4faf6" strokeWidth="1.6" />
+        <circle r="1.15" fill="#f4faf6" />
+      </g>
     </svg>
   );
 }
 
+/** Soft wellness / botanical backdrop (health-oriented, not cartoon farmyard). */
 function FarmBackdrop() {
   return (
     <div className="farm-backdrop" aria-hidden="true">
       <div className="farm-sky" />
-      <div className="farm-sun" />
-      <div className="farm-cloud farm-cloud-a" />
-      <div className="farm-cloud farm-cloud-b" />
-      <div className="farm-cloud farm-cloud-c" />
+      <div className="health-glow health-glow-a" />
+      <div className="health-glow health-glow-b" />
       <svg className="farm-scene" viewBox="0 0 800 420" preserveAspectRatio="xMidYMax slice">
         <path
           className="farm-hill farm-hill-back"
-          d="M0 260 C120 210 220 230 340 250 C480 275 560 200 800 230 L800 420 L0 420 Z"
+          d="M0 250 C160 200 280 220 420 240 C580 265 680 210 800 235 L800 420 L0 420 Z"
         />
         <path
           className="farm-hill farm-hill-mid"
-          d="M0 300 C140 250 260 280 400 295 C560 315 650 255 800 285 L800 420 L0 420 Z"
+          d="M0 295 C150 255 290 275 450 290 C600 305 700 270 800 288 L800 420 L0 420 Z"
         />
         <path
           className="farm-hill farm-hill-front"
-          d="M0 345 C180 310 300 335 460 340 C620 346 700 315 800 330 L800 420 L0 420 Z"
+          d="M0 340 C200 315 340 330 500 338 C640 345 720 325 800 335 L800 420 L0 420 Z"
         />
-        {/* Cartoon barn */}
-        <g className="farm-barn" transform="translate(590 238)">
-          <rect x="18" y="36" width="88" height="70" rx="4" fill="#e4574d" />
-          <path d="M12 40 L62 4 L112 40 Z" fill="#c73f38" />
-          <rect x="48" y="58" width="28" height="48" rx="3" fill="#ffe8a3" />
-          <rect x="28" y="48" width="18" height="16" rx="2" fill="#7ec8e3" />
-          <rect x="78" y="48" width="18" height="16" rx="2" fill="#7ec8e3" />
-          <rect x="8" y="100" width="108" height="10" rx="2" fill="#8b5a2b" />
+        {/* Abstract botanical leaves — wellness cue, not barn/crops */}
+        <g className="health-botanicals" fill="#2f7a55" opacity="0.45">
+          <path d="M120 310 C150 250 190 250 210 310 C175 295 145 295 120 310 Z" />
+          <path d="M165 300 C175 270 195 270 205 300" fill="none" stroke="#1f5c3d" strokeWidth="3" />
+          <path d="M680 300 C710 240 755 245 770 305 C735 288 705 288 680 300 Z" />
+          <path d="M725 292 C735 260 755 262 765 292" fill="none" stroke="#1f5c3d" strokeWidth="3" />
         </g>
-        {/* Fence posts */}
-        <g className="farm-fence" fill="none" stroke="#8b5a2b" strokeWidth="4" strokeLinecap="round">
-          <path d="M40 360 V318 M70 360 V318 M100 360 V318 M130 360 V318 M160 360 V318" />
-          <path d="M36 328 H164 M36 348 H164" />
-        </g>
-        {/* Cartoon crops */}
-        <g className="farm-crops">
-          <ellipse cx="220" cy="352" rx="10" ry="16" fill="#4caf50" />
-          <ellipse cx="246" cy="348" rx="11" ry="18" fill="#66bb6a" />
-          <ellipse cx="272" cy="354" rx="9" ry="15" fill="#43a047" />
-          <ellipse cx="300" cy="350" rx="12" ry="19" fill="#57b85d" />
-          <rect x="216" y="360" width="90" height="8" rx="3" fill="#7a5a2b" opacity="0.35" />
-        </g>
-        {/* Path */}
-        <path
-          d="M310 420 C360 380 420 370 480 360 C540 350 580 355 640 420"
-          fill="#e6d2a0"
-          opacity="0.85"
-        />
       </svg>
     </div>
   );
@@ -543,8 +497,10 @@ export default function App() {
   );
 
   return (
-    <main className="app">
+    <>
+      {/* Outside .app so fixed positioning isn't trapped by the rise-in transform. */}
       <FarmBackdrop />
+      <main className="app">
       <header className="hero">
         <div className="hero-top">
           <div className="brand-block">
@@ -838,6 +794,7 @@ export default function App() {
         </section>
       )}
     </main>
+    </>
   );
 }
 

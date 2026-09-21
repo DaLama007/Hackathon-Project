@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Polish PlateWise UI: cartoon farm backdrop + plate/sprout logo, liquid-glass panels, recipe cards, product thumbs, empty/loading states (EN/NL).
+- Polish PlateWise UI: Anthropic-inspired geometric logo, health/botanical backdrop, liquid-glass panels, recipe cards (EN/NL).
 - Add List-tab Share/Copy to iPhone Reminders (newline grocery text, clipboard fallback).
 - Add shared agent tasklist (`TASKS.md`) so any agent can pick/claim: frontend UI, camera AI scan, AH offers ↔ recipes with item filters.
 - Add EN/NL language switch (persisted); UI shows one language at a time.
