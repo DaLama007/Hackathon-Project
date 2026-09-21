@@ -63,6 +63,7 @@ const LANG_KEY = "platewise-lang";
 const copy = {
   en: {
     title: "Diet planner",
+    brandTag: "Eat well. Shop smart at AH.",
     subtitle: "Prefs → recipe → Albert Heijn products (bonus first) → shopping list",
     recipes: "Recipes",
     match: "Match",
@@ -75,10 +76,11 @@ const copy = {
     loading: "Loading…",
     noRecipes: "No recipes for these prefs — turn a filter off.",
     servings: "servings",
+    minutes: "min",
     matching: "Matching…",
-    addViaAh: "Add via AH",
+    addViaAh: "Match products",
     mockBanner: "AH API unreachable — using mock products (demo still works).",
-    noProduct: "No product found",
+    noProduct: "No product found — uncheck or try another recipe.",
     adding: "Adding…",
     addSelected: "Add selected to list",
     shoppingList: "Shopping list",
@@ -92,11 +94,14 @@ const copy = {
     remindersHint:
       "On iPhone: share and pick Reminders, or paste into a Groceries list (one item per line).",
     remindersFailed: "Could not copy the list. Select and copy the items manually.",
+    logoAlt: "PlateWise plate mark",
+    productImage: "Product image",
     switchTo: "NL",
     switchAria: "Switch to Dutch",
   },
   nl: {
     title: "Dieetplanner",
+    brandTag: "Eet goed. Shop slim bij AH.",
     subtitle: "Voorkeuren → recept → AH-producten (bonus eerst) → boodschappenlijst",
     recipes: "Recepten",
     match: "Match",
@@ -109,10 +114,11 @@ const copy = {
     loading: "Laden…",
     noRecipes: "Geen recepten voor deze voorkeuren. Zet een filter uit.",
     servings: "pers",
+    minutes: "min",
     matching: "Matchen…",
-    addViaAh: "Voeg toe via AH",
+    addViaAh: "Match producten",
     mockBanner: "AH API onbereikbaar — mock producten gebruikt (demo blijft werken).",
-    noProduct: "Geen product gevonden",
+    noProduct: "Geen product gevonden — vink uit of kies een ander recept.",
     adding: "Toevoegen…",
     addSelected: "Geselecteerde producten naar lijst",
     shoppingList: "Boodschappenlijst",
@@ -126,6 +132,8 @@ const copy = {
     remindersHint:
       "Op iPhone: deel en kies Herinneringen, of plak in een Boodschappen-lijst (één regel per product).",
     remindersFailed: "Lijst kopiëren mislukt. Kopieer de items handmatig.",
+    logoAlt: "PlateWise bord-logo",
+    productImage: "Productafbeelding",
     switchTo: "EN",
     switchAria: "Schakel naar Engels",
   },
@@ -165,6 +173,36 @@ function copyTextWithFallback(text: string): boolean {
   } finally {
     document.body.removeChild(textarea);
   }
+}
+
+/** Anthropic-inspired mark: overlapping arcs inside a plate rim. */
+function PlateLogo({ title }: { title: string }) {
+  return (
+    <svg
+      className="plate-logo"
+      viewBox="0 0 64 64"
+      role="img"
+      aria-label={title}
+    >
+      <circle className="well" cx="32" cy="32" r="22" />
+      <circle className="rim" cx="32" cy="32" r="28" />
+      <path className="arc arc-a" d="M18 38c4-14 24-18 30-6" />
+      <path className="arc arc-b" d="M16 28c10-12 28-8 32 6" />
+      <path className="arc arc-c" d="M22 44c8 6 22 4 26-8" />
+      <circle className="core" cx="32" cy="32" r="3.2" />
+    </svg>
+  );
+}
+
+function ProductThumb({ product, alt }: { product: Product; alt: string }) {
+  if (product.imageUrl) {
+    return <img className="product-thumb" src={product.imageUrl} alt={alt} loading="lazy" />;
+  }
+  return (
+    <div className="product-thumb-fallback" aria-hidden="true">
+      AH
+    </div>
+  );
 }
 
 export default function App() {
@@ -394,205 +432,240 @@ export default function App() {
     [shoppingList],
   );
 
+  // Smoke UI: load app → see plate logo + glass panels → prefs toggle → recipe Match →
+  // swap/uncheck products → add to list → Reminders + Clear; check EN/NL + phone width.
   return (
-    <main className="app">
-      <header className="hero">
-        <div className="hero-top">
-          <p className="brand">PlateWise</p>
-          <div className="lang-switch" role="group" aria-label="Language / Taal">
-            <button
-              type="button"
-              className={lang === "en" ? "lang active" : "lang"}
-              onClick={() => setLanguage("en")}
-              aria-pressed={lang === "en"}
-            >
-              EN
-            </button>
-            <button
-              type="button"
-              className={lang === "nl" ? "lang active" : "lang"}
-              onClick={() => setLanguage("nl")}
-              aria-pressed={lang === "nl"}
-            >
-              NL
-            </button>
+    <>
+      <div className="atmosphere" aria-hidden="true" />
+      <main className="app">
+        <header className="hero">
+          <div className="hero-top">
+            <div className="brand-lockup">
+              <PlateLogo title={t.logoAlt} />
+              <div className="brand-text">
+                <p className="brand-name">PlateWise</p>
+                <p className="brand-tag">{t.brandTag}</p>
+              </div>
+            </div>
+            <div className="lang-switch" role="group" aria-label="Language / Taal">
+              <button
+                type="button"
+                className={lang === "en" ? "lang active" : "lang"}
+                onClick={() => setLanguage("en")}
+                aria-pressed={lang === "en"}
+              >
+                EN
+              </button>
+              <button
+                type="button"
+                className={lang === "nl" ? "lang active" : "lang"}
+                onClick={() => setLanguage("nl")}
+                aria-pressed={lang === "nl"}
+              >
+                NL
+              </button>
+            </div>
           </div>
-        </div>
-        <h1>{t.title}</h1>
-        <p className="subtitle">{t.subtitle}</p>
-      </header>
+          <h1 className="visually-hidden">{t.title}</h1>
+        </header>
 
-      <nav className="tabs" aria-label={lang === "en" ? "Views" : "Weergaven"}>
-        <button className={view === "recipes" ? "active" : ""} onClick={() => setView("recipes")}>
-          {t.recipes}
-        </button>
-        <button
-          className={view === "match" ? "active" : ""}
-          onClick={() => selectedRecipe && setView("match")}
-          disabled={!selectedRecipe}
-        >
-          {t.match}
-        </button>
-        <button className={view === "list" ? "active" : ""} onClick={() => setView("list")}>
-          {t.list} ({shoppingList.length})
-        </button>
-      </nav>
+        <nav className="tabs glass" aria-label={lang === "en" ? "Views" : "Weergaven"}>
+          <button className={view === "recipes" ? "active" : ""} onClick={() => setView("recipes")}>
+            {t.recipes}
+          </button>
+          <button
+            className={view === "match" ? "active" : ""}
+            onClick={() => selectedRecipe && setView("match")}
+            disabled={!selectedRecipe}
+          >
+            {t.match}
+          </button>
+          <button className={view === "list" ? "active" : ""} onClick={() => setView("list")}>
+            {t.list} ({shoppingList.length})
+          </button>
+        </nav>
 
-      <section className="prefs" aria-label={t.prefs}>
-        <h2>{t.prefs}</h2>
-        <div className="pref-toggles">
-          {(
-            [
-              ["vegetarian", t.vegetarian],
-              ["vegan", t.vegan],
-              ["halal", t.halal],
-            ] as const
-          ).map(([key, label]) => (
-            <label key={key} className="pref">
-              <input
-                type="checkbox"
-                checked={prefs[key]}
-                onChange={(e) => updatePref(key, e.target.checked)}
-              />
-              {label}
-            </label>
-          ))}
-        </div>
-        <p className="hint">{t.hint}</p>
-      </section>
-
-      {error && <p className="error">{error}</p>}
-
-      {loading ? (
-        <p className="empty">{t.loading}</p>
-      ) : view === "recipes" ? (
-        <section>
-          <h2>
-            {t.recipes} ({recipes.length})
-          </h2>
-          {recipes.length === 0 ? (
-            <p className="empty">{t.noRecipes}</p>
-          ) : (
-            <ul className="recipe-list">
-              {recipes.map((recipe) => (
-                <li key={recipe.id}>
-                  <div>
-                    <h3>{recipe.title}</h3>
-                    <p>{recipe.summary}</p>
-                    <p className="meta">
-                      {recipe.timeMinutes} min · {recipe.servings} {t.servings} ·{" "}
-                      {recipe.dietTags.join(", ")}
-                    </p>
-                  </div>
-                  <button disabled={matching} onClick={() => matchRecipe(recipe)}>
-                    {matching && selectedRecipe?.id === recipe.id ? t.matching : t.addViaAh}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
+        <section className="prefs glass" aria-label={t.prefs}>
+          <h2>{t.prefs}</h2>
+          <div className="pref-toggles">
+            {(
+              [
+                ["vegetarian", t.vegetarian],
+                ["vegan", t.vegan],
+                ["halal", t.halal],
+              ] as const
+            ).map(([key, label]) => (
+              <label key={key} className="pref">
+                <input
+                  type="checkbox"
+                  checked={prefs[key]}
+                  onChange={(e) => updatePref(key, e.target.checked)}
+                />
+                {label}
+              </label>
+            ))}
+          </div>
+          <p className="hint">{t.hint}</p>
         </section>
-      ) : view === "match" && selectedRecipe ? (
-        <section>
-          <h2>
-            {t.match}: {selectedRecipe.title}
-          </h2>
-          {usedMock && <p className="banner">{t.mockBanner}</p>}
-          <ul className="match-list">
-            {matches.map((row) => {
-              const key = row.ingredient.searchTerm;
-              const selected = selectedProducts[key];
-              const options = [row.product, ...row.alternatives].filter(Boolean) as Product[];
-              return (
-                <li key={key}>
-                  <label className="match-head">
-                    <input
-                      type="checkbox"
-                      checked={Boolean(included[key])}
-                      onChange={(e) =>
-                        setIncluded((prev) => ({ ...prev, [key]: e.target.checked }))
-                      }
-                    />
-                    <span>
-                      {row.ingredient.name}{" "}
-                      <span className="meta">
-                        ({row.ingredient.quantity} {row.ingredient.unit})
-                      </span>
-                    </span>
-                  </label>
-                  {selected ? (
-                    <div className="match-body">
-                      <select
-                        value={selected.id}
-                        onChange={(e) => swapProduct(key, e.target.value, row)}
-                        aria-label={`Product for ${row.ingredient.name}`}
-                      >
-                        {options.map((product) => (
-                          <option key={product.id} value={product.id}>
-                            {product.title} · {formatPrice(product.price)}
-                            {product.isBonus ? " · BONUS" : ""}
-                          </option>
-                        ))}
-                      </select>
-                      {selected.isBonus && (
-                        <span className="bonus">{selected.bonusLabel ?? "Bonus"}</span>
+
+        {error && <p className="error">{error}</p>}
+
+        {loading ? (
+          <div className="loading-stack" aria-busy="true" aria-label={t.loading}>
+            <div className="skeleton" />
+            <div className="skeleton" />
+            <div className="skeleton" />
+            <p className="status">{t.loading}</p>
+          </div>
+        ) : view === "recipes" ? (
+          <section className="panel-block">
+            <div className="section-title">
+              <h2>{t.recipes}</h2>
+              <span className="section-count">{recipes.length}</span>
+            </div>
+            {recipes.length === 0 ? (
+              <p className="empty glass">{t.noRecipes}</p>
+            ) : (
+              <ul className="recipe-list">
+                {recipes.map((recipe) => (
+                  <li key={recipe.id} className="glass">
+                    <div>
+                      <h3>{recipe.title}</h3>
+                      <p>{recipe.summary}</p>
+                      <div className="meta-row meta">
+                        <span>
+                          {recipe.timeMinutes} {t.minutes}
+                        </span>
+                        <span>
+                          {recipe.servings} {t.servings}
+                        </span>
+                      </div>
+                      {recipe.dietTags.length > 0 && (
+                        <div className="diet-tags">
+                          {recipe.dietTags.map((tag) => (
+                            <span key={tag} className="diet-tag">
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
                       )}
                     </div>
-                  ) : (
-                    <p className="empty">{t.noProduct}</p>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-          <button className="primary" disabled={adding} onClick={addSelectedToList}>
-            {adding ? t.adding : t.addSelected}
-          </button>
-        </section>
-      ) : (
-        <section>
-          <div className="list-header">
-            <h2>{t.shoppingList}</h2>
-            {shoppingList.length > 0 && (
-              <div className="list-actions">
-                <button className="ghost" onClick={shareToReminders}>
-                  {t.reminders}
-                </button>
-                <button className="ghost" onClick={clearList}>
-                  {t.clear}
-                </button>
-              </div>
-            )}
-          </div>
-          {shoppingList.length === 0 ? (
-            <p className="empty">{t.emptyList}</p>
-          ) : (
-            <>
-              <p className="hint">{t.remindersHint}</p>
-              {shareStatus && <p className="banner">{shareStatus}</p>}
-              <ul className="shop-list">
-                {shoppingList.map((item) => (
-                  <li key={item.id}>
-                    <div>
-                      <strong>{item.title}</strong>
-                      <p className="meta">
-                        ×{item.quantity} · {formatPrice(item.price)}
-                        {item.is_bonus ? ` · ${item.bonus_label ?? "Bonus"}` : ""}
-                      </p>
-                    </div>
-                    <button className="delete" onClick={() => removeItem(item.id)} aria-label={t.remove}>
-                      ×
+                    <button disabled={matching} onClick={() => matchRecipe(recipe)}>
+                      {matching && selectedRecipe?.id === recipe.id ? t.matching : t.addViaAh}
                     </button>
                   </li>
                 ))}
               </ul>
-              <p className="total">
-                {t.total}: {formatPrice(listTotal)}
-              </p>
-            </>
-          )}
-        </section>
-      )}
-    </main>
+            )}
+          </section>
+        ) : view === "match" && selectedRecipe ? (
+          <section className="panel-block">
+            <div className="section-title">
+              <h2>
+                {t.match}: {selectedRecipe.title}
+              </h2>
+            </div>
+            {usedMock && <p className="banner">{t.mockBanner}</p>}
+            <ul className="match-list">
+              {matches.map((row) => {
+                const key = row.ingredient.searchTerm;
+                const selected = selectedProducts[key];
+                const options = [row.product, ...row.alternatives].filter(Boolean) as Product[];
+                return (
+                  <li key={key} className="glass">
+                    <label className="match-head">
+                      <input
+                        type="checkbox"
+                        checked={Boolean(included[key])}
+                        onChange={(e) =>
+                          setIncluded((prev) => ({ ...prev, [key]: e.target.checked }))
+                        }
+                      />
+                      <span>
+                        {row.ingredient.name}{" "}
+                        <span className="meta">
+                          ({row.ingredient.quantity} {row.ingredient.unit})
+                        </span>
+                      </span>
+                    </label>
+                    {selected ? (
+                      <div className="match-body">
+                        <ProductThumb product={selected} alt={t.productImage} />
+                        <div className="match-select-wrap">
+                          <select
+                            value={selected.id}
+                            onChange={(e) => swapProduct(key, e.target.value, row)}
+                            aria-label={`Product for ${row.ingredient.name}`}
+                          >
+                            {options.map((product) => (
+                              <option key={product.id} value={product.id}>
+                                {product.title} · {formatPrice(product.price)}
+                                {product.isBonus ? " · BONUS" : ""}
+                              </option>
+                            ))}
+                          </select>
+                          {selected.isBonus && (
+                            <span className="bonus">{selected.bonusLabel ?? "Bonus"}</span>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="empty">{t.noProduct}</p>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+            <button className="primary" disabled={adding} onClick={addSelectedToList}>
+              {adding ? t.adding : t.addSelected}
+            </button>
+          </section>
+        ) : (
+          <section className="panel-block">
+            <div className="list-header">
+              <h2>{t.shoppingList}</h2>
+              {shoppingList.length > 0 && (
+                <div className="list-actions">
+                  <button className="ghost" onClick={shareToReminders}>
+                    {t.reminders}
+                  </button>
+                  <button className="ghost" onClick={clearList}>
+                    {t.clear}
+                  </button>
+                </div>
+              )}
+            </div>
+            {shoppingList.length === 0 ? (
+              <p className="empty glass">{t.emptyList}</p>
+            ) : (
+              <>
+                <p className="hint">{t.remindersHint}</p>
+                {shareStatus && <p className="banner ok">{shareStatus}</p>}
+                <ul className="shop-list">
+                  {shoppingList.map((item) => (
+                    <li key={item.id} className="glass">
+                      <div>
+                        <strong>{item.title}</strong>
+                        <p className="meta">
+                          ×{item.quantity} · {formatPrice(item.price)}
+                          {item.is_bonus ? ` · ${item.bonus_label ?? "Bonus"}` : ""}
+                        </p>
+                      </div>
+                      <button className="delete" onClick={() => removeItem(item.id)} aria-label={t.remove}>
+                        ×
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+                <div className="total-bar glass glass-strong">
+                  <span>{t.total}</span>
+                  <span className="amount">{formatPrice(listTotal)}</span>
+                </div>
+              </>
+            )}
+          </section>
+        )}
+      </main>
+    </>
   );
 }
