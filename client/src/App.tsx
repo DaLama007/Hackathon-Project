@@ -53,6 +53,7 @@ interface ShoppingItem {
   is_bonus: boolean;
   bonus_label: string | null;
   quantity: number;
+  image_url?: string | null;
 }
 
 type View = "recipes" | "match" | "list";
@@ -62,28 +63,31 @@ const LANG_KEY = "platewise-lang";
 
 const copy = {
   en: {
-    title: "Diet planner",
-    subtitle: "Prefs → recipe → Albert Heijn products (bonus first) → shopping list",
+    brandEyebrow: "Farm-fresh planning",
+    title: "Eat well. Shop smart.",
+    subtitle: "Pick a recipe, match Albert Heijn products (bonus first), fill your list.",
     recipes: "Recipes",
     match: "Match",
     list: "List",
-    prefs: "Preferences",
+    prefs: "Diet preferences",
     vegetarian: "Vegetarian",
     vegan: "Vegan",
     halal: "Halal",
-    hint: "Recipes are filtered by store tags — not medical/religious advice.",
-    loading: "Loading…",
+    hint: "Recipes are filtered by store tags — not medical or religious advice.",
+    loading: "Gathering fresh recipes…",
     noRecipes: "No recipes for these prefs — turn a filter off.",
     servings: "servings",
+    minutes: "min",
     matching: "Matching…",
-    addViaAh: "Add via AH",
+    addViaAh: "Match at AH",
     mockBanner: "AH API unreachable — using mock products (demo still works).",
     noProduct: "No product found",
     adding: "Adding…",
     addSelected: "Add selected to list",
     shoppingList: "Shopping list",
     clear: "Clear",
-    emptyList: "List is empty. Match a recipe to start.",
+    emptyList: "Your basket is empty. Match a recipe to start.",
+    emptyIcon: "◇",
     remove: "Remove",
     total: "Estimated total",
     selectOne: "Select at least one product",
@@ -94,30 +98,37 @@ const copy = {
     remindersFailed: "Could not copy the list. Select and copy the items manually.",
     switchTo: "NL",
     switchAria: "Switch to Dutch",
+    viewsAria: "Views",
+    productFor: "Product for",
+    recipeCount: "fresh picks",
+    ah: "AH",
   },
   nl: {
-    title: "Dieetplanner",
-    subtitle: "Voorkeuren → recept → AH-producten (bonus eerst) → boodschappenlijst",
+    brandEyebrow: "Vers van de boer",
+    title: "Eet goed. Koop slim.",
+    subtitle: "Kies een recept, match AH-producten (bonus eerst), vul je lijst.",
     recipes: "Recepten",
     match: "Match",
     list: "Lijst",
-    prefs: "Voorkeuren",
+    prefs: "Dieetvoorkeuren",
     vegetarian: "Vegetarisch",
     vegan: "Vegan",
     halal: "Halal",
-    hint: "Recepten worden gefilterd op store-tags; geen medische/religieuze garantie.",
-    loading: "Laden…",
+    hint: "Recepten worden gefilterd op store-tags; geen medische of religieuze garantie.",
+    loading: "Verse recepten laden…",
     noRecipes: "Geen recepten voor deze voorkeuren. Zet een filter uit.",
     servings: "pers",
+    minutes: "min",
     matching: "Matchen…",
-    addViaAh: "Voeg toe via AH",
+    addViaAh: "Match bij AH",
     mockBanner: "AH API onbereikbaar — mock producten gebruikt (demo blijft werken).",
     noProduct: "Geen product gevonden",
     adding: "Toevoegen…",
     addSelected: "Geselecteerde producten naar lijst",
     shoppingList: "Boodschappenlijst",
     clear: "Leegmaken",
-    emptyList: "Lijst is leeg. Match een recept om te beginnen.",
+    emptyList: "Je mandje is leeg. Match een recept om te beginnen.",
+    emptyIcon: "◇",
     remove: "Verwijderen",
     total: "Geschat totaal",
     selectOne: "Selecteer minstens één product",
@@ -128,6 +139,10 @@ const copy = {
     remindersFailed: "Lijst kopiëren mislukt. Kopieer de items handmatig.",
     switchTo: "EN",
     switchAria: "Schakel naar Engels",
+    viewsAria: "Weergaven",
+    productFor: "Product voor",
+    recipeCount: "verse keuzes",
+    ah: "AH",
   },
 } as const;
 
@@ -167,6 +182,32 @@ function copyTextWithFallback(text: string): boolean {
   }
 }
 
+function primaryDiet(tags: DietTag[]): DietTag | "any" {
+  if (tags.includes("vegan")) return "vegan";
+  if (tags.includes("vegetarian")) return "vegetarian";
+  if (tags.includes("halal")) return "halal";
+  return "any";
+}
+
+function ProductThumb({
+  imageUrl,
+  label,
+  fallback,
+}: {
+  imageUrl: string | null | undefined;
+  label: string;
+  fallback: string;
+}) {
+  if (imageUrl) {
+    return <img className="product-thumb" src={imageUrl} alt={label} loading="lazy" />;
+  }
+  return (
+    <div className="product-thumb-fallback" aria-hidden="true">
+      {fallback}
+    </div>
+  );
+}
+
 export default function App() {
   const [lang, setLang] = useState<Lang>(() => readStoredLang());
   const t = copy[lang];
@@ -185,6 +226,7 @@ export default function App() {
   const [matching, setMatching] = useState(false);
   const [adding, setAdding] = useState(false);
   const [shareStatus, setShareStatus] = useState<string | null>(null);
+  const [productImages, setProductImages] = useState<Record<string, string>>({});
 
   function setLanguage(next: Lang) {
     setLang(next);
@@ -266,13 +308,18 @@ export default function App() {
 
       const products: Record<string, Product> = {};
       const includedMap: Record<string, boolean> = {};
+      const images: Record<string, string> = {};
       for (const row of rows) {
         const key = row.ingredient.searchTerm;
         if (row.product) products[key] = row.product;
         includedMap[key] = Boolean(row.product);
+        for (const product of [row.product, ...row.alternatives]) {
+          if (product?.imageUrl) images[product.id] = product.imageUrl;
+        }
       }
       setSelectedProducts(products);
       setIncluded(includedMap);
+      setProductImages((prev) => ({ ...prev, ...images }));
       setView("match");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to match products");
@@ -394,11 +441,22 @@ export default function App() {
     [shoppingList],
   );
 
+  const selectedCount = useMemo(
+    () => matches.filter((row) => included[row.ingredient.searchTerm]).length,
+    [matches, included],
+  );
+
   return (
     <main className="app">
       <header className="hero">
         <div className="hero-top">
-          <p className="brand">PlateWise</p>
+          <div className="brand-block">
+            <p className="eyebrow">{t.brandEyebrow}</p>
+            <p className="brand">
+              <span className="brand-mark" aria-hidden="true" />
+              PlateWise
+            </p>
+          </div>
           <div className="lang-switch" role="group" aria-label="Language / Taal">
             <button
               type="button"
@@ -422,24 +480,34 @@ export default function App() {
         <p className="subtitle">{t.subtitle}</p>
       </header>
 
-      <nav className="tabs" aria-label={lang === "en" ? "Views" : "Weergaven"}>
-        <button className={view === "recipes" ? "active" : ""} onClick={() => setView("recipes")}>
+      <nav className="tabs" aria-label={t.viewsAria}>
+        <button
+          type="button"
+          className={view === "recipes" ? "active" : ""}
+          onClick={() => setView("recipes")}
+        >
           {t.recipes}
         </button>
         <button
+          type="button"
           className={view === "match" ? "active" : ""}
           onClick={() => selectedRecipe && setView("match")}
           disabled={!selectedRecipe}
         >
           {t.match}
         </button>
-        <button className={view === "list" ? "active" : ""} onClick={() => setView("list")}>
-          {t.list} ({shoppingList.length})
+        <button
+          type="button"
+          className={view === "list" ? "active" : ""}
+          onClick={() => setView("list")}
+        >
+          {t.list}
+          {shoppingList.length > 0 && <span className="tab-count">({shoppingList.length})</span>}
         </button>
       </nav>
 
       <section className="prefs" aria-label={t.prefs}>
-        <h2>{t.prefs}</h2>
+        <p className="section-label">{t.prefs}</p>
         <div className="pref-toggles">
           {(
             [
@@ -461,32 +529,72 @@ export default function App() {
         <p className="hint">{t.hint}</p>
       </section>
 
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <p className="error-banner" role="alert">
+          {error}
+        </p>
+      )}
 
       {loading ? (
-        <p className="empty">{t.loading}</p>
+        <div className="loading-block" aria-busy="true" aria-label={t.loading}>
+          <div className="skeleton" />
+          <div className="skeleton" />
+          <div className="skeleton short" />
+          <p className="hint" style={{ textAlign: "center", marginTop: "0.25rem" }}>
+            {t.loading}
+          </p>
+        </div>
       ) : view === "recipes" ? (
         <section>
-          <h2>
-            {t.recipes} ({recipes.length})
-          </h2>
+          <div className="view-header">
+            <h2>{t.recipes}</h2>
+            <span className="view-count">
+              {recipes.length} {t.recipeCount}
+            </span>
+          </div>
           {recipes.length === 0 ? (
-            <p className="empty">{t.noRecipes}</p>
+            <div className="empty-state">
+              <div className="empty-icon" aria-hidden="true">
+                {t.emptyIcon}
+              </div>
+              <p>{t.noRecipes}</p>
+            </div>
           ) : (
             <ul className="recipe-list">
               {recipes.map((recipe) => (
-                <li key={recipe.id}>
-                  <div>
+                <li key={recipe.id} className="recipe-card">
+                  <div
+                    className="recipe-visual"
+                    data-diet={primaryDiet(recipe.dietTags)}
+                    aria-hidden="true"
+                  />
+                  <div className="recipe-body">
                     <h3>{recipe.title}</h3>
-                    <p>{recipe.summary}</p>
-                    <p className="meta">
-                      {recipe.timeMinutes} min · {recipe.servings} {t.servings} ·{" "}
-                      {recipe.dietTags.join(", ")}
-                    </p>
+                    <p className="recipe-summary">{recipe.summary}</p>
+                    <div className="recipe-meta-row">
+                      <span className="chip chip-muted">
+                        {recipe.timeMinutes} {t.minutes}
+                      </span>
+                      <span className="chip chip-muted">
+                        {recipe.servings} {t.servings}
+                      </span>
+                      {recipe.dietTags.map((tag) => (
+                        <span key={tag} className="chip">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="recipe-actions">
+                      <button
+                        type="button"
+                        className="btn btn-primary btn-block"
+                        disabled={matching}
+                        onClick={() => matchRecipe(recipe)}
+                      >
+                        {matching && selectedRecipe?.id === recipe.id ? t.matching : t.addViaAh}
+                      </button>
+                    </div>
                   </div>
-                  <button disabled={matching} onClick={() => matchRecipe(recipe)}>
-                    {matching && selectedRecipe?.id === recipe.id ? t.matching : t.addViaAh}
-                  </button>
                 </li>
               ))}
             </ul>
@@ -494,9 +602,14 @@ export default function App() {
         </section>
       ) : view === "match" && selectedRecipe ? (
         <section>
-          <h2>
-            {t.match}: {selectedRecipe.title}
-          </h2>
+          <div className="view-header">
+            <h2>
+              {t.match}: {selectedRecipe.title}
+            </h2>
+            <span className="view-count">
+              {selectedCount}/{matches.length}
+            </span>
+          </div>
           {usedMock && <p className="banner">{t.mockBanner}</p>}
           <ul className="match-list">
             {matches.map((row) => {
@@ -504,7 +617,7 @@ export default function App() {
               const selected = selectedProducts[key];
               const options = [row.product, ...row.alternatives].filter(Boolean) as Product[];
               return (
-                <li key={key}>
+                <li key={key} className="match-card">
                   <label className="match-head">
                     <input
                       type="checkbox"
@@ -522,32 +635,48 @@ export default function App() {
                   </label>
                   {selected ? (
                     <div className="match-body">
-                      <select
-                        value={selected.id}
-                        onChange={(e) => swapProduct(key, e.target.value, row)}
-                        aria-label={`Product for ${row.ingredient.name}`}
-                      >
-                        {options.map((product) => (
-                          <option key={product.id} value={product.id}>
-                            {product.title} · {formatPrice(product.price)}
-                            {product.isBonus ? " · BONUS" : ""}
-                          </option>
-                        ))}
-                      </select>
-                      {selected.isBonus && (
-                        <span className="bonus">{selected.bonusLabel ?? "Bonus"}</span>
-                      )}
+                      <ProductThumb
+                        imageUrl={selected.imageUrl}
+                        label={selected.title}
+                        fallback={t.ah}
+                      />
+                      <div className="match-select-wrap">
+                        <select
+                          value={selected.id}
+                          onChange={(e) => swapProduct(key, e.target.value, row)}
+                          aria-label={`${t.productFor} ${row.ingredient.name}`}
+                        >
+                          {options.map((product) => (
+                            <option key={product.id} value={product.id}>
+                              {product.title} · {formatPrice(product.price)}
+                              {product.isBonus ? " · BONUS" : ""}
+                            </option>
+                          ))}
+                        </select>
+                        {selected.isBonus && (
+                          <span className="bonus">{selected.bonusLabel ?? "Bonus"}</span>
+                        )}
+                      </div>
                     </div>
                   ) : (
-                    <p className="empty">{t.noProduct}</p>
+                    <p className="hint" style={{ paddingLeft: "1.75rem", marginTop: "0.5rem" }}>
+                      {t.noProduct}
+                    </p>
                   )}
                 </li>
               );
             })}
           </ul>
-          <button className="primary" disabled={adding} onClick={addSelectedToList}>
-            {adding ? t.adding : t.addSelected}
-          </button>
+          <div className="match-sticky">
+            <button
+              type="button"
+              className="btn btn-primary btn-block"
+              disabled={adding}
+              onClick={addSelectedToList}
+            >
+              {adding ? t.adding : t.addSelected}
+            </button>
+          </div>
         </section>
       ) : (
         <section>
@@ -555,40 +684,58 @@ export default function App() {
             <h2>{t.shoppingList}</h2>
             {shoppingList.length > 0 && (
               <div className="list-actions">
-                <button className="ghost" onClick={shareToReminders}>
+                <button type="button" className="btn btn-ghost" onClick={shareToReminders}>
                   {t.reminders}
                 </button>
-                <button className="ghost" onClick={clearList}>
+                <button type="button" className="btn btn-ghost" onClick={clearList}>
                   {t.clear}
                 </button>
               </div>
             )}
           </div>
           {shoppingList.length === 0 ? (
-            <p className="empty">{t.emptyList}</p>
+            <div className="empty-state">
+              <div className="empty-icon" aria-hidden="true">
+                {t.emptyIcon}
+              </div>
+              <p>{t.emptyList}</p>
+            </div>
           ) : (
             <>
               <p className="hint">{t.remindersHint}</p>
               {shareStatus && <p className="banner">{shareStatus}</p>}
               <ul className="shop-list">
                 {shoppingList.map((item) => (
-                  <li key={item.id}>
-                    <div>
-                      <strong>{item.title}</strong>
-                      <p className="meta">
-                        ×{item.quantity} · {formatPrice(item.price)}
-                        {item.is_bonus ? ` · ${item.bonus_label ?? "Bonus"}` : ""}
-                      </p>
+                  <li key={item.id} className="shop-card">
+                    <div className="shop-main">
+                      <ProductThumb
+                        imageUrl={item.image_url ?? productImages[item.product_id] ?? null}
+                        label={item.title}
+                        fallback={t.ah}
+                      />
+                      <div>
+                        <strong>{item.title}</strong>
+                        <p className="meta">
+                          ×{item.quantity} · {formatPrice(item.price)}
+                          {item.is_bonus ? ` · ${item.bonus_label ?? "Bonus"}` : ""}
+                        </p>
+                      </div>
                     </div>
-                    <button className="delete" onClick={() => removeItem(item.id)} aria-label={t.remove}>
+                    <button
+                      type="button"
+                      className="btn btn-danger-ghost"
+                      onClick={() => removeItem(item.id)}
+                      aria-label={t.remove}
+                    >
                       ×
                     </button>
                   </li>
                 ))}
               </ul>
-              <p className="total">
-                {t.total}: {formatPrice(listTotal)}
-              </p>
+              <div className="total-bar">
+                <span className="label">{t.total}</span>
+                <span className="amount">{formatPrice(listTotal)}</span>
+              </div>
             </>
           )}
         </section>
@@ -596,3 +743,11 @@ export default function App() {
     </main>
   );
 }
+
+/*
+ * Smoke checklist (frontend-ui):
+ * 1. npm run dev → open app at phone width + ~720px; PlateWise brand reads first, meadow green atmosphere.
+ * 2. Toggle EN/NL; prefs chips update recipes; empty state if filters too strict.
+ * 3. Recipe card → Match at AH → swap/uncheck products (thumbnails when present) → Add selected.
+ * 4. List shows items + total; Reminders share/copy; Clear empties list.
+ */
