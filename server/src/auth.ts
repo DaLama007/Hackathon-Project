@@ -7,7 +7,6 @@ import {
   createUser,
   deleteExpiredSessions,
   deleteSession,
-  findUserById,
   findUserBySessionToken,
   findUserByUsername,
   type User,
@@ -58,7 +57,7 @@ function readSessionToken(req: Request): string | null {
   return typeof token === "string" && token.length > 0 ? token : null;
 }
 
-export function getUserFromRequest(req: Request): User | undefined {
+function getUserFromRequest(req: Request): User | undefined {
   const token = readSessionToken(req);
   if (!token) return undefined;
   return findUserBySessionToken(token);
@@ -96,7 +95,7 @@ function parseCredentials(body: unknown): CredentialsResult {
   return { ok: true, value: { username, password } };
 }
 
-export async function registerUser(username: string, password: string): Promise<User> {
+async function registerUser(username: string, password: string): Promise<User> {
   const passwordHash = await hash(password, BCRYPT_ROUNDS);
   return createUser(username, passwordHash);
 }
@@ -177,10 +176,8 @@ export async function seedDemoUser(): Promise<void> {
 
   try {
     const existing = findUserByUsername(username);
-    const user = existing
-      ? findUserById(existing.id)!
-      : await registerUser(username, password);
-    adoptLegacyData(user.id);
+    const userId = existing?.id ?? (await registerUser(username, password)).id;
+    adoptLegacyData(userId);
     if (!existing) console.log(`Seeded demo account "${username}".`);
   } catch (err) {
     console.error("Demo user seeding failed", err);
