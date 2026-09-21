@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add accounts: username/password login (bcrypt + httpOnly session cookie). Prefs and the shopping list are saved per account and reloaded on the next login. / Inloggen met account: voorkeuren en boodschappenlijst worden per account bewaard en staan er bij de volgende login weer.
 - Translate recipe titles, summaries, ingredient names, and units to English when UI lang is EN; shopping list keeps original Dutch AH product titles.
 - Add `ah-api-integration` backlog task: live AH needs an anonymous bearer token; documented that today's request params return 401/400 so the app always falls back to mock.
 - Add bidirectional AH offers ↔ recipes, plus bonus/bio/cheap/huismerk product filters and add-item search.
