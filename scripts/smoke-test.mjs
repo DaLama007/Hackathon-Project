@@ -60,12 +60,32 @@ assert(
   "linzen alternatives include a bonus product",
 );
 
+const liveSuggest = await fetch(`${base}/api/products/suggest?q=${encodeURIComponent("spinazie")}`).then((r) =>
+  r.json(),
+);
+assert(Array.isArray(liveSuggest.products) && liveSuggest.products.length >= 1, "suggest returns products");
+if (liveSuggest.usedMock) {
+  assert(
+    liveSuggest.products.every((p) => p.source === "mock"),
+    "mock mode / AH-down fallback returns source mock",
+  );
+} else {
+  assert(
+    liveSuggest.usedMock === false && liveSuggest.products.every((p) => p.source === "ah"),
+    "live search returns source ah (mock banner stays hidden)",
+  );
+  assert(
+    liveSuggest.products.some((p) => p.price != null),
+    "live products include a numeric price",
+  );
+}
+
 const bioSuggest = await fetch(`${base}/api/products/suggest?q=${encodeURIComponent("rode linzen")}&filter=bio`).then(
   (r) => r.json(),
 );
 assert(
   Array.isArray(bioSuggest.products) && bioSuggest.products.length >= 1 && bioSuggest.products.every((p) => p.isBio),
-  "suggest filter=bio returns only organic products",
+  "suggest filter=bio returns only organic products (propertyIcons / title)",
 );
 
 const product = match.matches[0].product;
