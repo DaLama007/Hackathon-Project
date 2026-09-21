@@ -746,7 +746,7 @@ export default function App() {
 
 /*
  * Smoke checklist (frontend-ui):
- * 1. npm run dev → open app at phone width + ~720px; PlateWise brand reads first, meadow green atmosphere.
+ * 1. npm run dev → open app at phone width + ~720px; PlateWise brand reads first, liquid-glass meadow atmosphere.
  * 2. Toggle EN/NL; prefs chips update recipes; empty state if filters too strict.
  * 3. Recipe card → Match at AH → swap/uncheck products (thumbnails when present) → Add selected.
  * 4. List shows items + total; Reminders share/copy; Clear empties list.
