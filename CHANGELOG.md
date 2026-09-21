@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Polish PlateWise UI: Apple-style liquid glass, Anthropic-inspired plate logo, healthy leaf atmosphere, clearer recipe/match/list states (EN/NL).
+- Polish PlateWise UI: Apple-style liquid glass, Anthropic-inspired plate logo, animated overlapping-arc background, clearer recipe/match/list states (EN/NL).
 - Add List-tab Share/Copy to iPhone Reminders (newline grocery text, clipboard fallback).
 - Add shared agent tasklist (`TASKS.md`) so any agent can pick/claim: frontend UI, camera AI scan, AH offers ↔ recipes with item filters.
 - Add EN/NL language switch (persisted); UI shows one language at a time.

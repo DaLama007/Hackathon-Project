@@ -436,7 +436,50 @@ export default function App() {
   // swap/uncheck products → add to list → Reminders + Clear; check EN/NL + phone width.
   return (
     <>
-      <div className="atmosphere" aria-hidden="true" />
+      <div className="atmosphere" aria-hidden="true">
+        <svg className="atmosphere-svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <linearGradient id="bgWash" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#eaf7f0" />
+              <stop offset="45%" stopColor="#d5ebe0" />
+              <stop offset="100%" stopColor="#c3e2d2" />
+            </linearGradient>
+            <linearGradient id="arcGradA" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#1a6b4a" stopOpacity="0.55" />
+              <stop offset="100%" stopColor="#2f9a6a" stopOpacity="0.15" />
+            </linearGradient>
+            <linearGradient id="arcGradB" x1="100%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#0f3d2e" stopOpacity="0.35" />
+              <stop offset="100%" stopColor="#7ec49c" stopOpacity="0.12" />
+            </linearGradient>
+            <radialGradient id="glowSoft" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#fff8dc" stopOpacity="0.7" />
+              <stop offset="100%" stopColor="#fff8dc" stopOpacity="0" />
+            </radialGradient>
+          </defs>
+          <rect width="1200" height="800" fill="url(#bgWash)" />
+          <circle className="atm-glow atm-glow-a" cx="180" cy="120" r="220" fill="url(#glowSoft)" />
+          <circle className="atm-glow atm-glow-b" cx="980" cy="640" r="280" fill="url(#glowSoft)" />
+          {/* Overlapping Anthropic-style arcs — plate-scale field */}
+          <g className="atm-arcs atm-arcs-a" fill="none" strokeLinecap="round">
+            <path stroke="url(#arcGradA)" strokeWidth="28" d="M80 520c120-280 420-360 620-180" />
+            <path stroke="url(#arcGradB)" strokeWidth="18" d="M160 580c140-260 460-300 640-100" />
+            <path stroke="url(#arcGradA)" strokeWidth="12" d="M40 400c180-220 480-200 720 40" />
+          </g>
+          <g className="atm-arcs atm-arcs-b" fill="none" strokeLinecap="round">
+            <path stroke="url(#arcGradB)" strokeWidth="22" d="M520 120c200 80 360 280 280 520" />
+            <path stroke="url(#arcGradA)" strokeWidth="14" d="M640 40c220 120 340 360 200 580" />
+            <path stroke="url(#arcGradB)" strokeWidth="10" d="M780 80c160 160 200 400 40 560" />
+          </g>
+          <g className="atm-arcs atm-arcs-c" fill="none" strokeLinecap="round">
+            <path stroke="url(#arcGradA)" strokeWidth="20" d="M1100 200c-160 40-280 200-240 420" />
+            <path stroke="url(#arcGradB)" strokeWidth="11" d="M1180 320c-200 20-320 180-260 360" />
+          </g>
+          <circle className="atm-orb atm-orb-a" cx="920" cy="180" r="90" fill="#7ec49c" fillOpacity="0.22" />
+          <circle className="atm-orb atm-orb-b" cx="260" cy="620" r="120" fill="#2f9a6a" fillOpacity="0.14" />
+          <circle className="atm-orb atm-orb-c" cx="640" cy="420" r="48" fill="#0f3d2e" fillOpacity="0.08" />
+        </svg>
+      </div>
       <main className="app">
         <header className="hero">
           <div className="hero-top">
