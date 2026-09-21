@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Push PlateWise backdrop fully wellness: soft aqua–sage sky, mist + botanical leaf clusters (no hills/farm cues); keep liquid-glass + geometric logo.
 - Polish PlateWise UI: Anthropic-inspired geometric logo, health/botanical backdrop, liquid-glass panels, recipe cards (EN/NL).
 - Add List-tab Share/Copy to iPhone Reminders (newline grocery text, clipboard fallback).
 - Add shared agent tasklist (`TASKS.md`) so any agent can pick/claim: frontend UI, camera AI scan, AH offers ↔ recipes with item filters.

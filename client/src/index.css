@@ -53,11 +53,11 @@ body {
   margin: 0;
   min-height: 100vh;
   color: var(--ink);
-  background-color: #c8e0d4;
+  background-color: #b8d9cf;
   overflow-x: hidden;
 }
 
-/* Soft health / botanical scene lives in .farm-backdrop (App.tsx) */
+/* Calm wellness / botanical scene (.wellness-backdrop in App.tsx) */
 body::before,
 body::after {
   content: none;
@@ -73,7 +73,7 @@ body::after {
   content: none;
 }
 
-.farm-backdrop {
+.wellness-backdrop {
   position: fixed;
   inset: 0;
   z-index: 0;
@@ -81,54 +81,125 @@ body::after {
   overflow: hidden;
 }
 
-.farm-sky {
+.wellness-sky {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, #c5e4ef 0%, #d7ecdf 42%, #c8e4c4 78%, #a8d4a6 100%);
+  background: linear-gradient(
+    165deg,
+    #b8dceb 0%,
+    #c9e8ef 22%,
+    #d4ebe3 48%,
+    #c5e4d4 72%,
+    #b5dcc8 100%
+  );
 }
 
-.health-glow {
+.wellness-mist {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  height: 42%;
+  pointer-events: none;
+}
+
+.wellness-mist-top {
+  top: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255, 255, 255, 0.55), transparent 70%);
+}
+
+.wellness-glow {
   position: absolute;
   border-radius: 50%;
-  filter: blur(40px);
-  opacity: 0.55;
+  filter: blur(48px);
+  opacity: 0.6;
+  animation: wellness-breathe 10s ease-in-out infinite alternate;
 }
 
-.health-glow-a {
-  width: min(380px, 60vw);
-  height: min(380px, 60vw);
-  top: -8%;
-  right: 5%;
-  background: radial-gradient(circle, rgba(180, 230, 210, 0.9), transparent 70%);
+.wellness-glow-a {
+  width: min(420px, 65vw);
+  height: min(420px, 65vw);
+  top: -10%;
+  right: 2%;
+  background: radial-gradient(circle, rgba(170, 230, 215, 0.95), transparent 70%);
 }
 
-.health-glow-b {
-  width: min(320px, 55vw);
-  height: min(320px, 55vw);
-  bottom: 18%;
-  left: -8%;
-  background: radial-gradient(circle, rgba(160, 210, 230, 0.75), transparent 70%);
+.wellness-glow-b {
+  width: min(360px, 58vw);
+  height: min(360px, 58vw);
+  bottom: 12%;
+  left: -10%;
+  background: radial-gradient(circle, rgba(150, 205, 230, 0.8), transparent 70%);
+  animation-delay: -3s;
 }
 
-.farm-scene {
+.wellness-glow-c {
+  width: min(280px, 45vw);
+  height: min(280px, 45vw);
+  top: 38%;
+  left: 42%;
+  background: radial-gradient(circle, rgba(200, 235, 210, 0.7), transparent 70%);
+  animation-delay: -6s;
+  opacity: 0.45;
+}
+
+.wellness-scene {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
   width: 100%;
-  height: min(48vh, 420px);
+  height: min(52vh, 440px);
 }
 
-.farm-hill-back {
-  fill: #9dcea0;
+.wellness-wash-back {
+  fill: rgba(130, 190, 165, 0.35);
 }
 
-.farm-hill-mid {
-  fill: #7bbb7f;
+.wellness-wash-front {
+  fill: rgba(110, 175, 155, 0.42);
 }
 
-.farm-hill-front {
-  fill: #5ea866;
+.wellness-leaf-left {
+  transform-origin: 120px 360px;
+  animation: wellness-sway 14s ease-in-out infinite alternate;
+}
+
+.wellness-leaf-right {
+  transform-origin: 680px 360px;
+  animation: wellness-sway 16s ease-in-out infinite alternate-reverse;
+}
+
+.wellness-fronds {
+  animation: wellness-fade 12s ease-in-out infinite alternate;
+}
+
+@keyframes wellness-breathe {
+  from {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  to {
+    transform: scale(1.08);
+    opacity: 0.72;
+  }
+}
+
+@keyframes wellness-sway {
+  from {
+    transform: rotate(-2deg) translateY(0);
+  }
+  to {
+    transform: rotate(2.5deg) translateY(-6px);
+  }
+}
+
+@keyframes wellness-fade {
+  from {
+    opacity: 0.2;
+  }
+  to {
+    opacity: 0.38;
+  }
 }
 
 .app {
@@ -223,7 +294,7 @@ body::after {
   z-index: 1;
 }
 
-/* —— Hero as liquid slab over cartoon farm —— */
+/* —— Hero as liquid slab over wellness backdrop —— */
 .hero {
   position: relative;
   margin-bottom: 1.2rem;

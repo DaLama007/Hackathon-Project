@@ -226,32 +226,39 @@ function PlateWiseLogo() {
   );
 }
 
-/** Soft wellness / botanical backdrop (health-oriented, not cartoon farmyard). */
-function FarmBackdrop() {
+/** Calm wellness / botanical backdrop — spa greens & soft blues, no farmyard cues. */
+function WellnessBackdrop() {
   return (
-    <div className="farm-backdrop" aria-hidden="true">
-      <div className="farm-sky" />
-      <div className="health-glow health-glow-a" />
-      <div className="health-glow health-glow-b" />
-      <svg className="farm-scene" viewBox="0 0 800 420" preserveAspectRatio="xMidYMax slice">
-        <path
-          className="farm-hill farm-hill-back"
-          d="M0 250 C160 200 280 220 420 240 C580 265 680 210 800 235 L800 420 L0 420 Z"
-        />
-        <path
-          className="farm-hill farm-hill-mid"
-          d="M0 295 C150 255 290 275 450 290 C600 305 700 270 800 288 L800 420 L0 420 Z"
-        />
-        <path
-          className="farm-hill farm-hill-front"
-          d="M0 340 C200 315 340 330 500 338 C640 345 720 325 800 335 L800 420 L0 420 Z"
-        />
-        {/* Abstract botanical leaves — wellness cue, not barn/crops */}
-        <g className="health-botanicals" fill="#2f7a55" opacity="0.45">
-          <path d="M120 310 C150 250 190 250 210 310 C175 295 145 295 120 310 Z" />
-          <path d="M165 300 C175 270 195 270 205 300" fill="none" stroke="#1f5c3d" strokeWidth="3" />
-          <path d="M680 300 C710 240 755 245 770 305 C735 288 705 288 680 300 Z" />
-          <path d="M725 292 C735 260 755 262 765 292" fill="none" stroke="#1f5c3d" strokeWidth="3" />
+    <div className="wellness-backdrop" aria-hidden="true">
+      <div className="wellness-sky" />
+      <div className="wellness-mist wellness-mist-top" />
+      <div className="wellness-glow wellness-glow-a" />
+      <div className="wellness-glow wellness-glow-b" />
+      <div className="wellness-glow wellness-glow-c" />
+      <svg className="wellness-scene" viewBox="0 0 800 420" preserveAspectRatio="xMidYMax slice">
+        {/* Soft ground wash — foggy meadow wash, not hills/fields */}
+        <ellipse className="wellness-wash wellness-wash-back" cx="400" cy="400" rx="520" ry="120" />
+        <ellipse className="wellness-wash wellness-wash-front" cx="400" cy="430" rx="480" ry="90" />
+        {/* Abstract botanical silhouettes */}
+        <g className="wellness-botanicals">
+          <g className="wellness-leaf-cluster wellness-leaf-left" fill="#2a7a5c" opacity="0.38">
+            <path d="M90 360 C70 300 95 250 130 220 C145 280 140 330 90 360 Z" />
+            <path d="M130 360 C115 295 145 245 185 215 C190 285 175 335 130 360 Z" />
+            <path d="M155 365 C150 310 175 265 215 240 C210 305 190 345 155 365 Z" />
+            <path d="M112 250 C118 280 125 310 120 340" fill="none" stroke="#1a5c42" strokeWidth="2.5" opacity="0.5" />
+          </g>
+          <g className="wellness-leaf-cluster wellness-leaf-right" fill="#2f8a68" opacity="0.34">
+            <path d="M710 355 C730 295 705 245 670 215 C655 275 660 325 710 355 Z" />
+            <path d="M670 358 C685 290 655 240 615 212 C610 285 625 335 670 358 Z" />
+            <path d="M645 365 C650 310 625 265 585 242 C590 305 610 345 645 365 Z" />
+            <path d="M688 245 C682 275 675 305 680 338" fill="none" stroke="#1a5c42" strokeWidth="2.5" opacity="0.45" />
+          </g>
+          <g className="wellness-fronds" fill="none" stroke="#3a9a72" strokeWidth="2" opacity="0.28">
+            <path d="M320 420 C310 360 280 320 250 290" />
+            <path d="M340 420 C345 355 360 310 390 275" />
+            <path d="M460 420 C455 355 440 310 410 275" />
+            <path d="M480 420 C490 360 520 320 550 290" />
+          </g>
         </g>
       </svg>
     </div>
@@ -499,7 +506,7 @@ export default function App() {
   return (
     <>
       {/* Outside .app so fixed positioning isn't trapped by the rise-in transform. */}
-      <FarmBackdrop />
+      <WellnessBackdrop />
       <main className="app">
       <header className="hero">
         <div className="hero-top">
