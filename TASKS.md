@@ -28,6 +28,14 @@ Open tasks are available to any agent. Claimed tasks show `(@branch-name)` on th
 
 ## P1
 
+- [ ] Translate recipe/ingredient names in EN mode (@cursor/translate-names-en-078b)
+  - **ID**: translate-names-en
+  - **Status**: claimed
+  - **Tags**: frontend, i18n
+  - **Files**: `client/src/App.tsx`, `client/src/recipeI18n.ts`
+  - **Details**: When UI lang is EN, show English recipe titles, summaries, ingredient names, and units. Keep Dutch AH product titles on the shopping list (and share/Reminders text) so store names stay searchable.
+  - **Acceptance**: Switch to EN → recipe cards and match rows show English names; List tab still shows original Dutch product titles. NL mode unchanged. Smoke checklist + CHANGELOG.
+
 - [x] Share shopping list to iPhone Reminders (@cursor/reminders-grocery-share-30e4)
   - **ID**: reminders-grocery-share
   - **Status**: done
