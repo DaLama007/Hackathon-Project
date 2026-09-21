@@ -11,7 +11,7 @@ Full-stack demo built on the Vite + Express + SQLite starter.
 
 1. Set dietary prefs (vegetarian / vegan / halal)
 2. Browse ~8 seeded Dutch recipes (filtered by prefs)
-3. Match ingredients to Albert Heijn products (live search, **mock fallback** if AH is down)
+3. Match ingredients to Albert Heijn products (**mock products today** — live AH needs `ah-api-integration`)
 4. Start from AH **bonus/offers** and jump into a recipe that uses that item
 5. Filter match alternatives (bonus / bio / cheap / AH brand) or add a catalog item with no recipe
 6. Review / swap products (bonus & cheap ranked first)
@@ -27,6 +27,7 @@ Current backlog:
 | ID | Task |
 | --- | --- |
 | `frontend-ui` | Polish frontend UI |
+| `ah-api-integration` | Live AH API: auth token, valid query params, real product fields |
 | `camera-ai-scan` | Camera + AI scan of ingredients/products |
 
 ## Quick start
