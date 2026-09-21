@@ -2,8 +2,12 @@
 
 ## Unreleased
 
+<<<<<<< HEAD
+- Polish PlateWise UI: liquid glass panels, Anthropic-inspired plate logo, softer layered animated arc atmosphere (EN/NL); builds on geometric plate + wellness backdrop polish.
+=======
 - Add accounts: username/password login (bcrypt + httpOnly session cookie). Prefs and the shopping list are saved per account and reloaded on the next login. / Inloggen met account: voorkeuren en boodschappenlijst worden per account bewaard en staan er bij de volgende login weer.
 - Polish PlateWise UI: geometric dinner-plate logo (Anthropic-inspired), wellness botanical backdrop, liquid-glass panels (EN/NL).
+>>>>>>> origin/main
 - Live Albert Heijn search: anonymous bearer token (cached + refresh), valid `sortOn`, `propertyIcons` for bio/cheap, discounted `currentPrice` for bonus items; mock fallback still works.
 - Expand seed data to 16 Dutch recipes and a richer mock AH catalog (bio/bonus/cheap options) for new search terms; EN display strings for the new recipes.
 - Translate recipe titles, summaries, ingredient names, and units to English when UI lang is EN; shopping list keeps original Dutch AH product titles.

@@ -308,51 +308,72 @@ function PlateWiseLogo() {
   );
 }
 
-/** Calm wellness / botanical backdrop — spa greens & soft blues, no farmyard cues. */
+/** Soft Anthropic-inspired atmosphere: layered ribbons, depth blur, calm drift. */
 function WellnessBackdrop() {
   return (
     <div className="wellness-backdrop" aria-hidden="true">
-      <div className="wellness-sky" />
-      <div className="wellness-mist wellness-mist-top" />
-      <div className="wellness-glow wellness-glow-a" />
-      <div className="wellness-glow wellness-glow-b" />
-      <div className="wellness-glow wellness-glow-c" />
-      <svg className="wellness-scene" viewBox="0 0 800 420" preserveAspectRatio="xMidYMax slice">
-        <ellipse className="wellness-wash wellness-wash-back" cx="400" cy="400" rx="520" ry="120" />
-        <ellipse className="wellness-wash wellness-wash-front" cx="400" cy="430" rx="480" ry="90" />
-        <g className="wellness-botanicals">
-          <g className="wellness-leaf-cluster wellness-leaf-left" fill="#2a7a5c" opacity="0.38">
-            <path d="M90 360 C70 300 95 250 130 220 C145 280 140 330 90 360 Z" />
-            <path d="M130 360 C115 295 145 245 185 215 C190 285 175 335 130 360 Z" />
-            <path d="M155 365 C150 310 175 265 215 240 C210 305 190 345 155 365 Z" />
-            <path
-              d="M112 250 C118 280 125 310 120 340"
-              fill="none"
-              stroke="#1a5c42"
-              strokeWidth="2.5"
-              opacity="0.5"
-            />
-          </g>
-          <g className="wellness-leaf-cluster wellness-leaf-right" fill="#2f8a68" opacity="0.34">
-            <path d="M710 355 C730 295 705 245 670 215 C655 275 660 325 710 355 Z" />
-            <path d="M670 358 C685 290 655 240 615 212 C610 285 625 335 670 358 Z" />
-            <path d="M645 365 C650 310 625 265 585 242 C590 305 610 345 645 365 Z" />
-            <path
-              d="M688 245 C682 275 675 305 680 338"
-              fill="none"
-              stroke="#1a5c42"
-              strokeWidth="2.5"
-              opacity="0.45"
-            />
-          </g>
-          <g className="wellness-fronds" fill="none" stroke="#3a9a72" strokeWidth="2" opacity="0.28">
-            <path d="M320 420 C310 360 280 320 250 290" />
-            <path d="M340 420 C345 355 360 310 390 275" />
-            <path d="M460 420 C455 355 440 310 410 275" />
-            <path d="M480 420 C490 360 520 320 550 290" />
-          </g>
+      <div className="atm-mesh" />
+      <svg className="atmosphere-svg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="arcA" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#0f3d2e" stopOpacity="0" />
+            <stop offset="35%" stopColor="#1a6b4a" stopOpacity="0.45" />
+            <stop offset="70%" stopColor="#3cb87a" stopOpacity="0.28" />
+            <stop offset="100%" stopColor="#7ec49c" stopOpacity="0" />
+          </linearGradient>
+          <linearGradient id="arcB" x1="100%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#2f9a6a" stopOpacity="0" />
+            <stop offset="40%" stopColor="#0f3d2e" stopOpacity="0.32" />
+            <stop offset="100%" stopColor="#a8dcc0" stopOpacity="0" />
+          </linearGradient>
+          <linearGradient id="arcC" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#cfe8a8" stopOpacity="0" />
+            <stop offset="50%" stopColor="#5fb887" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="#1a6b4a" stopOpacity="0" />
+          </linearGradient>
+          <radialGradient id="sunGlow" cx="28%" cy="18%" r="42%">
+            <stop offset="0%" stopColor="#fff6d6" stopOpacity="0.85" />
+            <stop offset="45%" stopColor="#e8f6c8" stopOpacity="0.28" />
+            <stop offset="100%" stopColor="#e8f6c8" stopOpacity="0" />
+          </radialGradient>
+          <radialGradient id="leafGlow" cx="78%" cy="72%" r="48%">
+            <stop offset="0%" stopColor="#8fd4ad" stopOpacity="0.55" />
+            <stop offset="55%" stopColor="#5aaa7e" stopOpacity="0.18" />
+            <stop offset="100%" stopColor="#5aaa7e" stopOpacity="0" />
+          </radialGradient>
+          <filter id="softBlur" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="8" />
+          </filter>
+          <filter id="hazeBlur" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="28" />
+          </filter>
+        </defs>
+
+        <rect width="1440" height="900" fill="#dff3e8" />
+        <ellipse cx="380" cy="160" rx="520" ry="380" fill="url(#sunGlow)" />
+        <ellipse cx="1120" cy="700" rx="560" ry="420" fill="url(#leafGlow)" />
+
+        <g className="atm-layer atm-layer-far" filter="url(#hazeBlur)" fill="none" strokeLinecap="round">
+          <path stroke="url(#arcA)" strokeWidth="64" d="M-40 620 C 220 180, 620 80, 980 320 S 1480 700, 1500 520" />
+          <path stroke="url(#arcB)" strokeWidth="48" d="M1500 240 C 1100 40, 700 120, 480 360 S 120 780, -60 640" />
+        </g>
+
+        <g className="atm-layer atm-layer-mid" filter="url(#softBlur)" fill="none" strokeLinecap="round">
+          <path stroke="url(#arcC)" strokeWidth="36" d="M80 740 C 280 420, 560 260, 860 340 S 1280 620, 1460 480" />
+          <path stroke="url(#arcA)" strokeWidth="22" d="M-20 280 C 260 120, 520 220, 740 420 S 1180 780, 1480 620" />
+          <path stroke="url(#arcB)" strokeWidth="16" d="M1480 120 C 1080 200, 820 380, 640 560 S 280 820, 40 700" />
+        </g>
+
+        <g className="atm-layer atm-layer-near" fill="none" strokeLinecap="round">
+          <path className="atm-stroke" stroke="url(#arcA)" strokeWidth="3.5" d="M120 560 C 340 300, 620 220, 880 360 S 1280 640, 1400 500" />
+          <path className="atm-stroke" stroke="url(#arcB)" strokeWidth="2.5" d="M60 420 C 300 200, 580 180, 820 320 S 1220 620, 1420 460" />
+          <path className="atm-stroke" stroke="url(#arcC)" strokeWidth="2" d="M200 680 C 420 480, 700 400, 960 480 S 1320 700, 1460 580" />
+          <circle className="atm-dot" cx="720" cy="430" r="5" fill="#1a6b4a" fillOpacity="0.35" />
+          <circle className="atm-dot atm-dot-b" cx="980" cy="300" r="3.5" fill="#0f3d2e" fillOpacity="0.25" />
+          <circle className="atm-dot atm-dot-c" cx="420" cy="520" r="4" fill="#2f9a6a" fillOpacity="0.3" />
         </g>
       </svg>
+      <div className="atm-vignette" />
     </div>
   );
 }

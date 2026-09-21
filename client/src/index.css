@@ -53,11 +53,11 @@ body {
   margin: 0;
   min-height: 100vh;
   color: var(--ink);
-  background-color: #b8d9cf;
+  background-color: #dff3e8;
   overflow-x: hidden;
 }
 
-/* Calm wellness / botanical scene (.wellness-backdrop in App.tsx) */
+/* Soft Anthropic-inspired atmosphere (.wellness-backdrop in App.tsx) */
 body::before,
 body::after {
   content: none;
@@ -79,126 +79,128 @@ body::after {
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
+  background: #dff3e8;
 }
 
-.wellness-sky {
+.atm-mesh {
+  position: absolute;
+  inset: -10%;
+  background:
+    radial-gradient(ellipse 55% 45% at 18% 12%, rgba(255, 246, 214, 0.7) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 86% 18%, rgba(143, 212, 173, 0.45) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 72% 88%, rgba(47, 154, 106, 0.28) 0%, transparent 60%),
+    radial-gradient(ellipse 45% 40% at 12% 78%, rgba(207, 232, 168, 0.35) 0%, transparent 55%),
+    linear-gradient(160deg, #eaf8f1 0%, #d8f0e4 40%, #cce8db 100%);
+  animation: mesh-shift 24s ease-in-out infinite alternate;
+}
+
+.atmosphere-svg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    165deg,
-    #b8dceb 0%,
-    #c9e8ef 22%,
-    #d4ebe3 48%,
-    #c5e4d4 72%,
-    #b5dcc8 100%
-  );
-}
-
-.wellness-mist {
-  position: absolute;
-  left: -10%;
-  right: -10%;
-  height: 42%;
-  pointer-events: none;
-}
-
-.wellness-mist-top {
-  top: 0;
-  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255, 255, 255, 0.55), transparent 70%);
-}
-
-.wellness-glow {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(48px);
-  opacity: 0.6;
-  animation: wellness-breathe 10s ease-in-out infinite alternate;
-}
-
-.wellness-glow-a {
-  width: min(420px, 65vw);
-  height: min(420px, 65vw);
-  top: -10%;
-  right: 2%;
-  background: radial-gradient(circle, rgba(170, 230, 215, 0.95), transparent 70%);
-}
-
-.wellness-glow-b {
-  width: min(360px, 58vw);
-  height: min(360px, 58vw);
-  bottom: 12%;
-  left: -10%;
-  background: radial-gradient(circle, rgba(150, 205, 230, 0.8), transparent 70%);
-  animation-delay: -3s;
-}
-
-.wellness-glow-c {
-  width: min(280px, 45vw);
-  height: min(280px, 45vw);
-  top: 38%;
-  left: 42%;
-  background: radial-gradient(circle, rgba(200, 235, 210, 0.7), transparent 70%);
-  animation-delay: -6s;
-  opacity: 0.45;
-}
-
-.wellness-scene {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
   width: 100%;
-  height: min(52vh, 440px);
+  height: 100%;
+  opacity: 0.92;
 }
 
-.wellness-wash-back {
-  fill: rgba(130, 190, 165, 0.35);
+.atm-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 75% 70% at 50% 40%, transparent 40%, rgba(15, 61, 46, 0.08) 100%);
 }
 
-.wellness-wash-front {
-  fill: rgba(110, 175, 155, 0.42);
+.atm-layer {
+  transform-origin: 50% 50%;
 }
 
-.wellness-leaf-left {
-  transform-origin: 120px 360px;
-  animation: wellness-sway 14s ease-in-out infinite alternate;
+.atm-layer-far {
+  animation: layer-drift-far 32s ease-in-out infinite alternate;
+  opacity: 0.7;
 }
 
-.wellness-leaf-right {
-  transform-origin: 680px 360px;
-  animation: wellness-sway 16s ease-in-out infinite alternate-reverse;
+.atm-layer-mid {
+  animation: layer-drift-mid 26s ease-in-out infinite alternate-reverse;
+  opacity: 0.85;
 }
 
-.wellness-fronds {
-  animation: wellness-fade 12s ease-in-out infinite alternate;
+.atm-layer-near {
+  animation: layer-drift-near 20s ease-in-out infinite alternate;
 }
 
-@keyframes wellness-breathe {
+.atm-stroke {
+  stroke-dasharray: 1800;
+  stroke-dashoffset: 0;
+  animation: stroke-breathe 14s ease-in-out infinite alternate;
+}
+
+.atm-dot {
+  animation: dot-pulse 8s ease-in-out infinite alternate;
+}
+
+.atm-dot-b {
+  animation-delay: -2.5s;
+  animation-duration: 10s;
+}
+
+.atm-dot-c {
+  animation-delay: -5s;
+  animation-duration: 9s;
+}
+
+@keyframes mesh-shift {
   from {
-    transform: scale(1);
-    opacity: 0.5;
+    transform: translate3d(-1.5%, -1%, 0) scale(1.02);
   }
   to {
-    transform: scale(1.08);
-    opacity: 0.72;
+    transform: translate3d(2%, 1.5%, 0) scale(1.08);
   }
 }
 
-@keyframes wellness-sway {
+@keyframes layer-drift-far {
   from {
-    transform: rotate(-2deg) translateY(0);
+    transform: translate(-30px, 18px) rotate(-2deg) scale(1.02);
   }
   to {
-    transform: rotate(2.5deg) translateY(-6px);
+    transform: translate(36px, -24px) rotate(2.5deg) scale(1.06);
   }
 }
 
-@keyframes wellness-fade {
+@keyframes layer-drift-mid {
   from {
-    opacity: 0.2;
+    transform: translate(20px, -14px) rotate(1.5deg);
   }
   to {
-    opacity: 0.38;
+    transform: translate(-28px, 22px) rotate(-2deg);
+  }
+}
+
+@keyframes layer-drift-near {
+  from {
+    transform: translate(-12px, 8px) rotate(-1deg);
+  }
+  to {
+    transform: translate(16px, -12px) rotate(1.2deg);
+  }
+}
+
+@keyframes stroke-breathe {
+  from {
+    opacity: 0.45;
+    stroke-dashoffset: 40;
+  }
+  to {
+    opacity: 0.95;
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes dot-pulse {
+  from {
+    transform: scale(0.7);
+    opacity: 0.35;
+  }
+  to {
+    transform: scale(1.35);
+    opacity: 0.9;
   }
 }
 

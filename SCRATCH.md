@@ -1,12 +1,18 @@
 # Scratch / smoke notes
 
+## frontend-ui (liquid glass + arc atmosphere)
+
+1. `npm run dev` — open client; PlateWise plate logo + frosted glass panels on soft animated arc background.
+2. Toggle prefs (Vegetarisch / Vegan / Halal); recipe list updates.
+3. Tap **Match** on a recipe → thumbs, swap select, uncheck rows → add to list.
+4. List tab: total, Reminders, Clear. Switch EN/NL; resize to phone width (~375).
+
 ## More recipes + mock products (2026-09)
 
 1. `AH_FORCE_MOCK=1 npm run dev` — open Recipes tab; expect ~16 recipes (fewer with vegan prefs).
 2. Open **Pompoensoep** or **Falafel wrap** → Match — every ingredient should resolve to named mock products (not only `AH <term>` fallback).
 3. Switch lang to EN — new recipe titles/summaries/ingredients show English.
 4. `curl -s localhost:3001/api/recipes | jq length` → 16; `curl -s 'localhost:3001/api/products/suggest?q=pompoen'` returns mock pompoen rows with bonus/bio options.
-
 
 ## offers-recipes-loop
 
