@@ -74,6 +74,7 @@ interface ShoppingItem {
   is_bonus: boolean;
   bonus_label: string | null;
   quantity: number;
+  image_url?: string | null;
 }
 
 type View = "offers" | "recipes" | "match" | "list";
@@ -84,22 +85,24 @@ const FILTERS: CatalogFilter[] = ["all", "bonus", "bio", "cheap", "storeBrand"];
 
 const copy = {
   en: {
-    title: "Diet planner",
-    subtitle: "Offers ↔ recipes, or add a single AH item, then shopping list",
+    brandEyebrow: "Healthy eating, planned",
+    title: "Eat well. Shop smart.",
+    subtitle: "Offers ↔ recipes, match AH products (bonus first), or add a single item to your list.",
     offers: "Offers",
     recipes: "Recipes",
     match: "Match",
     list: "List",
-    prefs: "Preferences",
+    prefs: "Diet preferences",
     vegetarian: "Vegetarian",
     vegan: "Vegan",
     halal: "Halal",
-    hint: "Recipes are filtered by store tags — not medical/religious advice.",
-    loading: "Loading…",
+    hint: "Recipes are filtered by store tags — not medical or religious advice.",
+    loading: "Gathering fresh recipes…",
     noRecipes: "No recipes for these prefs — turn a filter off.",
     servings: "servings",
+    minutes: "min",
     matching: "Matching…",
-    addViaAh: "Add via AH",
+    addViaAh: "Match at AH",
     mockBanner: "AH API unreachable — using mock products (demo still works).",
     noProduct: "No product found",
     adding: "Adding…",
@@ -107,6 +110,7 @@ const copy = {
     shoppingList: "Shopping list",
     clear: "Clear",
     emptyList: "List is empty. Match a recipe or add an item.",
+    emptyIcon: "◇",
     remove: "Remove",
     total: "Estimated total",
     selectOne: "Select at least one product",
@@ -117,6 +121,10 @@ const copy = {
     remindersFailed: "Could not copy the list. Select and copy the items manually.",
     switchTo: "NL",
     switchAria: "Switch to Dutch",
+    viewsAria: "Views",
+    productFor: "Product for",
+    recipeCount: "fresh picks",
+    ah: "AH",
     offersHint: "Bonus items first. Pick one and open a recipe that uses it.",
     noOffers: "No bonus offers right now — try mock mode or another pref.",
     usesThis: "Uses this",
@@ -137,22 +145,24 @@ const copy = {
     itemAdded: "Added to list",
   },
   nl: {
-    title: "Dieetplanner",
-    subtitle: "Aanbiedingen ↔ recepten, of één AH-artikel, daarna boodschappenlijst",
+    brandEyebrow: "Gezond eten, gepland",
+    title: "Eet goed. Koop slim.",
+    subtitle: "Aanbiedingen ↔ recepten, match AH-producten (bonus eerst), of voeg één artikel toe.",
     offers: "Aanbiedingen",
     recipes: "Recepten",
     match: "Match",
     list: "Lijst",
-    prefs: "Voorkeuren",
+    prefs: "Dieetvoorkeuren",
     vegetarian: "Vegetarisch",
     vegan: "Vegan",
     halal: "Halal",
-    hint: "Recepten worden gefilterd op store-tags; geen medische/religieuze garantie.",
-    loading: "Laden…",
+    hint: "Recepten worden gefilterd op store-tags; geen medische of religieuze garantie.",
+    loading: "Verse recepten laden…",
     noRecipes: "Geen recepten voor deze voorkeuren. Zet een filter uit.",
     servings: "pers",
+    minutes: "min",
     matching: "Matchen…",
-    addViaAh: "Voeg toe via AH",
+    addViaAh: "Match bij AH",
     mockBanner: "AH API onbereikbaar — mock producten gebruikt (demo blijft werken).",
     noProduct: "Geen product gevonden",
     adding: "Toevoegen…",
@@ -160,6 +170,7 @@ const copy = {
     shoppingList: "Boodschappenlijst",
     clear: "Leegmaken",
     emptyList: "Lijst is leeg. Match een recept of voeg een artikel toe.",
+    emptyIcon: "◇",
     remove: "Verwijderen",
     total: "Geschat totaal",
     selectOne: "Selecteer minstens één product",
@@ -170,6 +181,10 @@ const copy = {
     remindersFailed: "Lijst kopiëren mislukt. Kopieer de items handmatig.",
     switchTo: "EN",
     switchAria: "Schakel naar Engels",
+    viewsAria: "Weergaven",
+    productFor: "Product voor",
+    recipeCount: "verse keuzes",
+    ah: "AH",
     offersHint: "Bonus eerst. Kies een item en open een recept dat het gebruikt.",
     noOffers: "Geen bonusaanbiedingen — probeer mock of andere voorkeuren.",
     usesThis: "Gebruikt dit",
@@ -225,6 +240,110 @@ function copyTextWithFallback(text: string): boolean {
   } finally {
     document.body.removeChild(textarea);
   }
+}
+
+function primaryDiet(tags: DietTag[]): DietTag | "any" {
+  if (tags.includes("vegan")) return "vegan";
+  if (tags.includes("vegetarian")) return "vegetarian";
+  if (tags.includes("halal")) return "halal";
+  return "any";
+}
+
+function ProductThumb({
+  imageUrl,
+  label,
+  fallback,
+}: {
+  imageUrl: string | null | undefined;
+  label: string;
+  fallback: string;
+}) {
+  if (imageUrl) {
+    return <img className="product-thumb" src={imageUrl} alt={label} loading="lazy" />;
+  }
+  return (
+    <div className="product-thumb-fallback" aria-hidden="true">
+      {fallback}
+    </div>
+  );
+}
+
+/** Anthropic-inspired geometric mark: concentric dinner plate. */
+function PlateWiseLogo() {
+  return (
+    <svg className="brand-logo" viewBox="0 0 40 40" aria-hidden="true">
+      <rect width="40" height="40" rx="10" fill="#16382c" />
+      <g
+        transform="translate(20 20)"
+        fill="none"
+        stroke="#f4faf6"
+        strokeLinecap="round"
+      >
+        {/* Outer edge + rim band + inner well = dinner plate */}
+        <circle r="14" strokeWidth="1.5" />
+        <circle r="11.15" strokeWidth="1.05" opacity="0.72" />
+        <circle r="7" strokeWidth="1.65" />
+        <circle r="7" fill="#f4faf6" fillOpacity="0.1" stroke="none" />
+        <circle r="1.35" fill="#f4faf6" stroke="none" />
+        {/* Short rim ticks — plate accent, not a spark/asterisk */}
+        <g strokeWidth="1.25" opacity="0.9">
+          <path d="M0 -13.85v2.1" />
+          <path d="M0 11.75v2.1" />
+          <path d="M-13.85 0h2.1" />
+          <path d="M11.75 0h2.1" />
+        </g>
+      </g>
+    </svg>
+  );
+}
+
+/** Calm wellness / botanical backdrop — spa greens & soft blues, no farmyard cues. */
+function WellnessBackdrop() {
+  return (
+    <div className="wellness-backdrop" aria-hidden="true">
+      <div className="wellness-sky" />
+      <div className="wellness-mist wellness-mist-top" />
+      <div className="wellness-glow wellness-glow-a" />
+      <div className="wellness-glow wellness-glow-b" />
+      <div className="wellness-glow wellness-glow-c" />
+      <svg className="wellness-scene" viewBox="0 0 800 420" preserveAspectRatio="xMidYMax slice">
+        <ellipse className="wellness-wash wellness-wash-back" cx="400" cy="400" rx="520" ry="120" />
+        <ellipse className="wellness-wash wellness-wash-front" cx="400" cy="430" rx="480" ry="90" />
+        <g className="wellness-botanicals">
+          <g className="wellness-leaf-cluster wellness-leaf-left" fill="#2a7a5c" opacity="0.38">
+            <path d="M90 360 C70 300 95 250 130 220 C145 280 140 330 90 360 Z" />
+            <path d="M130 360 C115 295 145 245 185 215 C190 285 175 335 130 360 Z" />
+            <path d="M155 365 C150 310 175 265 215 240 C210 305 190 345 155 365 Z" />
+            <path
+              d="M112 250 C118 280 125 310 120 340"
+              fill="none"
+              stroke="#1a5c42"
+              strokeWidth="2.5"
+              opacity="0.5"
+            />
+          </g>
+          <g className="wellness-leaf-cluster wellness-leaf-right" fill="#2f8a68" opacity="0.34">
+            <path d="M710 355 C730 295 705 245 670 215 C655 275 660 325 710 355 Z" />
+            <path d="M670 358 C685 290 655 240 615 212 C610 285 625 335 670 358 Z" />
+            <path d="M645 365 C650 310 625 265 585 242 C590 305 610 345 645 365 Z" />
+            <path
+              d="M688 245 C682 275 675 305 680 338"
+              fill="none"
+              stroke="#1a5c42"
+              strokeWidth="2.5"
+              opacity="0.45"
+            />
+          </g>
+          <g className="wellness-fronds" fill="none" stroke="#3a9a72" strokeWidth="2" opacity="0.28">
+            <path d="M320 420 C310 360 280 320 250 290" />
+            <path d="M340 420 C345 355 360 310 390 275" />
+            <path d="M460 420 C455 355 440 310 410 275" />
+            <path d="M480 420 C490 360 520 320 550 290" />
+          </g>
+        </g>
+      </svg>
+    </div>
+  );
 }
 
 function isBioProduct(product: Product): boolean {
@@ -647,11 +766,25 @@ export default function App() {
     );
   }
 
+  const selectedCount = useMemo(
+    () => matches.filter((row) => included[row.ingredient.searchTerm]).length,
+    [matches, included],
+  );
+
   return (
-    <main className="app">
+    <>
+      {/* Outside .app so fixed positioning isn't trapped by the rise-in transform. */}
+      <WellnessBackdrop />
+      <main className="app">
       <header className="hero">
         <div className="hero-top">
-          <p className="brand">PlateWise</p>
+          <div className="brand-block">
+            <p className="eyebrow">{t.brandEyebrow}</p>
+            <div className="brand-lockup">
+              <PlateWiseLogo />
+              <p className="brand">PlateWise</p>
+            </div>
+          </div>
           <div className="lang-switch" role="group" aria-label="Language / Taal">
             <button
               type="button"
@@ -675,27 +808,29 @@ export default function App() {
         <p className="subtitle">{t.subtitle}</p>
       </header>
 
-      <nav className="tabs" aria-label={lang === "en" ? "Views" : "Weergaven"}>
-        <button className={view === "offers" ? "active" : ""} onClick={() => setView("offers")}>
+      <nav className="tabs" aria-label={t.viewsAria}>
+        <button type="button" className={view === "offers" ? "active" : ""} onClick={() => setView("offers")}>
           {t.offers}
         </button>
-        <button className={view === "recipes" ? "active" : ""} onClick={() => setView("recipes")}>
+        <button type="button" className={view === "recipes" ? "active" : ""} onClick={() => setView("recipes")}>
           {t.recipes}
         </button>
         <button
+          type="button"
           className={view === "match" ? "active" : ""}
           onClick={() => selectedRecipe && setView("match")}
           disabled={!selectedRecipe}
         >
           {t.match}
         </button>
-        <button className={view === "list" ? "active" : ""} onClick={() => setView("list")}>
-          {t.list} ({shoppingList.length})
+        <button type="button" className={view === "list" ? "active" : ""} onClick={() => setView("list")}>
+          {t.list}
+          {shoppingList.length > 0 && <span className="tab-count">({shoppingList.length})</span>}
         </button>
       </nav>
 
       <section className="prefs" aria-label={t.prefs}>
-        <h2>{t.prefs}</h2>
+        <p className="section-label">{t.prefs}</p>
         <div className="pref-toggles">
           {(
             [
@@ -717,28 +852,43 @@ export default function App() {
         <p className="hint">{t.hint}</p>
       </section>
 
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <p className="error-banner" role="alert">
+          {error}
+        </p>
+      )}
 
       {loading ? (
-        <p className="empty">{t.loading}</p>
+        <div className="loading-block" aria-busy="true" aria-label={t.loading}>
+          <div className="skeleton" />
+          <div className="skeleton" />
+          <div className="skeleton short" />
+          <p className="hint" style={{ textAlign: "center", marginTop: "0.25rem" }}>
+            {t.loading}
+          </p>
+        </div>
       ) : view === "offers" ? (
         <section>
-          <h2>
-            {t.offers} ({offers.length})
-          </h2>
+          <div className="view-header">
+            <h2>{t.offers}</h2>
+            <span className="view-count">{offers.length}</span>
+          </div>
           <p className="hint">{t.offersHint}</p>
           {offersMock && <p className="banner">{t.mockBanner}</p>}
           {offers.length === 0 ? (
-            <p className="empty">{t.noOffers}</p>
+            <div className="empty-state">
+              <div className="empty-icon" aria-hidden="true">
+                {t.emptyIcon}
+              </div>
+              <p>{t.noOffers}</p>
+            </div>
           ) : (
             <ul className="offer-list">
               {offers.map((offer) => (
-                <li key={offer.product.id}>
-                  <div>
+                <li key={offer.product.id} className="recipe-card">
+                  <div className="recipe-body">
                     <h3>{offer.product.title}</h3>
-                    <p className="meta">
-                      {formatPrice(offer.product.price)}
-                    </p>
+                    <p className="meta">{formatPrice(offer.product.price)}</p>
                     <div className="badge-row">{renderBadges(offer.product)}</div>
                     {offer.recipes.length > 0 ? (
                       <div className="offer-recipes">
@@ -747,6 +897,7 @@ export default function App() {
                           <button
                             key={recipe.id}
                             type="button"
+                            className="btn btn-primary btn-block"
                             disabled={matching}
                             onClick={() => cookOffer(offer, recipe)}
                           >
@@ -757,7 +908,7 @@ export default function App() {
                         ))}
                       </div>
                     ) : (
-                      <p className="empty">{t.noRecipes}</p>
+                      <p className="hint">{t.noRecipes}</p>
                     )}
                   </div>
                 </li>
@@ -767,26 +918,55 @@ export default function App() {
         </section>
       ) : view === "recipes" ? (
         <section>
-          <h2>
-            {t.recipes} ({recipes.length})
-          </h2>
+          <div className="view-header">
+            <h2>{t.recipes}</h2>
+            <span className="view-count">
+              {recipes.length} {t.recipeCount}
+            </span>
+          </div>
           {recipes.length === 0 ? (
-            <p className="empty">{t.noRecipes}</p>
+            <div className="empty-state">
+              <div className="empty-icon" aria-hidden="true">
+                {t.emptyIcon}
+              </div>
+              <p>{t.noRecipes}</p>
+            </div>
           ) : (
             <ul className="recipe-list">
               {recipes.map((recipe) => (
-                <li key={recipe.id}>
-                  <div>
+                <li key={recipe.id} className="recipe-card">
+                  <div
+                    className="recipe-visual"
+                    data-diet={primaryDiet(recipe.dietTags)}
+                    aria-hidden="true"
+                  />
+                  <div className="recipe-body">
                     <h3>{recipeTitle(recipe.id, recipe.title, lang)}</h3>
-                    <p>{recipeSummary(recipe.id, recipe.summary, lang)}</p>
-                    <p className="meta">
-                      {recipe.timeMinutes} min · {recipe.servings} {t.servings} ·{" "}
-                      {recipe.dietTags.join(", ")}
-                    </p>
+                    <p className="recipe-summary">{recipeSummary(recipe.id, recipe.summary, lang)}</p>
+                    <div className="recipe-meta-row">
+                      <span className="chip chip-muted">
+                        {recipe.timeMinutes} {t.minutes}
+                      </span>
+                      <span className="chip chip-muted">
+                        {recipe.servings} {t.servings}
+                      </span>
+                      {recipe.dietTags.map((tag) => (
+                        <span key={tag} className="chip">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="recipe-actions">
+                      <button
+                        type="button"
+                        className="btn btn-primary btn-block"
+                        disabled={matching}
+                        onClick={() => matchRecipe(recipe)}
+                      >
+                        {matching && selectedRecipe?.id === recipe.id ? t.matching : t.addViaAh}
+                      </button>
+                    </div>
                   </div>
-                  <button disabled={matching} onClick={() => matchRecipe(recipe)}>
-                    {matching && selectedRecipe?.id === recipe.id ? t.matching : t.addViaAh}
-                  </button>
                 </li>
               ))}
             </ul>
@@ -794,9 +974,14 @@ export default function App() {
         </section>
       ) : view === "match" && selectedRecipe ? (
         <section>
-          <h2>
-            {t.match}: {recipeTitle(selectedRecipe.id, selectedRecipe.title, lang)}
-          </h2>
+          <div className="view-header">
+            <h2>
+              {t.match}: {recipeTitle(selectedRecipe.id, selectedRecipe.title, lang)}
+            </h2>
+            <span className="view-count">
+              {selectedCount}/{matches.length}
+            </span>
+          </div>
           {pinnedOffer && (
             <p className="banner">
               {t.fromOffer}: {pinnedOffer.title}
@@ -808,9 +993,10 @@ export default function App() {
             {matches.map((row) => {
               const key = row.ingredient.searchTerm;
               const options = applyFilter(rowProducts(row), matchFilter);
-              const selected = options.find((product) => product.id === selectedProducts[key]?.id) ?? options[0];
+              const selected =
+                options.find((product) => product.id === selectedProducts[key]?.id) ?? options[0];
               return (
-                <li key={key}>
+                <li key={key} className="match-card">
                   <label className="match-head">
                     <input
                       type="checkbox"
@@ -829,31 +1015,47 @@ export default function App() {
                   </label>
                   {selected ? (
                     <div className="match-body">
-                      <select
-                        value={selected.id}
-                        onChange={(e) => swapProduct(key, e.target.value, row)}
-                        aria-label={`Product for ${ingredientName(row.ingredient.name, lang)}`}
-                      >
-                        {options.map((product) => (
-                          <option key={product.id} value={product.id}>
-                            {product.title} · {formatPrice(product.price)}
-                            {product.isBonus ? " · BONUS" : ""}
-                            {isBioProduct(product) ? " · BIO" : ""}
-                          </option>
-                        ))}
-                      </select>
-                      <div className="badge-row">{renderBadges(selected)}</div>
+                      <ProductThumb
+                        imageUrl={selected.imageUrl}
+                        label={selected.title}
+                        fallback={t.ah}
+                      />
+                      <div className="match-select-wrap">
+                        <select
+                          value={selected.id}
+                          onChange={(e) => swapProduct(key, e.target.value, row)}
+                          aria-label={`${t.productFor} ${ingredientName(row.ingredient.name, lang)}`}
+                        >
+                          {options.map((product) => (
+                            <option key={product.id} value={product.id}>
+                              {product.title} · {formatPrice(product.price)}
+                              {product.isBonus ? " · BONUS" : ""}
+                              {isBioProduct(product) ? " · BIO" : ""}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="badge-row">{renderBadges(selected)}</div>
+                      </div>
                     </div>
                   ) : (
-                    <p className="empty">{options.length === 0 ? t.noFilterMatch : t.noProduct}</p>
+                    <p className="hint" style={{ paddingLeft: "1.75rem", marginTop: "0.5rem" }}>
+                      {options.length === 0 ? t.noFilterMatch : t.noProduct}
+                    </p>
                   )}
                 </li>
               );
             })}
           </ul>
-          <button className="primary" disabled={adding} onClick={addSelectedToList}>
-            {adding ? t.adding : t.addSelected}
-          </button>
+          <div className="match-sticky">
+            <button
+              type="button"
+              className="btn btn-primary btn-block"
+              disabled={adding}
+              onClick={addSelectedToList}
+            >
+              {adding ? t.adding : t.addSelected}
+            </button>
+          </div>
         </section>
       ) : (
         <section>
@@ -861,10 +1063,10 @@ export default function App() {
             <h2>{t.shoppingList}</h2>
             {shoppingList.length > 0 && (
               <div className="list-actions">
-                <button className="ghost" onClick={shareToReminders}>
+                <button type="button" className="btn btn-ghost" onClick={shareToReminders}>
                   {t.reminders}
                 </button>
-                <button className="ghost" onClick={clearList}>
+                <button type="button" className="btn btn-ghost" onClick={clearList}>
                   {t.clear}
                 </button>
               </div>
@@ -879,7 +1081,7 @@ export default function App() {
               placeholder={t.searchPlaceholder}
               aria-label={t.addItem}
             />
-            <button type="submit" disabled={itemSearching}>
+            <button type="submit" className="btn btn-primary" disabled={itemSearching}>
               {itemSearching ? t.searching : t.search}
             </button>
           </form>
@@ -887,13 +1089,25 @@ export default function App() {
           {itemResults.length > 0 && (
             <ul className="suggest-list">
               {itemResults.map((product) => (
-                <li key={product.id}>
-                  <div>
-                    <strong>{product.title}</strong>
-                    <p className="meta">{formatPrice(product.price)}</p>
-                    <div className="badge-row">{renderBadges(product)}</div>
+                <li key={product.id} className="shop-card">
+                  <div className="shop-main">
+                    <ProductThumb
+                      imageUrl={product.imageUrl}
+                      label={product.title}
+                      fallback={t.ah}
+                    />
+                    <div>
+                      <strong>{product.title}</strong>
+                      <p className="meta">{formatPrice(product.price)}</p>
+                      <div className="badge-row">{renderBadges(product)}</div>
+                    </div>
                   </div>
-                  <button type="button" disabled={adding} onClick={() => addCatalogItem(product)}>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    disabled={adding}
+                    onClick={() => addCatalogItem(product)}
+                  >
                     {t.add}
                   </button>
                 </li>
@@ -901,7 +1115,12 @@ export default function App() {
             </ul>
           )}
           {shoppingList.length === 0 ? (
-            <p className="empty">{t.emptyList}</p>
+            <div className="empty-state">
+              <div className="empty-icon" aria-hidden="true">
+                {t.emptyIcon}
+              </div>
+              <p>{t.emptyList}</p>
+            </div>
           ) : (
             <>
               <p className="hint">{t.remindersHint}</p>
@@ -909,31 +1128,53 @@ export default function App() {
               {/* Shopping list always keeps original AH/Dutch product titles for store lookup / Reminders. */}
               <ul className="shop-list">
                 {shoppingList.map((item) => (
-                  <li key={item.id}>
-                    <div>
-                      <strong>{item.title}</strong>
-                      <p className="meta">
-                        ×{item.quantity} · {formatPrice(item.price)}
-                        {item.is_bonus ? ` · ${item.bonus_label ?? "Bonus"}` : ""}
-                      </p>
+                  <li key={item.id} className="shop-card">
+                    <div className="shop-main">
+                      <ProductThumb
+                        imageUrl={item.image_url ?? null}
+                        label={item.title}
+                        fallback={t.ah}
+                      />
+                      <div>
+                        <strong>{item.title}</strong>
+                        <p className="meta">
+                          ×{item.quantity} · {formatPrice(item.price)}
+                          {item.is_bonus ? ` · ${item.bonus_label ?? "Bonus"}` : ""}
+                        </p>
+                      </div>
                     </div>
-                    <button className="delete" onClick={() => removeItem(item.id)} aria-label={t.remove}>
+                    <button
+                      type="button"
+                      className="btn btn-danger-ghost"
+                      onClick={() => removeItem(item.id)}
+                      aria-label={t.remove}
+                    >
                       ×
                     </button>
                   </li>
                 ))}
               </ul>
-              <p className="total">
-                {t.total}: {formatPrice(listTotal)}
-              </p>
+              <div className="total-bar">
+                <span className="label">{t.total}</span>
+                <span className="amount">{formatPrice(listTotal)}</span>
+              </div>
             </>
           )}
         </section>
       )}
     </main>
+    </>
   );
+
 }
 
 // Smoke: Offers → pick bonus → Cook this → remaining ingredients match.
 // Smoke: Recipe → Match → Bio/Cheap chips change alternatives → add to list.
 // Smoke: List → search a Dutch term → Add (no recipe) → item appears.
+/*
+ * Smoke checklist (frontend-ui):
+ * 1. npm run dev → open app at phone width + ~720px; geometric plate logo + wellness backdrop; liquid-glass panels readable.
+ * 2. Toggle EN/NL; prefs chips update recipes; empty state if filters too strict.
+ * 3. Recipe card → Match at AH → swap/uncheck products (thumbnails when present) → Add selected.
+ * 4. List shows items + total; Reminders share/copy; Clear empties list.
+ */
