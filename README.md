@@ -27,7 +27,6 @@ Current backlog:
 | ID | Task |
 | --- | --- |
 | `frontend-ui` | Polish frontend UI |
-| `ah-api-integration` | Live AH API: auth token, valid query params, real product fields |
 | `camera-ai-scan` | Camera + AI scan of ingredients/products |
 
 ## Quick start
@@ -69,7 +68,7 @@ AH_FORCE_MOCK=1 npm run dev:server
 ## Demo checklist / Demochecklist
 
 1. Toggle **Vegetarian / Vegetarisch** — meat recipes disappear / vleesrecepten verdwijnen
-2. Open **Linzen dal** → Match — products appear (mock banner OK) / producten verschijnen
+2. Open **Linzen dal** → Match — live AH products appear (no mock banner unless AH is down) / live producten, mockbanner alleen als AH down is
 3. Filter **Bio** or **Goedkoop** on Match, then add to list / filter Bio of Goedkoop, voeg toe
 4. **Aanbiedingen** → pick a bonus item → **Kook dit** → remaining ingredients match
 5. List → search `spinazie` → **Voeg toe** (no recipe) / zoek en voeg los artikel toe
