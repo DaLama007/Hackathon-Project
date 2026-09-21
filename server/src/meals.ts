@@ -153,18 +153,49 @@ function sqliteSinceFromWeekStart(weekStart: string): string {
   return `${weekStart} 00:00:00`;
 }
 
-function aggregateMissing(meals: MealLog[]): string[] {
+/** Same gap logged in EN and NL should count once, not twice. */
+const GAP_SYNONYMS: Record<string, { en: string; nl: string }> = {
+  fiber: { en: "fiber", nl: "vezels" },
+  fibre: { en: "fiber", nl: "vezels" },
+  vezels: { en: "fiber", nl: "vezels" },
+  protein: { en: "protein", nl: "eiwit" },
+  proteins: { en: "protein", nl: "eiwit" },
+  eiwit: { en: "protein", nl: "eiwit" },
+  eiwitten: { en: "protein", nl: "eiwit" },
+  vegetables: { en: "vegetables", nl: "groenten" },
+  veggies: { en: "vegetables", nl: "groenten" },
+  groente: { en: "vegetables", nl: "groenten" },
+  groenten: { en: "vegetables", nl: "groenten" },
+  fruit: { en: "fruit", nl: "fruit" },
+  "whole grains": { en: "whole grains", nl: "volkoren granen" },
+  wholegrains: { en: "whole grains", nl: "volkoren granen" },
+  "volkoren granen": { en: "whole grains", nl: "volkoren granen" },
+  volkoren: { en: "whole grains", nl: "volkoren granen" },
+  calcium: { en: "calcium", nl: "calcium" },
+  iron: { en: "iron", nl: "ijzer" },
+  ijzer: { en: "iron", nl: "ijzer" },
+  "healthy fats": { en: "healthy fats", nl: "gezonde vetten" },
+  "gezonde vetten": { en: "healthy fats", nl: "gezonde vetten" },
+};
+
+function aggregateMissing(meals: MealLog[], lang: MealLang): string[] {
   const counts = new Map<string, number>();
+  const labels = new Map<string, string>();
+
   for (const meal of meals) {
     for (const gap of meal.missing) {
-      const key = gap.trim().toLowerCase();
-      if (!key) continue;
+      const raw = gap.trim().toLowerCase();
+      if (!raw) continue;
+      const known = GAP_SYNONYMS[raw];
+      const key = known ? known.en : raw;
       counts.set(key, (counts.get(key) ?? 0) + 1);
+      labels.set(key, known ? known[lang] : gap.trim());
     }
   }
+
   return [...counts.entries()]
     .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-    .map(([name]) => name)
+    .map(([key]) => labels.get(key) ?? key)
     .slice(0, 6);
 }
 
@@ -236,7 +267,7 @@ export async function buildWeeklyReview(options: {
   const lang = options.lang === "en" ? "en" : "nl";
   const weekStart = options.weekStart ?? weekStartMonday();
   const meals = listMealLogs(options.userId, sqliteSinceFromWeekStart(weekStart));
-  const missing = aggregateMissing(meals);
+  const missing = aggregateMissing(meals, lang);
 
   let summary: string;
   let usedStub = true;
