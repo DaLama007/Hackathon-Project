@@ -190,7 +190,7 @@ export default function App() {
       });
 
     if (items.length === 0) {
-      setError("Select at least one product");
+      setError("Select at least one product / Selecteer minstens één product");
       return;
     }
 
@@ -241,15 +241,17 @@ export default function App() {
     <main className="app">
       <header className="hero">
         <p className="brand">PlateWise</p>
-        <h1>Diet planner</h1>
+        <h1>Diet planner / Dieetplanner</h1>
         <p className="subtitle">
-          Prefs → recept → Albert Heijn producten (bonus eerst) → boodschappenlijst
+          Prefs → recipe → Albert Heijn products (bonus first) → shopping list
+          {" · "}
+          Voorkeuren → recept → AH-producten (bonus eerst) → boodschappenlijst
         </p>
       </header>
 
-      <nav className="tabs" aria-label="Views">
+      <nav className="tabs" aria-label="Views / Weergaven">
         <button className={view === "recipes" ? "active" : ""} onClick={() => setView("recipes")}>
-          Recepten
+          Recipes / Recepten
         </button>
         <button
           className={view === "match" ? "active" : ""}
@@ -259,16 +261,16 @@ export default function App() {
           Match
         </button>
         <button className={view === "list" ? "active" : ""} onClick={() => setView("list")}>
-          Lijst ({shoppingList.length})
+          List / Lijst ({shoppingList.length})
         </button>
       </nav>
 
-      <section className="prefs" aria-label="Dietary preferences">
-        <h2>Voorkeuren</h2>
+      <section className="prefs" aria-label="Dietary preferences / Dieetvoorkeuren">
+        <h2>Preferences / Voorkeuren</h2>
         <div className="pref-toggles">
           {(
             [
-              ["vegetarian", "Vegetarisch"],
+              ["vegetarian", "Vegetarian / Vegetarisch"],
               ["vegan", "Vegan"],
               ["halal", "Halal"],
             ] as const
@@ -283,18 +285,26 @@ export default function App() {
             </label>
           ))}
         </div>
-        <p className="hint">Recepten worden gefilterd op store-tags; geen medische/religieuze garantie.</p>
+        <p className="hint">
+          Recipes are filtered by store tags — not medical/religious advice.
+          {" "}
+          Recepten worden gefilterd op store-tags; geen medische/religieuze garantie.
+        </p>
       </section>
 
       {error && <p className="error">{error}</p>}
 
       {loading ? (
-        <p className="empty">Laden…</p>
+        <p className="empty">Loading… / Laden…</p>
       ) : view === "recipes" ? (
         <section>
-          <h2>Recepten ({recipes.length})</h2>
+          <h2>Recipes / Recepten ({recipes.length})</h2>
           {recipes.length === 0 ? (
-            <p className="empty">Geen recepten voor deze voorkeuren. Zet een filter uit.</p>
+            <p className="empty">
+              No recipes for these prefs — turn a filter off.
+              {" "}
+              Geen recepten voor deze voorkeuren. Zet een filter uit.
+            </p>
           ) : (
             <ul className="recipe-list">
               {recipes.map((recipe) => (
@@ -303,11 +313,14 @@ export default function App() {
                     <h3>{recipe.title}</h3>
                     <p>{recipe.summary}</p>
                     <p className="meta">
-                      {recipe.timeMinutes} min · {recipe.servings} pers · {recipe.dietTags.join(", ")}
+                      {recipe.timeMinutes} min · {recipe.servings} servings / pers ·{" "}
+                      {recipe.dietTags.join(", ")}
                     </p>
                   </div>
                   <button disabled={matching} onClick={() => matchRecipe(recipe)}>
-                    {matching && selectedRecipe?.id === recipe.id ? "Matchen…" : "Voeg toe via AH"}
+                    {matching && selectedRecipe?.id === recipe.id
+                      ? "Matching… / Matchen…"
+                      : "Add via AH / Voeg toe via AH"}
                   </button>
                 </li>
               ))}
@@ -318,7 +331,11 @@ export default function App() {
         <section>
           <h2>Match: {selectedRecipe.title}</h2>
           {usedMock && (
-            <p className="banner">AH API onbereikbaar — mock producten gebruikt (demo blijft werken).</p>
+            <p className="banner">
+              AH API unreachable — using mock products (demo still works).
+              {" "}
+              AH API onbereikbaar — mock producten gebruikt (demo blijft werken).
+            </p>
           )}
           <ul className="match-list">
             {matches.map((row) => {
@@ -361,28 +378,34 @@ export default function App() {
                       )}
                     </div>
                   ) : (
-                    <p className="empty">Geen product gevonden</p>
+                    <p className="empty">No product found / Geen product gevonden</p>
                   )}
                 </li>
               );
             })}
           </ul>
           <button className="primary" disabled={adding} onClick={addSelectedToList}>
-            {adding ? "Toevoegen…" : "Geselecteerde producten naar lijst"}
+            {adding
+              ? "Adding… / Toevoegen…"
+              : "Add selected to list / Geselecteerde producten naar lijst"}
           </button>
         </section>
       ) : (
         <section>
           <div className="list-header">
-            <h2>Boodschappenlijst</h2>
+            <h2>Shopping list / Boodschappenlijst</h2>
             {shoppingList.length > 0 && (
               <button className="ghost" onClick={clearList}>
-                Leegmaken
+                Clear / Leegmaken
               </button>
             )}
           </div>
           {shoppingList.length === 0 ? (
-            <p className="empty">Lijst is leeg. Match een recept om te beginnen.</p>
+            <p className="empty">
+              List is empty. Match a recipe to start.
+              {" "}
+              Lijst is leeg. Match een recept om te beginnen.
+            </p>
           ) : (
             <>
               <ul className="shop-list">
@@ -395,13 +418,19 @@ export default function App() {
                         {item.is_bonus ? ` · ${item.bonus_label ?? "Bonus"}` : ""}
                       </p>
                     </div>
-                    <button className="delete" onClick={() => removeItem(item.id)} aria-label="Remove">
+                    <button
+                      className="delete"
+                      onClick={() => removeItem(item.id)}
+                      aria-label="Remove / Verwijderen"
+                    >
                       ×
                     </button>
                   </li>
                 ))}
               </ul>
-              <p className="total">Geschat totaal: {formatPrice(listTotal)}</p>
+              <p className="total">
+                Estimated total / Geschat totaal: {formatPrice(listTotal)}
+              </p>
             </>
           )}
         </section>

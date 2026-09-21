@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- UI copy bilingual EN/NL (e.g. Recipes / Recepten); .cursorrules language rule for agents.
 - Replace Notes demo with PlateWise diet planner (prefs, recipes, AH match, shopping list).
 - Seed 8 Dutch recipes with dietTags + searchTerms; filter list by user prefs.
 - Add Albert Heijn product search with ranking (bonus/price) and mock fallback.

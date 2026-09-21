@@ -50,9 +50,9 @@ AH_FORCE_MOCK=1 npm run dev:server
 | DELETE | `/api/shopping-list/items/:id` | Remove one item |
 | GET | `/api/products/suggest?q=` | Search a single term |
 
-## Demo checklist
+## Demo checklist / Demochecklist
 
-1. Toggle **Vegetarisch** — meat recipes disappear
-2. Open **Linzen dal** → Match — products appear (mock banner OK)
-3. Swap a product / uncheck one → add to list
-4. Confirm list shows bonus labels when present
+1. Toggle **Vegetarian / Vegetarisch** — meat recipes disappear / vleesrecepten verdwijnen
+2. Open **Linzen dal** → Match — products appear (mock banner OK) / producten verschijnen
+3. Swap a product / uncheck one → add to list / wissel of vink uit → voeg toe aan lijst
+4. Confirm list shows bonus labels / controleer bonuslabels op de lijst

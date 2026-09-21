@@ -62,7 +62,8 @@ working, demoable product over "correct" architecture. Priority order:
 - Running CHANGELOG.md bullet per feature — becomes the README/pitch later.
 - 1hr before deadline: freeze features, fix only demo-breaking bugs.
 
-## Response format
-- Lead with code, not preamble. Prose ≤3 sentences unless asked for more.
-- Multiple files changed → bullet list of filenames before the code blocks.
-- Flag security/correctness issues in one line, then keep moving.
+## Language (EN + NL)
+- User-facing UI copy, README demo steps, and CHANGELOG bullets: **English and Dutch**.
+- Prefer compact bilingual labels: `Recipes / Recepten`, not separate locale files (unless asked).
+- Keep AH search terms and seeded ingredient names in Dutch (store catalog).
+- Agent replies to the user: English is fine unless they ask for Dutch too.
