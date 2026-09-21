@@ -63,7 +63,7 @@ working, demoable product over "correct" architecture. Priority order:
 - 1hr before deadline: freeze features, fix only demo-breaking bugs.
 
 ## Language (EN + NL)
-- User-facing UI copy, README demo steps, and CHANGELOG bullets: **English and Dutch**.
-- Prefer compact bilingual labels: `Recipes / Recepten`, not separate locale files (unless asked).
+- App supports **EN and NL** via an in-UI language switch (default NL); persist in localStorage.
+- Keep both locale strings in code (compact `copy.en` / `copy.nl` map) — no i18n library unless needed.
 - Keep AH search terms and seeded ingredient names in Dutch (store catalog).
-- Agent replies to the user: English is fine unless they ask for Dutch too.
+- README/CHANGELOG: bilingual where it helps teammates; chat replies English unless asked for Dutch.

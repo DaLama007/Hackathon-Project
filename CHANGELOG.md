@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add EN/NL language switch (persisted); UI shows one language at a time.
 - UI copy bilingual EN/NL (e.g. Recipes / Recepten); .cursorrules language rule for agents.
 - Replace Notes demo with PlateWise diet planner (prefs, recipes, AH match, shopping list).
 - Seed 8 Dutch recipes with dietTags + searchTerms; filter list by user prefs.
