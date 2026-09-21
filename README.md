@@ -15,6 +15,18 @@ Full-stack demo built on the Vite + Express + SQLite starter.
 4. Review / swap products (bonus & cheap ranked first)
 5. Add selections to an in-app shopping list
 
+## Agent tasklist
+
+Open work for any Cursor agent lives in **`TASKS.md`**. Agents pick one unclaimed task (see `AGENTS.md`). Humans can use `/pick-task`.
+
+Current backlog:
+
+| ID | Task |
+| --- | --- |
+| `frontend-ui` | Polish frontend UI |
+| `offers-recipes-loop` | AH offers ↔ recipes, plus cheap/bio/bonus item filters |
+| `camera-ai-scan` | Camera + AI scan of ingredients/products |
+
 ## Quick start
 
 ```bash
