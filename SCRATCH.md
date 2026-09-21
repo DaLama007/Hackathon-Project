@@ -1,5 +1,13 @@
 # Scratch / smoke notes
 
+## More recipes + mock products (2026-09)
+
+1. `AH_FORCE_MOCK=1 npm run dev` — open Recipes tab; expect ~16 recipes (fewer with vegan prefs).
+2. Open **Pompoensoep** or **Falafel wrap** → Match — every ingredient should resolve to named mock products (not only `AH <term>` fallback).
+3. Switch lang to EN — new recipe titles/summaries/ingredients show English.
+4. `curl -s localhost:3001/api/recipes | jq length` → 16; `curl -s 'localhost:3001/api/products/suggest?q=pompoen'` returns mock pompoen rows with bonus/bio options.
+
+
 ## offers-recipes-loop
 
 1. Offers tab → pick a bonus item → **Kook dit** / **Cook this** → Match shows remaining ingredients with the bonus product selected.
@@ -41,3 +49,11 @@ Findings:
 - Bonus items: `currentPrice` is the discounted price, `priceBeforeBonus` is higher
   (e.g. 13.64 vs 15.16). `mapAhProduct` reads `priceBeforeBonus` first, so bonus ranking is wrong on live data.
 - Unused but available: `images[].url`, `unitPriceDescription`, `brand`, `discountLabels`, `nutriscore`.
+
+## ah-api-integration — smoke
+
+1. `AH_FORCE_MOCK` unset → `GET /api/products/suggest?q=spinazie` has `usedMock: false` and `source: "ah"`; no mock banner; server log shows one `[ah] fetched anonymous token` then searches reuse it.
+2. Same suggest after a second request: no extra anonymous-token log (token reused).
+3. `filter=bio` on `rode linzen` returns only `isBio: true` (live `propertyIcons` includes `biologisch`).
+4. Bonus items use discounted `currentPrice` when AH sends it (not the higher `priceBeforeBonus`).
+5. `AH_FORCE_MOCK=1 npm run dev:server` → suggest returns `source: "mock"` and the mock banner still shows.

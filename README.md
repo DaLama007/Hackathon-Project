@@ -11,8 +11,8 @@ Full-stack demo built on the Vite + Express + SQLite starter.
 
 1. Log in or sign up — prefs and the shopping list are saved per account and reloaded next login
 2. Set dietary prefs (vegetarian / vegan / halal)
-3. Browse ~8 seeded Dutch recipes (filtered by prefs)
-4. Match ingredients to Albert Heijn products (**mock products today** — live AH needs `ah-api-integration`)
+3. Browse ~16 seeded Dutch recipes (filtered by prefs)
+4. Match ingredients to Albert Heijn products (live search with anonymous token, **mock fallback** if AH is down)
 5. Start from AH **bonus/offers** and jump into a recipe that uses that item
 6. Filter match alternatives (bonus / bio / cheap / AH brand) or add a catalog item with no recipe
 7. Review / swap products (bonus & cheap ranked first)
@@ -28,7 +28,6 @@ Current backlog:
 | ID | Task |
 | --- | --- |
 | `frontend-ui` | Polish frontend UI |
-| `ah-api-integration` | Live AH API: auth token, valid query params, real product fields |
 | `camera-ai-scan` | Camera + AI scan of ingredients/products |
 
 Accounts are handled by `auth-save-load` (done) — see `TASKS.md` for its smoke checklist.
@@ -44,7 +43,7 @@ Open http://localhost:5173. Vite proxies `/api/*` to Express on port 3001.
 
 Copy `.env.example` to `server/.env` before the first run — `SESSION_SECRET` signs the session cookie, and the optional `DEMO_USERNAME` / `DEMO_PASSWORD` pre-seed an account so demo day does not start on a signup form. Any prefs and shopping-list rows from before accounts existed are handed to that demo account on first boot (the old tables are kept as `prefs_legacy` / `shopping_list_legacy`).
 
-Force mock products (skip live AH):
+Live AH uses an anonymous token from `AH_BASE_URL` / `AH_CLIENT_ID` (see `.env.example`; no account or secret). Force mock products (skip live AH):
 
 ```bash
 AH_FORCE_MOCK=1 npm run dev:server
@@ -81,7 +80,7 @@ Everything except `/api/health` and `/api/auth/*` requires a session cookie and 
 
 1. **Sign up / Registreer** — the planner only appears once you are signed in / de planner verschijnt pas na inloggen
 2. Toggle **Vegetarian / Vegetarisch** — meat recipes disappear / vleesrecepten verdwijnen
-3. Open **Linzen dal** → Match — products appear (mock banner OK) / producten verschijnen
+3. Open **Linzen dal** → Match — live AH products appear (no mock banner unless AH is down) / live producten, mockbanner alleen als AH down is
 4. Filter **Bio** or **Goedkoop** on Match, then add to list / filter Bio of Goedkoop, voeg toe
 5. **Aanbiedingen** → pick a bonus item → **Kook dit** → remaining ingredients match
 6. List → search `spinazie` → **Voeg toe** (no recipe) / zoek en voeg los artikel toe
