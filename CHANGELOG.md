@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Translate recipe titles, summaries, ingredient names, and units to English when UI lang is EN; shopping list keeps original Dutch AH product titles.
 - Add `ah-api-integration` backlog task: live AH needs an anonymous bearer token; documented that today's request params return 401/400 so the app always falls back to mock.
 - Add bidirectional AH offers ↔ recipes, plus bonus/bio/cheap/huismerk product filters and add-item search.
 - Add List-tab Share/Copy to iPhone Reminders (newline grocery text, clipboard fallback).

@@ -1,7 +1,13 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
+import {
+  ingredientName,
+  ingredientUnit,
+  recipeSummary,
+  recipeTitle,
+  type Lang,
+} from "./recipeI18n";
 
 type DietTag = "vegetarian" | "vegan" | "halal";
-type Lang = "en" | "nl";
 type CatalogFilter = "all" | "bonus" | "bio" | "cheap" | "storeBrand";
 
 interface UserPrefs {
@@ -570,6 +576,7 @@ export default function App() {
     return copyTextWithFallback(text);
   }
 
+  // Smoke: EN → English recipe/ingredient labels; List + Reminders keep Dutch AH titles.
   // Smoke: List tab → Reminders → share sheet or "Copied" banner; text is one product per line.
   async function shareToReminders() {
     if (shoppingList.length === 0) return;
@@ -745,7 +752,7 @@ export default function App() {
                           >
                             {matching && selectedRecipe?.id === recipe.id
                               ? t.matching
-                              : `${t.cookThis}: ${recipe.title}`}
+                              : `${t.cookThis}: ${recipeTitle(recipe.id, recipe.title, lang)}`}
                           </button>
                         ))}
                       </div>
@@ -770,8 +777,8 @@ export default function App() {
               {recipes.map((recipe) => (
                 <li key={recipe.id}>
                   <div>
-                    <h3>{recipe.title}</h3>
-                    <p>{recipe.summary}</p>
+                    <h3>{recipeTitle(recipe.id, recipe.title, lang)}</h3>
+                    <p>{recipeSummary(recipe.id, recipe.summary, lang)}</p>
                     <p className="meta">
                       {recipe.timeMinutes} min · {recipe.servings} {t.servings} ·{" "}
                       {recipe.dietTags.join(", ")}
@@ -788,7 +795,7 @@ export default function App() {
       ) : view === "match" && selectedRecipe ? (
         <section>
           <h2>
-            {t.match}: {selectedRecipe.title}
+            {t.match}: {recipeTitle(selectedRecipe.id, selectedRecipe.title, lang)}
           </h2>
           {pinnedOffer && (
             <p className="banner">
@@ -813,9 +820,10 @@ export default function App() {
                       }
                     />
                     <span>
-                      {row.ingredient.name}{" "}
+                      {ingredientName(row.ingredient.name, lang)}{" "}
                       <span className="meta">
-                        ({row.ingredient.quantity} {row.ingredient.unit})
+                        ({row.ingredient.quantity}{" "}
+                        {ingredientUnit(row.ingredient.unit, lang)})
                       </span>
                     </span>
                   </label>
@@ -824,7 +832,7 @@ export default function App() {
                       <select
                         value={selected.id}
                         onChange={(e) => swapProduct(key, e.target.value, row)}
-                        aria-label={`Product for ${row.ingredient.name}`}
+                        aria-label={`Product for ${ingredientName(row.ingredient.name, lang)}`}
                       >
                         {options.map((product) => (
                           <option key={product.id} value={product.id}>
@@ -898,6 +906,7 @@ export default function App() {
             <>
               <p className="hint">{t.remindersHint}</p>
               {shareStatus && <p className="banner">{shareStatus}</p>}
+              {/* Shopping list always keeps original AH/Dutch product titles for store lookup / Reminders. */}
               <ul className="shop-list">
                 {shoppingList.map((item) => (
                   <li key={item.id}>
