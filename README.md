@@ -28,7 +28,7 @@ Current backlog:
 | --- | --- |
 | `frontend-ui` | Polish frontend UI |
 | `ah-api-integration` | Live AH API: auth token, valid query params, real product fields |
-| `camera-ai-scan` | Camera + AI scan of ingredients/products |
+| `camera-ai-scan` | Plate photo → nutrition/gaps + weekly review |
 
 ## Quick start
 
@@ -65,6 +65,9 @@ AH_FORCE_MOCK=1 npm run dev:server
 | POST | `/api/shopping-list/items` | Add `{ items: [...] }` (recipe optional) |
 | DELETE | `/api/shopping-list/items/:id` | Remove one item |
 | GET | `/api/products/suggest?q=` | Search a single term (`filter` same as match) |
+| POST | `/api/meals/scan` | Plate photo → description/nutrition/gaps; saves meal log (`X-User-Id`) |
+| GET | `/api/meals` | Saved plate meals for soft user id |
+| GET/POST | `/api/meals/weekly-review` | Weekly overview from saved meal texts |
 
 ## Demo checklist / Demochecklist
 
@@ -76,3 +79,5 @@ AH_FORCE_MOCK=1 npm run dev:server
 6. Swap a product / uncheck one → add to list / wissel of vink uit → voeg toe aan lijst
 7. Confirm list shows bonus labels / controleer bonuslabels op de lijst
 8. List → **Reminders / Herinneringen** — share sheet or copied text, one product per line / deel of kopieer, één product per regel
+9. **Bord / Plate** → upload plate photo → preview visible + description/nutrition/gaps saved / preview + voedingstekorten
+10. **Week / Weekly** → refresh → overview from this week’s meal texts / weekoverzicht

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
+import MealScanPanel from "./MealScanPanel";
 import {
   ingredientName,
   ingredientUnit,
@@ -6,6 +7,7 @@ import {
   recipeTitle,
   type Lang,
 } from "./recipeI18n";
+import WeeklyReviewPanel from "./WeeklyReviewPanel";
 
 type DietTag = "vegetarian" | "vegan" | "halal";
 type CatalogFilter = "all" | "bonus" | "bio" | "cheap" | "storeBrand";
@@ -76,11 +78,24 @@ interface ShoppingItem {
   quantity: number;
 }
 
-type View = "offers" | "recipes" | "match" | "list";
+type View = "offers" | "recipes" | "match" | "list" | "scan" | "weekly";
 
 const emptyPrefs: UserPrefs = { vegetarian: false, vegan: false, halal: false };
 const LANG_KEY = "platewise-lang";
+const USER_KEY = "platewise-user-id";
 const FILTERS: CatalogFilter[] = ["all", "bonus", "bio", "cheap", "storeBrand"];
+
+function readOrCreateUserId(): string {
+  // Soft id until auth lands — other agent can replace with real session user.
+  const existing = localStorage.getItem(USER_KEY)?.trim();
+  if (existing) return existing.slice(0, 64);
+  const created =
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `local-${Date.now()}`;
+  localStorage.setItem(USER_KEY, created);
+  return created;
+}
 
 const copy = {
   en: {
@@ -135,6 +150,39 @@ const copy = {
     searching: "Searching…",
     noItemResults: "No products for that search.",
     itemAdded: "Added to list",
+    scan: "Plate",
+    scanHint: "Photo of your plate → description, nutrition estimate, and what’s missing.",
+    uploadPhoto: "Upload photo",
+    useCamera: "Use camera",
+    stopCamera: "Stop camera",
+    capture: "Capture & analyze",
+    scanning: "Analyzing plate…",
+    stubBanner: "No AI key configured — using demo plate analysis (stub).",
+    description: "Description",
+    foods: "Foods seen",
+    nutrition: "Estimated nutrition",
+    missing: "Likely missing",
+    tips: "Tip",
+    recentMeals: "Saved meals",
+    emptyMeals: "No meals saved yet — scan a plate to start.",
+    cameraDenied: "Camera permission denied — upload a photo instead.",
+    needPhoto: "Take or upload a plate photo first.",
+    previewAlt: "Plate photo preview",
+    kcal: "kcal",
+    protein: "Protein",
+    carbs: "Carbs",
+    fat: "Fat",
+    fiber: "Fiber",
+    saved: "Saved to your meal log.",
+    weekly: "Weekly",
+    weeklyHint: "End-of-week overview from your saved plate descriptions.",
+    refreshReview: "Refresh review",
+    refreshing: "Building review…",
+    thisWeek: "This week",
+    mealsThisWeek: "Meals this week",
+    commonGaps: "Common gaps",
+    noMealsWeek: "No meals logged this week yet.",
+    pastReviews: "Earlier reviews",
   },
   nl: {
     title: "Dieetplanner",
@@ -188,6 +236,39 @@ const copy = {
     searching: "Zoeken…",
     noItemResults: "Geen producten voor deze zoekterm.",
     itemAdded: "Toegevoegd aan lijst",
+    scan: "Bord",
+    scanHint: "Foto van je bord → beschrijving, voedingsschatting en wat er tekort lijkt.",
+    uploadPhoto: "Upload foto",
+    useCamera: "Gebruik camera",
+    stopCamera: "Stop camera",
+    capture: "Maak foto & analyseer",
+    scanning: "Bord analyseren…",
+    stubBanner: "Geen AI-sleutel — demodata voor bordanalyse (stub).",
+    description: "Beschrijving",
+    foods: "Geziene voedingsmiddelen",
+    nutrition: "Geschatte voeding",
+    missing: "Waarschijnlijk tekort",
+    tips: "Tip",
+    recentMeals: "Opgeslagen maaltijden",
+    emptyMeals: "Nog geen maaltijden — scan een bord om te starten.",
+    cameraDenied: "Cameratoegang geweigerd — upload in plaats daarvan een foto.",
+    needPhoto: "Maak of upload eerst een bordfoto.",
+    previewAlt: "Voorbeeld bordfoto",
+    kcal: "kcal",
+    protein: "Eiwit",
+    carbs: "Koolhydraten",
+    fat: "Vet",
+    fiber: "Vezels",
+    saved: "Opgeslagen in je maaltijdlog.",
+    weekly: "Week",
+    weeklyHint: "Weekoverzicht op basis van je opgeslagen bordbeschrijvingen.",
+    refreshReview: "Vernieuw review",
+    refreshing: "Review maken…",
+    thisWeek: "Deze week",
+    mealsThisWeek: "Maaltijden deze week",
+    commonGaps: "Veelvoorkomende tekorten",
+    noMealsWeek: "Nog geen maaltijden deze week.",
+    pastReviews: "Eerdere reviews",
   },
 } as const;
 
@@ -289,6 +370,7 @@ function productToListItem(product: Product, extras: { searchTerm?: string; reci
 export default function App() {
   const [lang, setLang] = useState<Lang>(() => readStoredLang());
   const t = copy[lang];
+  const [userId] = useState(() => readOrCreateUserId());
 
   const [view, setView] = useState<View>("recipes");
   const [prefs, setPrefs] = useState<UserPrefs>(emptyPrefs);
@@ -682,6 +764,12 @@ export default function App() {
         <button className={view === "recipes" ? "active" : ""} onClick={() => setView("recipes")}>
           {t.recipes}
         </button>
+        <button className={view === "scan" ? "active" : ""} onClick={() => setView("scan")}>
+          {t.scan}
+        </button>
+        <button className={view === "weekly" ? "active" : ""} onClick={() => setView("weekly")}>
+          {t.weekly}
+        </button>
         <button
           className={view === "match" ? "active" : ""}
           onClick={() => selectedRecipe && setView("match")}
@@ -721,6 +809,12 @@ export default function App() {
 
       {loading ? (
         <p className="empty">{t.loading}</p>
+      ) : view === "scan" ? (
+        // Smoke: Plate → upload image → preview + description/nutrition/gaps → appears under Saved meals.
+        <MealScanPanel t={t} lang={lang} userId={userId} onError={setError} />
+      ) : view === "weekly" ? (
+        // Smoke: Weekly → refresh → summary from saved meal texts + common gaps.
+        <WeeklyReviewPanel t={t} lang={lang} userId={userId} onError={setError} />
       ) : view === "offers" ? (
         <section>
           <h2>

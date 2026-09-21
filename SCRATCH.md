@@ -1,5 +1,12 @@
 # Scratch / smoke notes
 
+## camera-ai-scan (plate + weekly)
+
+1. **Bord / Plate** → Upload any plate photo → preview must show the image (not a blank black box).
+2. Stub banner OK without `OPENAI_API_KEY` → description, nutrition, missing (fiber/vezels…) → appears under Saved meals.
+3. **Week / Weekly** → Refresh review → summary uses this week’s saved texts + common gaps.
+4. Soft user id in `localStorage` (`platewise-user-id`) / `X-User-Id` until auth merges.
+
 ## offers-recipes-loop
 
 1. Offers tab → pick a bonus item → **Kook dit** / **Cook this** → Match shows remaining ingredients with the bonus product selected.

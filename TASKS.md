@@ -53,9 +53,9 @@ Open tasks are available to any agent. Claimed tasks show `(@branch-name)` on th
   - **Details**: Web apps cannot write into a named Reminders grocery list. Add a List-tab Share/Copy action that sends newline-separated product titles (quantity suffix when > 1) via `navigator.share` (iPhone share sheet) with clipboard fallback. Hint copy: paste into a Groceries list, or pick Reminders in the share sheet. EN/NL. Overlaps `frontend-ui` on App.tsx / index.css — do not edit those files in parallel.
   - **Acceptance**: List tab shows Reminders / Herinneringen when the list is not empty. Share or copy produces one item per line. Demo checklist + CHANGELOG bullet.
 
-- [ ] Camera plate scan + weekly nutrition review (@cursor/camera-ai-scan-8acf)
+- [x] Camera plate scan + weekly nutrition review (@cursor/camera-ai-scan-8acf)
   - **ID**: camera-ai-scan
-  - **Status**: claimed
+  - **Status**: done
   - **Tags**: frontend, camera, ai, meals
   - **Files**: `client/src/MealScanPanel.tsx`, `client/src/WeeklyReviewPanel.tsx`, `client/src/App.tsx`, `server/src/meals.ts`, `server/src/db.ts`, `server/src/index.ts`
   - **Details**: Photo of a **plate of food** → short description + estimated nutrition + what’s missing (fiber, veggies, protein, …) → save per user in SQLite. Separate **Weekly** tab builds an end-of-week overview from saved meal texts. `getUserMedia` / file input; `OPENAI_API_KEY` from `.env.example` or `// TODO(demo):` stub. Soft `user_id` via `X-User-Id` / localStorage until auth lands (do not block on login). Avoid shopping-list ownership conflicts with other agents.

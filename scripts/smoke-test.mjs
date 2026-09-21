@@ -121,6 +121,37 @@ assert(del.status === 204, "DELETE shopping-list item removes it");
 const delLoose = await fetch(`${base}/api/shopping-list/items/${looseAdded[0].id}`, { method: "DELETE" });
 assert(delLoose.status === 204, "DELETE non-recipe catalog item removes it");
 
+// Plate meal scan stub (no OPENAI_API_KEY) + weekly review from saved texts
+const mealUser = "smoke-meal-user";
+const mealScan = await fetch(`${base}/api/meals/scan`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json", "X-User-Id": mealUser },
+  body: JSON.stringify({
+    imageBase64: "dGVzdA==",
+    mimeType: "image/jpeg",
+    lang: "nl",
+    userId: mealUser,
+  }),
+}).then((r) => r.json());
+assert(mealScan.analysis?.usedStub === true, "meal scan without OPENAI_API_KEY uses stub");
+assert(mealScan.analysis?.description, "meal scan returns a description");
+assert(Array.isArray(mealScan.analysis?.missing) && mealScan.analysis.missing.length >= 1, "meal scan lists gaps");
+assert(mealScan.meal?.id, "meal scan saves a meal log row");
+
+const mealsList = await fetch(`${base}/api/meals?userId=${encodeURIComponent(mealUser)}`, {
+  headers: { "X-User-Id": mealUser },
+}).then((r) => r.json());
+assert(
+  Array.isArray(mealsList.meals) && mealsList.meals.some((m) => m.id === mealScan.meal.id),
+  "GET /api/meals returns saved plate meals",
+);
+
+const weekly = await fetch(`${base}/api/meals/weekly-review?userId=${encodeURIComponent(mealUser)}&lang=nl&refresh=1`, {
+  headers: { "X-User-Id": mealUser },
+}).then((r) => r.json());
+assert(weekly.review?.summary, "weekly review returns a summary");
+assert(weekly.review?.meal_count >= 1, "weekly review counts saved meals");
+
 // reset prefs
 await fetch(`${base}/api/prefs`, {
   method: "PUT",
