@@ -1246,3 +1246,219 @@ button {
     transition: none !important;
   }
 }
+
+/* —— Main: offers / filters / add-item (liquid-glass) —— */
+.bio {
+  display: inline-flex;
+  align-self: flex-start;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+  background: var(--accent-soft);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 0.2rem 0.45rem;
+  border-radius: 0.45rem;
+  backdrop-filter: blur(8px);
+}
+
+.badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.25rem;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.55rem 0 0.75rem;
+}
+
+.chips .chip.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.offer-list,
+.suggest-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.offer-list li,
+.suggest-list li {
+  position: relative;
+  padding: 0.9rem 1rem;
+  background:
+    linear-gradient(155deg, rgba(255, 255, 255, 0.58) 0%, rgba(255, 255, 255, 0.22) 50%, rgba(232, 245, 236, 0.32) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: var(--radius);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  box-shadow: var(--shadow-glass);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.offer-list li::before,
+.suggest-list li::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(255, 255, 255, 0.06) 32%,
+    transparent 58%
+  );
+  z-index: 0;
+}
+
+.offer-list li > *,
+.suggest-list li > * {
+  position: relative;
+  z-index: 1;
+}
+
+.offer-recipes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.55rem;
+}
+
+.offer-recipes button,
+.suggest-list button,
+.item-search button,
+.btn.primary,
+.primary {
+  border: none;
+  border-radius: 0.85rem;
+  cursor: pointer;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: white;
+  padding: 0.6rem 0.9rem;
+  background:
+    linear-gradient(180deg, rgba(72, 180, 125, 0.95) 0%, var(--accent) 45%, var(--accent-deep) 100%);
+  backdrop-filter: blur(10px) saturate(1.3);
+  -webkit-backdrop-filter: blur(10px) saturate(1.3);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  transition:
+    background 0.2s var(--ease-out),
+    transform 0.2s var(--ease-out),
+    box-shadow 0.2s var(--ease-out),
+    opacity 0.2s var(--ease-out);
+}
+
+.offer-recipes button {
+  width: 100%;
+  white-space: normal;
+  text-align: left;
+}
+
+.offer-recipes button:hover:not(:disabled),
+.suggest-list button:hover:not(:disabled),
+.item-search button:hover:not(:disabled),
+.primary:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+
+.primary {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.suggest-list li {
+  display: flex;
+  gap: 0.85rem;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.item-search {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.item-search input {
+  flex: 1;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px);
+  color: var(--ink);
+  font: inherit;
+}
+
+.item-search input:focus {
+  outline: 2px solid rgba(31, 138, 91, 0.35);
+  outline-offset: 1px;
+}
+
+.btn-ghost,
+.ghost {
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.35);
+  color: var(--muted);
+  border-radius: 0.75rem;
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+}
+
+.btn-ghost:hover:not(:disabled),
+.ghost:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--ink);
+}
+
+.delete,
+.btn-danger-ghost {
+  border: none;
+  background: transparent;
+  color: var(--danger);
+  font-size: 1.35rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0.25rem 0.45rem;
+  border-radius: 0.5rem;
+}
+
+.delete:hover,
+.btn-danger-ghost:hover {
+  background: var(--danger-soft);
+}
+
+.total {
+  margin-top: 0.9rem;
+  font-weight: 700;
+}
+
+.tabs {
+  flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+  .suggest-list li {
+    flex-direction: column;
+  }
+
+  .suggest-list button,
+  .offer-recipes button {
+    width: 100%;
+  }
+}

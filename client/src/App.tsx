@@ -1,7 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
+import {
+  ingredientName,
+  ingredientUnit,
+  recipeSummary,
+  recipeTitle,
+  type Lang,
+} from "./recipeI18n";
 
 type DietTag = "vegetarian" | "vegan" | "halal";
-type Lang = "en" | "nl";
+type CatalogFilter = "all" | "bonus" | "bio" | "cheap" | "storeBrand";
 
 interface UserPrefs {
   vegetarian: boolean;
@@ -34,6 +41,7 @@ interface Product {
   price: number | null;
   isBonus: boolean;
   bonusLabel: string | null;
+  isBio?: boolean;
   imageUrl: string | null;
   source: "ah" | "mock";
 }
@@ -42,7 +50,20 @@ interface MatchRow {
   ingredient: Ingredient;
   product: Product | null;
   alternatives: Product[];
+  products?: Product[];
   usedMock: boolean;
+}
+
+interface OfferRecipe {
+  id: string;
+  title: string;
+  summary: string;
+  matchedIngredient: string;
+}
+
+interface Offer {
+  product: Product;
+  recipes: OfferRecipe[];
 }
 
 interface ShoppingItem {
@@ -56,16 +77,18 @@ interface ShoppingItem {
   image_url?: string | null;
 }
 
-type View = "recipes" | "match" | "list";
+type View = "offers" | "recipes" | "match" | "list";
 
 const emptyPrefs: UserPrefs = { vegetarian: false, vegan: false, halal: false };
 const LANG_KEY = "platewise-lang";
+const FILTERS: CatalogFilter[] = ["all", "bonus", "bio", "cheap", "storeBrand"];
 
 const copy = {
   en: {
     brandEyebrow: "Healthy eating, planned",
     title: "Eat well. Shop smart.",
-    subtitle: "Pick a recipe, match Albert Heijn products (bonus first), fill your list.",
+    subtitle: "Offers ↔ recipes, match AH products (bonus first), or add a single item to your list.",
+    offers: "Offers",
     recipes: "Recipes",
     match: "Match",
     list: "List",
@@ -86,7 +109,7 @@ const copy = {
     addSelected: "Add selected to list",
     shoppingList: "Shopping list",
     clear: "Clear",
-    emptyList: "Your basket is empty. Match a recipe to start.",
+    emptyList: "List is empty. Match a recipe or add an item.",
     emptyIcon: "◇",
     remove: "Remove",
     total: "Estimated total",
@@ -102,11 +125,30 @@ const copy = {
     productFor: "Product for",
     recipeCount: "fresh picks",
     ah: "AH",
+    offersHint: "Bonus items first. Pick one and open a recipe that uses it.",
+    noOffers: "No bonus offers right now — try mock mode or another pref.",
+    usesThis: "Uses this",
+    cookThis: "Cook this",
+    fromOffer: "Starting from bonus",
+    filterAll: "All",
+    filterBonus: "Bonus",
+    filterBio: "Organic",
+    filterCheap: "Cheap",
+    filterStoreBrand: "AH brand",
+    noFilterMatch: "No product for this filter",
+    addItem: "Add item",
+    searchPlaceholder: "e.g. spinazie, tofu…",
+    search: "Search",
+    add: "Add",
+    searching: "Searching…",
+    noItemResults: "No products for that search.",
+    itemAdded: "Added to list",
   },
   nl: {
     brandEyebrow: "Gezond eten, gepland",
     title: "Eet goed. Koop slim.",
-    subtitle: "Kies een recept, match AH-producten (bonus eerst), vul je lijst.",
+    subtitle: "Aanbiedingen ↔ recepten, match AH-producten (bonus eerst), of voeg één artikel toe.",
+    offers: "Aanbiedingen",
     recipes: "Recepten",
     match: "Match",
     list: "Lijst",
@@ -127,7 +169,7 @@ const copy = {
     addSelected: "Geselecteerde producten naar lijst",
     shoppingList: "Boodschappenlijst",
     clear: "Leegmaken",
-    emptyList: "Je mandje is leeg. Match een recept om te beginnen.",
+    emptyList: "Lijst is leeg. Match een recept of voeg een artikel toe.",
     emptyIcon: "◇",
     remove: "Verwijderen",
     total: "Geschat totaal",
@@ -143,6 +185,24 @@ const copy = {
     productFor: "Product voor",
     recipeCount: "verse keuzes",
     ah: "AH",
+    offersHint: "Bonus eerst. Kies een item en open een recept dat het gebruikt.",
+    noOffers: "Geen bonusaanbiedingen — probeer mock of andere voorkeuren.",
+    usesThis: "Gebruikt dit",
+    cookThis: "Kook dit",
+    fromOffer: "Start vanaf bonus",
+    filterAll: "Alles",
+    filterBonus: "Bonus",
+    filterBio: "Bio",
+    filterCheap: "Goedkoop",
+    filterStoreBrand: "Huismerk",
+    noFilterMatch: "Geen product voor dit filter",
+    addItem: "Artikel toevoegen",
+    searchPlaceholder: "bijv. spinazie, tofu…",
+    search: "Zoeken",
+    add: "Voeg toe",
+    searching: "Zoeken…",
+    noItemResults: "Geen producten voor deze zoekterm.",
+    itemAdded: "Toegevoegd aan lijst",
   },
 } as const;
 
@@ -286,6 +346,65 @@ function WellnessBackdrop() {
   );
 }
 
+function isBioProduct(product: Product): boolean {
+  if (typeof product.isBio === "boolean") return product.isBio;
+  const lower = product.title.toLowerCase();
+  return lower.includes("biologisch") || lower.includes("organic") || /(^|\s)bio(\s|$|-)/.test(lower);
+}
+
+function rowProducts(row: MatchRow): Product[] {
+  if (row.products?.length) return row.products;
+  return [row.product, ...row.alternatives].filter(Boolean) as Product[];
+}
+
+function applyFilter(products: Product[], filter: CatalogFilter): Product[] {
+  if (filter === "all") return products;
+  if (filter === "bonus") return products.filter((product) => product.isBonus);
+  if (filter === "bio") return products.filter(isBioProduct);
+  if (filter === "storeBrand") return products.filter((product) => /^AH\s/i.test(product.title));
+  const priced = products.filter((product) => product.price != null);
+  if (priced.length === 0) return [];
+  const min = Math.min(...priced.map((product) => product.price as number));
+  return products.filter((product) => product.price != null && product.price <= min + 0.4);
+}
+
+function productMatchesIngredient(product: Product, ingredient: Ingredient): boolean {
+  const title = product.title.toLowerCase();
+  const needles = [ingredient.searchTerm, ingredient.name].map((value) => value.toLowerCase());
+  return needles.some((needle) => title.includes(needle));
+}
+
+function pickPreferred(
+  rows: MatchRow[],
+  preferred: Product | undefined,
+): Record<string, Product> {
+  const products: Record<string, Product> = {};
+  for (const row of rows) {
+    const key = row.ingredient.searchTerm;
+    const options = rowProducts(row);
+    const fromOffer =
+      preferred &&
+      (options.find((product) => product.id === preferred.id) ||
+        (productMatchesIngredient(preferred, row.ingredient) ? preferred : null));
+    if (fromOffer) products[key] = fromOffer;
+    else if (row.product) products[key] = row.product;
+  }
+  return products;
+}
+
+function productToListItem(product: Product, extras: { searchTerm?: string; recipeId?: string | null }) {
+  return {
+    productId: product.id,
+    title: product.title,
+    price: product.price,
+    isBonus: product.isBonus,
+    bonusLabel: product.bonusLabel,
+    quantity: 1,
+    searchTerm: extras.searchTerm ?? null,
+    recipeId: extras.recipeId ?? null,
+  };
+}
+
 export default function App() {
   const [lang, setLang] = useState<Lang>(() => readStoredLang());
   const t = copy[lang];
@@ -293,10 +412,14 @@ export default function App() {
   const [view, setView] = useState<View>("recipes");
   const [prefs, setPrefs] = useState<UserPrefs>(emptyPrefs);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [offers, setOffers] = useState<Offer[]>([]);
+  const [offersMock, setOffersMock] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+  const [pinnedOffer, setPinnedOffer] = useState<Product | null>(null);
   const [matches, setMatches] = useState<MatchRow[]>([]);
   const [selectedProducts, setSelectedProducts] = useState<Record<string, Product>>({});
   const [included, setIncluded] = useState<Record<string, boolean>>({});
+  const [matchFilter, setMatchFilter] = useState<CatalogFilter>("all");
   const [usedMock, setUsedMock] = useState(false);
   const [shoppingList, setShoppingList] = useState<ShoppingItem[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -304,7 +427,11 @@ export default function App() {
   const [matching, setMatching] = useState(false);
   const [adding, setAdding] = useState(false);
   const [shareStatus, setShareStatus] = useState<string | null>(null);
-  const [productImages, setProductImages] = useState<Record<string, string>>({});
+  const [itemQuery, setItemQuery] = useState("");
+  const [itemFilter, setItemFilter] = useState<CatalogFilter>("all");
+  const [itemResults, setItemResults] = useState<Product[]>([]);
+  const [itemSearching, setItemSearching] = useState(false);
+  const [itemMessage, setItemMessage] = useState<string | null>(null);
 
   function setLanguage(next: Lang) {
     setLang(next);
@@ -328,6 +455,14 @@ export default function App() {
     setRecipes(await res.json());
   }
 
+  async function loadOffers() {
+    const res = await fetch("/api/offers");
+    if (!res.ok) throw new Error(`GET /api/offers failed: ${res.status}`);
+    const data = await res.json();
+    setOffers(Array.isArray(data.offers) ? data.offers : []);
+    setOffersMock(Boolean(data.usedMock));
+  }
+
   async function loadShoppingList() {
     const res = await fetch("/api/shopping-list");
     if (!res.ok) throw new Error(`GET /api/shopping-list failed: ${res.status}`);
@@ -337,7 +472,7 @@ export default function App() {
   async function bootstrap() {
     try {
       setLoading(true);
-      await Promise.all([loadPrefs(), loadRecipes(), loadShoppingList()]);
+      await Promise.all([loadPrefs(), loadRecipes(), loadShoppingList(), loadOffers()]);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load");
@@ -349,6 +484,30 @@ export default function App() {
   useEffect(() => {
     bootstrap();
   }, []);
+
+  useEffect(() => {
+    if (matches.length === 0) return;
+    setSelectedProducts((prev) => {
+      const next = { ...prev };
+      for (const row of matches) {
+        const key = row.ingredient.searchTerm;
+        const options = applyFilter(rowProducts(row), matchFilter);
+        if (options.length === 0) continue;
+        const current = prev[key];
+        if (!current || !options.some((product) => product.id === current.id)) {
+          next[key] = options[0];
+        }
+      }
+      return next;
+    });
+  }, [matchFilter, matches]);
+
+  useEffect(() => {
+    if (!itemQuery.trim()) return;
+    void searchCatalogItems();
+    // Re-run catalog search when the list-tab filter chip changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [itemFilter]);
 
   async function updatePref(key: keyof UserPrefs, value: boolean) {
     const next = { ...prefs, [key]: value };
@@ -362,14 +521,24 @@ export default function App() {
       });
       if (!res.ok) throw new Error(`PUT /api/prefs failed: ${res.status}`);
       setPrefs(await res.json());
-      await loadRecipes();
+      await Promise.all([loadRecipes(), loadOffers()]);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save prefs");
     }
   }
 
-  async function matchRecipe(recipe: Recipe) {
+  async function resolveRecipe(id: string): Promise<Recipe | null> {
+    const local = recipes.find((recipe) => recipe.id === id);
+    if (local) return local;
+    const res = await fetch(`/api/recipes/${id}`);
+    if (!res.ok) return null;
+    return (await res.json()) as Recipe;
+  }
+
+  async function matchRecipe(recipe: Recipe, preferredProduct?: Product) {
     setSelectedRecipe(recipe);
+    setPinnedOffer(preferredProduct ?? null);
+    setMatchFilter("all");
     setMatching(true);
     setError(null);
     try {
@@ -383,21 +552,13 @@ export default function App() {
       const rows = data.matches as MatchRow[];
       setMatches(rows);
       setUsedMock(Boolean(data.usedMock));
-
-      const products: Record<string, Product> = {};
+      const products = pickPreferred(rows, preferredProduct);
       const includedMap: Record<string, boolean> = {};
-      const images: Record<string, string> = {};
       for (const row of rows) {
-        const key = row.ingredient.searchTerm;
-        if (row.product) products[key] = row.product;
-        includedMap[key] = Boolean(row.product);
-        for (const product of [row.product, ...row.alternatives]) {
-          if (product?.imageUrl) images[product.id] = product.imageUrl;
-        }
+        includedMap[row.ingredient.searchTerm] = Boolean(products[row.ingredient.searchTerm]);
       }
       setSelectedProducts(products);
       setIncluded(includedMap);
-      setProductImages((prev) => ({ ...prev, ...images }));
       setView("match");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to match products");
@@ -406,31 +567,47 @@ export default function App() {
     }
   }
 
+  async function cookOffer(offer: Offer, offerRecipe: OfferRecipe) {
+    const recipe = await resolveRecipe(offerRecipe.id);
+    if (!recipe) {
+      setError("recipe not found");
+      return;
+    }
+    await matchRecipe(recipe, offer.product);
+  }
+
   function swapProduct(searchTerm: string, productId: string, row: MatchRow) {
-    const all = [row.product, ...row.alternatives].filter(Boolean) as Product[];
-    const found = all.find((p) => p.id === productId);
+    const found = applyFilter(rowProducts(row), matchFilter).find((product) => product.id === productId);
     if (found) {
       setSelectedProducts((prev) => ({ ...prev, [searchTerm]: found }));
     }
   }
 
+  async function postListItems(items: ReturnType<typeof productToListItem>[]) {
+    const res = await fetch("/api/shopping-list/items", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ items }),
+    });
+    if (!res.ok) throw new Error(`Add to list failed: ${res.status}`);
+    await loadShoppingList();
+  }
+
   async function addSelectedToList() {
     if (!selectedRecipe) return;
     const items = matches
-      .filter((row) => included[row.ingredient.searchTerm] && selectedProducts[row.ingredient.searchTerm])
-      .map((row) => {
-        const product = selectedProducts[row.ingredient.searchTerm];
-        return {
-          productId: product.id,
-          title: product.title,
-          price: product.price,
-          isBonus: product.isBonus,
-          bonusLabel: product.bonusLabel,
+      .filter((row) => {
+        const key = row.ingredient.searchTerm;
+        const product = selectedProducts[key];
+        if (!included[key] || !product) return false;
+        return applyFilter(rowProducts(row), matchFilter).some((option) => option.id === product.id);
+      })
+      .map((row) =>
+        productToListItem(selectedProducts[row.ingredient.searchTerm], {
           searchTerm: row.ingredient.searchTerm,
           recipeId: selectedRecipe.id,
-          quantity: 1,
-        };
-      });
+        }),
+      );
 
     if (items.length === 0) {
       setError(t.selectOne);
@@ -439,14 +616,44 @@ export default function App() {
 
     setAdding(true);
     try {
-      const res = await fetch("/api/shopping-list/items", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items }),
-      });
-      if (!res.ok) throw new Error(`Add to list failed: ${res.status}`);
-      await loadShoppingList();
+      await postListItems(items);
       setView("list");
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to add items");
+    } finally {
+      setAdding(false);
+    }
+  }
+
+  async function searchCatalogItems(event?: FormEvent) {
+    event?.preventDefault();
+    const query = itemQuery.trim();
+    if (!query) return;
+    setItemSearching(true);
+    setItemMessage(null);
+    setError(null);
+    try {
+      const res = await fetch(
+        `/api/products/suggest?q=${encodeURIComponent(query)}&filter=${itemFilter}`,
+      );
+      if (!res.ok) throw new Error(`Search failed: ${res.status}`);
+      const data = await res.json();
+      const products = Array.isArray(data.products) ? (data.products as Product[]) : [];
+      setItemResults(products);
+      if (products.length === 0) setItemMessage(t.noItemResults);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to search products");
+    } finally {
+      setItemSearching(false);
+    }
+  }
+
+  async function addCatalogItem(product: Product) {
+    setAdding(true);
+    try {
+      await postListItems([productToListItem(product, { searchTerm: itemQuery.trim() || product.title })]);
+      setItemMessage(t.itemAdded);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to add items");
@@ -488,6 +695,7 @@ export default function App() {
     return copyTextWithFallback(text);
   }
 
+  // Smoke: EN → English recipe/ingredient labels; List + Reminders keep Dutch AH titles.
   // Smoke: List tab → Reminders → share sheet or "Copied" banner; text is one product per line.
   async function shareToReminders() {
     if (shoppingList.length === 0) return;
@@ -518,6 +726,45 @@ export default function App() {
     () => shoppingList.reduce((sum, item) => sum + (item.price ?? 0) * item.quantity, 0),
     [shoppingList],
   );
+
+  const filterLabel: Record<CatalogFilter, string> = {
+    all: t.filterAll,
+    bonus: t.filterBonus,
+    bio: t.filterBio,
+    cheap: t.filterCheap,
+    storeBrand: t.filterStoreBrand,
+  };
+
+  function renderFilterChips(
+    value: CatalogFilter,
+    onChange: (next: CatalogFilter) => void,
+    ariaLabel: string,
+  ) {
+    return (
+      <div className="chips" role="group" aria-label={ariaLabel}>
+        {FILTERS.map((filter) => (
+          <button
+            key={filter}
+            type="button"
+            className={value === filter ? "chip active" : "chip"}
+            onClick={() => onChange(filter)}
+            aria-pressed={value === filter}
+          >
+            {filterLabel[filter]}
+          </button>
+        ))}
+      </div>
+    );
+  }
+
+  function renderBadges(product: Product) {
+    return (
+      <>
+        {product.isBonus && <span className="bonus">{product.bonusLabel ?? "Bonus"}</span>}
+        {isBioProduct(product) && <span className="bio">Bio</span>}
+      </>
+    );
+  }
 
   const selectedCount = useMemo(
     () => matches.filter((row) => included[row.ingredient.searchTerm]).length,
@@ -562,11 +809,10 @@ export default function App() {
       </header>
 
       <nav className="tabs" aria-label={t.viewsAria}>
-        <button
-          type="button"
-          className={view === "recipes" ? "active" : ""}
-          onClick={() => setView("recipes")}
-        >
+        <button type="button" className={view === "offers" ? "active" : ""} onClick={() => setView("offers")}>
+          {t.offers}
+        </button>
+        <button type="button" className={view === "recipes" ? "active" : ""} onClick={() => setView("recipes")}>
           {t.recipes}
         </button>
         <button
@@ -577,11 +823,7 @@ export default function App() {
         >
           {t.match}
         </button>
-        <button
-          type="button"
-          className={view === "list" ? "active" : ""}
-          onClick={() => setView("list")}
-        >
+        <button type="button" className={view === "list" ? "active" : ""} onClick={() => setView("list")}>
           {t.list}
           {shoppingList.length > 0 && <span className="tab-count">({shoppingList.length})</span>}
         </button>
@@ -625,6 +867,55 @@ export default function App() {
             {t.loading}
           </p>
         </div>
+      ) : view === "offers" ? (
+        <section>
+          <div className="view-header">
+            <h2>{t.offers}</h2>
+            <span className="view-count">{offers.length}</span>
+          </div>
+          <p className="hint">{t.offersHint}</p>
+          {offersMock && <p className="banner">{t.mockBanner}</p>}
+          {offers.length === 0 ? (
+            <div className="empty-state">
+              <div className="empty-icon" aria-hidden="true">
+                {t.emptyIcon}
+              </div>
+              <p>{t.noOffers}</p>
+            </div>
+          ) : (
+            <ul className="offer-list">
+              {offers.map((offer) => (
+                <li key={offer.product.id} className="recipe-card">
+                  <div className="recipe-body">
+                    <h3>{offer.product.title}</h3>
+                    <p className="meta">{formatPrice(offer.product.price)}</p>
+                    <div className="badge-row">{renderBadges(offer.product)}</div>
+                    {offer.recipes.length > 0 ? (
+                      <div className="offer-recipes">
+                        <p className="hint">{t.usesThis}</p>
+                        {offer.recipes.map((recipe) => (
+                          <button
+                            key={recipe.id}
+                            type="button"
+                            className="btn btn-primary btn-block"
+                            disabled={matching}
+                            onClick={() => cookOffer(offer, recipe)}
+                          >
+                            {matching && selectedRecipe?.id === recipe.id
+                              ? t.matching
+                              : `${t.cookThis}: ${recipeTitle(recipe.id, recipe.title, lang)}`}
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="hint">{t.noRecipes}</p>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
       ) : view === "recipes" ? (
         <section>
           <div className="view-header">
@@ -650,8 +941,8 @@ export default function App() {
                     aria-hidden="true"
                   />
                   <div className="recipe-body">
-                    <h3>{recipe.title}</h3>
-                    <p className="recipe-summary">{recipe.summary}</p>
+                    <h3>{recipeTitle(recipe.id, recipe.title, lang)}</h3>
+                    <p className="recipe-summary">{recipeSummary(recipe.id, recipe.summary, lang)}</p>
                     <div className="recipe-meta-row">
                       <span className="chip chip-muted">
                         {recipe.timeMinutes} {t.minutes}
@@ -685,32 +976,40 @@ export default function App() {
         <section>
           <div className="view-header">
             <h2>
-              {t.match}: {selectedRecipe.title}
+              {t.match}: {recipeTitle(selectedRecipe.id, selectedRecipe.title, lang)}
             </h2>
             <span className="view-count">
               {selectedCount}/{matches.length}
             </span>
           </div>
+          {pinnedOffer && (
+            <p className="banner">
+              {t.fromOffer}: {pinnedOffer.title}
+            </p>
+          )}
           {usedMock && <p className="banner">{t.mockBanner}</p>}
+          {renderFilterChips(matchFilter, setMatchFilter, t.filterAll)}
           <ul className="match-list">
             {matches.map((row) => {
               const key = row.ingredient.searchTerm;
-              const selected = selectedProducts[key];
-              const options = [row.product, ...row.alternatives].filter(Boolean) as Product[];
+              const options = applyFilter(rowProducts(row), matchFilter);
+              const selected =
+                options.find((product) => product.id === selectedProducts[key]?.id) ?? options[0];
               return (
                 <li key={key} className="match-card">
                   <label className="match-head">
                     <input
                       type="checkbox"
-                      checked={Boolean(included[key])}
+                      checked={Boolean(included[key]) && Boolean(selected)}
                       onChange={(e) =>
                         setIncluded((prev) => ({ ...prev, [key]: e.target.checked }))
                       }
                     />
                     <span>
-                      {row.ingredient.name}{" "}
+                      {ingredientName(row.ingredient.name, lang)}{" "}
                       <span className="meta">
-                        ({row.ingredient.quantity} {row.ingredient.unit})
+                        ({row.ingredient.quantity}{" "}
+                        {ingredientUnit(row.ingredient.unit, lang)})
                       </span>
                     </span>
                   </label>
@@ -725,23 +1024,22 @@ export default function App() {
                         <select
                           value={selected.id}
                           onChange={(e) => swapProduct(key, e.target.value, row)}
-                          aria-label={`${t.productFor} ${row.ingredient.name}`}
+                          aria-label={`${t.productFor} ${ingredientName(row.ingredient.name, lang)}`}
                         >
                           {options.map((product) => (
                             <option key={product.id} value={product.id}>
                               {product.title} · {formatPrice(product.price)}
                               {product.isBonus ? " · BONUS" : ""}
+                              {isBioProduct(product) ? " · BIO" : ""}
                             </option>
                           ))}
                         </select>
-                        {selected.isBonus && (
-                          <span className="bonus">{selected.bonusLabel ?? "Bonus"}</span>
-                        )}
+                        <div className="badge-row">{renderBadges(selected)}</div>
                       </div>
                     </div>
                   ) : (
                     <p className="hint" style={{ paddingLeft: "1.75rem", marginTop: "0.5rem" }}>
-                      {t.noProduct}
+                      {options.length === 0 ? t.noFilterMatch : t.noProduct}
                     </p>
                   )}
                 </li>
@@ -774,6 +1072,48 @@ export default function App() {
               </div>
             )}
           </div>
+          <h3>{t.addItem}</h3>
+          {renderFilterChips(itemFilter, setItemFilter, t.addItem)}
+          <form className="item-search" onSubmit={searchCatalogItems}>
+            <input
+              value={itemQuery}
+              onChange={(e) => setItemQuery(e.target.value)}
+              placeholder={t.searchPlaceholder}
+              aria-label={t.addItem}
+            />
+            <button type="submit" className="btn btn-primary" disabled={itemSearching}>
+              {itemSearching ? t.searching : t.search}
+            </button>
+          </form>
+          {itemMessage && <p className="banner">{itemMessage}</p>}
+          {itemResults.length > 0 && (
+            <ul className="suggest-list">
+              {itemResults.map((product) => (
+                <li key={product.id} className="shop-card">
+                  <div className="shop-main">
+                    <ProductThumb
+                      imageUrl={product.imageUrl}
+                      label={product.title}
+                      fallback={t.ah}
+                    />
+                    <div>
+                      <strong>{product.title}</strong>
+                      <p className="meta">{formatPrice(product.price)}</p>
+                      <div className="badge-row">{renderBadges(product)}</div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    disabled={adding}
+                    onClick={() => addCatalogItem(product)}
+                  >
+                    {t.add}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
           {shoppingList.length === 0 ? (
             <div className="empty-state">
               <div className="empty-icon" aria-hidden="true">
@@ -785,12 +1125,13 @@ export default function App() {
             <>
               <p className="hint">{t.remindersHint}</p>
               {shareStatus && <p className="banner">{shareStatus}</p>}
+              {/* Shopping list always keeps original AH/Dutch product titles for store lookup / Reminders. */}
               <ul className="shop-list">
                 {shoppingList.map((item) => (
                   <li key={item.id} className="shop-card">
                     <div className="shop-main">
                       <ProductThumb
-                        imageUrl={item.image_url ?? productImages[item.product_id] ?? null}
+                        imageUrl={item.image_url ?? null}
                         label={item.title}
                         fallback={t.ah}
                       />
@@ -824,8 +1165,12 @@ export default function App() {
     </main>
     </>
   );
+
 }
 
+// Smoke: Offers → pick bonus → Cook this → remaining ingredients match.
+// Smoke: Recipe → Match → Bio/Cheap chips change alternatives → add to list.
+// Smoke: List → search a Dutch term → Add (no recipe) → item appears.
 /*
  * Smoke checklist (frontend-ui):
  * 1. npm run dev → open app at phone width + ~720px; geometric plate logo + wellness backdrop; liquid-glass panels readable.

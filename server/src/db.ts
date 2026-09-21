@@ -191,3 +191,45 @@ export function setCachedSearch(cacheKey: string, payload: string): void {
      ON CONFLICT(cache_key) DO UPDATE SET payload = excluded.payload, created_at = datetime('now')`,
   ).run(cacheKey, payload);
 }
+
+const AH_AUTH_CACHE_KEY = "ah:auth:token";
+
+export interface StoredAhAuth {
+  accessToken: string;
+  refreshToken: string;
+  expiresAtMs: number;
+}
+
+/** Persist the anonymous AH token; expiry is on the token itself, not the 30min search TTL. */
+export function getStoredAhAuth(): StoredAhAuth | null {
+  const row = db
+    .prepare(`SELECT payload FROM search_cache WHERE cache_key = ?`)
+    .get(AH_AUTH_CACHE_KEY) as { payload: string } | undefined;
+  if (!row) return null;
+  try {
+    const parsed = JSON.parse(row.payload) as Partial<StoredAhAuth>;
+    if (
+      typeof parsed.accessToken !== "string" ||
+      typeof parsed.refreshToken !== "string" ||
+      typeof parsed.expiresAtMs !== "number"
+    ) {
+      return null;
+    }
+    return {
+      accessToken: parsed.accessToken,
+      refreshToken: parsed.refreshToken,
+      expiresAtMs: parsed.expiresAtMs,
+    };
+  } catch (err) {
+    console.warn("[db] failed to parse stored AH auth:", err);
+    return null;
+  }
+}
+
+export function setStoredAhAuth(auth: StoredAhAuth): void {
+  setCachedSearch(AH_AUTH_CACHE_KEY, JSON.stringify(auth));
+}
+
+export function clearStoredAhAuth(): void {
+  db.prepare(`DELETE FROM search_cache WHERE cache_key = ?`).run(AH_AUTH_CACHE_KEY);
+}
