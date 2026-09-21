@@ -27,7 +27,6 @@ Current backlog:
 | ID | Task |
 | --- | --- |
 | `frontend-ui` | Polish frontend UI |
-| `offers-recipes-loop` | AH offers ↔ recipes, plus cheap/bio/bonus item filters |
 | `camera-ai-scan` | Camera + AI scan of ingredients/products |
 
 ## Quick start

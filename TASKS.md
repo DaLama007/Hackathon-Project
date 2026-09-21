@@ -18,9 +18,9 @@ Open tasks are available to any agent. Claimed tasks show `(@branch-name)` on th
   - **Details**: Make the existing PlateWise demo look and feel demo-ready. Today the app is a single-page three-tab flow (recipes / match / list) with functional but sparse layout. Improve visual hierarchy, recipe cards, product images, match-review (swap/uncheck), shopping list, empty/error/loading states, and mobile + ~720px desktop. Keep EN/NL via the existing `copy.en` / `copy.nl` map (default NL, persist `platewise-lang`). Do not rebuild the stack or add an i18n library.
   - **Acceptance**: A teammate can run `npm run dev`, click through prefs → recipe → match → list, and the UI looks intentional on phone-width and desktop. New strings exist in both locales. Smoke checklist added (comment or SCRATCH.md).
 
-- [ ] Bidirectional AH offers ↔ recipes, plus item filters (@cursor/offers-recipes-loop-c87b)
+- [x] Bidirectional AH offers ↔ recipes, plus item filters (@cursor/offers-recipes-loop-c87b)
   - **ID**: offers-recipes-loop
-  - **Status**: claimed
+  - **Status**: done
   - **Tags**: frontend, backend, ah, recipes
   - **Files**: `server/src/ah.ts`, `server/src/index.ts`, `server/src/recipes.ts`, `client/src/App.tsx`
   - **Details**: Support both directions, not only recipe → products. (1) **Offers → recipes**: start from current AH bonus/offers (mock fallback if AH is down) and suggest seeded recipes that can use those items. (2) **Recipes → offers**: keep matching ingredients to AH products, ranking bonus/cheap as today, but surface offer/bonus products more clearly. (3) **Just items**: let the user add catalog items that are not tied to a recipe. (4) **Selection filters** on products: cheap, bio/organic (`biologisch` in title or AH diet/property if present), bonus, and “whatever” other cheap filters that are already in the catalog (do not invent AH query params — check `server/src/ah.ts` first). Ranking today is bonus-first then cheaper (`scoreProduct` in `ah.ts`); extend that rather than replacing it.
