@@ -1,14 +1,19 @@
-# Hackathon Project
+# Hackathon Project — PlateWise diet planner
 
-A minimal, demoable full-stack starter.
+Full-stack demo built on the Vite + Express + SQLite starter.
 
 - **Frontend:** Vite + React + TypeScript (`client/`)
 - **Backend:** Express + TypeScript (`server/`)
 - **Database:** SQLite via `better-sqlite3`
 - **Package manager:** npm (workspaces monorepo)
 
-The demo app is a tiny "Notes" board: create, list, and delete notes. Notes are
-persisted in SQLite, served by the Express API, and rendered by the React UI.
+## What it does
+
+1. Set dietary prefs (vegetarian / vegan / halal)
+2. Browse ~8 seeded Dutch recipes (filtered by prefs)
+3. Match ingredients to Albert Heijn products (live search, **mock fallback** if AH is down)
+4. Review / swap products (bonus & cheap ranked first)
+5. Add selections to an in-app shopping list
 
 ## Quick start
 
@@ -17,42 +22,37 @@ npm install        # installs all workspaces
 npm run dev        # runs API (:3001) and web (:5173) together
 ```
 
-Then open http://localhost:5173. The Vite dev server proxies `/api/*` to the
-Express server on port 3001.
+Open http://localhost:5173. Vite proxies `/api/*` to Express on port 3001.
+
+Force mock products (skip live AH):
+
+```bash
+AH_FORCE_MOCK=1 npm run dev:server
+```
 
 ## Useful commands
 
 | Command | What it does |
 | --- | --- |
 | `npm run dev` | Run API + web concurrently |
-| `npm run dev:server` | Run only the Express API (:3001) |
-| `npm run dev:client` | Run only the Vite dev server (:5173) |
-| `npm run build` | Type-check + build server and client |
 | `npm run smoke` | End-to-end API smoke test (API must be running) |
 
 ## API
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | `/api/health` | Liveness check |
-| GET | `/api/notes` | List notes (newest first) |
-| POST | `/api/notes` | Create a note `{ "text": "..." }` |
-| DELETE | `/api/notes/:id` | Delete a note |
+| GET | `/api/health` | Liveness |
+| GET/PUT | `/api/prefs` | Dietary prefs `{ vegetarian, vegan, halal }` |
+| GET | `/api/recipes` | Seeded recipes (filtered by prefs) |
+| POST | `/api/recipes/:id/match` | Match ingredients → AH/mock products |
+| GET | `/api/shopping-list` | List items |
+| POST | `/api/shopping-list/items` | Add `{ items: [...] }` |
+| DELETE | `/api/shopping-list/items/:id` | Remove one item |
+| GET | `/api/products/suggest?q=` | Search a single term |
 
-## Configuration
+## Demo checklist
 
-Copy `.env.example` to `.env` to override defaults:
-
-- `PORT` — API port (default `3001`)
-- `DATABASE_PATH` — SQLite file path (default `./data/app.sqlite`)
-
-## Smoke test
-
-With the app running (`npm run dev`), in another terminal:
-
-```bash
-npm run smoke
-```
-
-This creates, lists, and deletes a note through the API to confirm the
-frontend → API → SQLite path works end to end.
+1. Toggle **Vegetarisch** — meat recipes disappear
+2. Open **Linzen dal** → Match — products appear (mock banner OK)
+3. Swap a product / uncheck one → add to list
+4. Confirm list shows bonus labels when present

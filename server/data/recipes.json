@@ -1,0 +1,168 @@
+[
+  {
+    "id": "linzen-dal",
+    "title": "Linzen dal met spinazie",
+    "servings": 2,
+    "timeMinutes": 30,
+    "dietTags": ["vegetarian", "halal", "vegan"],
+    "summary": "Eiwitrijk, goedkoop weeknight gerecht met rode linzen.",
+    "steps": [
+      "Fruit ui en knoflook in olie.",
+      "Voeg linzen, tomatenblokjes en kruiden toe; kook 20 min.",
+      "Roer spinazie erdoor tot geslonken."
+    ],
+    "ingredients": [
+      { "name": "rode linzen", "quantity": 200, "unit": "g", "searchTerm": "rode linzen", "optional": false },
+      { "name": "spinazie", "quantity": 300, "unit": "g", "searchTerm": "spinazie", "optional": false },
+      { "name": "ui", "quantity": 1, "unit": "stuk", "searchTerm": "ui", "optional": false },
+      { "name": "knoflook", "quantity": 2, "unit": "teen", "searchTerm": "knoflook", "optional": false },
+      { "name": "tomatenblokjes", "quantity": 400, "unit": "g", "searchTerm": "tomatenblokjes", "optional": false },
+      { "name": "olijfolie", "quantity": 1, "unit": "el", "searchTerm": "olijfolie", "optional": false },
+      { "name": "kurkuma", "quantity": 1, "unit": "tl", "searchTerm": "kurkuma", "optional": true }
+    ]
+  },
+  {
+    "id": "kikkererwten-curry",
+    "title": "Kikkererwten curry",
+    "servings": 2,
+    "timeMinutes": 25,
+    "dietTags": ["vegetarian", "vegan", "halal"],
+    "summary": "Romige curry met kikkererwten en kokosmelk.",
+    "steps": [
+      "Fruit ui en knoflook.",
+      "Voeg kikkererwten, currypasta en kokosmelk toe.",
+      "Laat 15 min sudderen; serveer met rijst."
+    ],
+    "ingredients": [
+      { "name": "kikkererwten", "quantity": 400, "unit": "g", "searchTerm": "kikkererwten", "optional": false },
+      { "name": "kokosmelk", "quantity": 250, "unit": "ml", "searchTerm": "kokosmelk", "optional": false },
+      { "name": "currypasta", "quantity": 2, "unit": "el", "searchTerm": "currypasta", "optional": false },
+      { "name": "basmatirijst", "quantity": 150, "unit": "g", "searchTerm": "basmatirijst", "optional": false },
+      { "name": "ui", "quantity": 1, "unit": "stuk", "searchTerm": "ui", "optional": false },
+      { "name": "spinazie", "quantity": 200, "unit": "g", "searchTerm": "spinazie", "optional": false }
+    ]
+  },
+  {
+    "id": "zalm-broccoli",
+    "title": "Zalm met broccoli en aardappel",
+    "servings": 2,
+    "timeMinutes": 35,
+    "dietTags": ["halal"],
+    "summary": "Eenvoudige ovenzalm met groente en krieltjes.",
+    "steps": [
+      "Kook of rooster krieltjes.",
+      "Bak zalm in de oven met citroen.",
+      "Stoom broccoli en serveer samen."
+    ],
+    "ingredients": [
+      { "name": "zalmfilet", "quantity": 2, "unit": "stuk", "searchTerm": "zalmfilet", "optional": false },
+      { "name": "broccoli", "quantity": 1, "unit": "stuk", "searchTerm": "broccoli", "optional": false },
+      { "name": "krieltjes", "quantity": 500, "unit": "g", "searchTerm": "krieltjes", "optional": false },
+      { "name": "citroen", "quantity": 1, "unit": "stuk", "searchTerm": "citroen", "optional": false },
+      { "name": "olijfolie", "quantity": 1, "unit": "el", "searchTerm": "olijfolie", "optional": false }
+    ]
+  },
+  {
+    "id": "kip-rijst-bak",
+    "title": "Kiprijstschotel met paprika",
+    "servings": 3,
+    "timeMinutes": 40,
+    "dietTags": ["halal"],
+    "summary": "Halal-vriendelijke kip met paprika en rijst uit één pan.",
+    "steps": [
+      "Bak kipstukjes goudbruin.",
+      "Voeg paprika, ui en rijst toe met bouillon.",
+      "Laat gaar sudderen tot rijst klaar is."
+    ],
+    "ingredients": [
+      { "name": "kipfilet", "quantity": 400, "unit": "g", "searchTerm": "kipfilet", "optional": false },
+      { "name": "paprika", "quantity": 2, "unit": "stuk", "searchTerm": "paprika", "optional": false },
+      { "name": "ui", "quantity": 1, "unit": "stuk", "searchTerm": "ui", "optional": false },
+      { "name": "rijst", "quantity": 250, "unit": "g", "searchTerm": "rijst", "optional": false },
+      { "name": "kippenbouillon", "quantity": 500, "unit": "ml", "searchTerm": "kippenbouillon", "optional": false },
+      { "name": "olijfolie", "quantity": 1, "unit": "el", "searchTerm": "olijfolie", "optional": false }
+    ]
+  },
+  {
+    "id": "pasta-pesto-tomaat",
+    "title": "Pasta pesto met cherrytomaat",
+    "servings": 2,
+    "timeMinutes": 20,
+    "dietTags": ["vegetarian"],
+    "summary": "Snelle pasta met pesto, tomaat en mozzarella.",
+    "steps": [
+      "Kook pasta al dente.",
+      "Meng met pesto en cherrytomaten.",
+      "Werk af met mozzarella."
+    ],
+    "ingredients": [
+      { "name": "pasta", "quantity": 250, "unit": "g", "searchTerm": "pasta penne", "optional": false },
+      { "name": "groene pesto", "quantity": 1, "unit": "pot", "searchTerm": "groene pesto", "optional": false },
+      { "name": "cherrytomaten", "quantity": 250, "unit": "g", "searchTerm": "cherrytomaten", "optional": false },
+      { "name": "mozzarella", "quantity": 125, "unit": "g", "searchTerm": "mozzarella", "optional": false },
+      { "name": "basilicum", "quantity": 1, "unit": "bosje", "searchTerm": "basilicum", "optional": true }
+    ]
+  },
+  {
+    "id": "shakshuka",
+    "title": "Shakshuka",
+    "servings": 2,
+    "timeMinutes": 25,
+    "dietTags": ["vegetarian", "halal"],
+    "summary": "Eieren in kruidige tomatensaus — goedkoop en vullend.",
+    "steps": [
+      "Fruit ui, paprika en knoflook.",
+      "Voeg tomatenblokjes en kruiden toe.",
+      "Breek eieren erin en laat stollen."
+    ],
+    "ingredients": [
+      { "name": "eieren", "quantity": 4, "unit": "stuk", "searchTerm": "scharreleieren", "optional": false },
+      { "name": "tomatenblokjes", "quantity": 400, "unit": "g", "searchTerm": "tomatenblokjes", "optional": false },
+      { "name": "paprika", "quantity": 1, "unit": "stuk", "searchTerm": "paprika", "optional": false },
+      { "name": "ui", "quantity": 1, "unit": "stuk", "searchTerm": "ui", "optional": false },
+      { "name": "knoflook", "quantity": 2, "unit": "teen", "searchTerm": "knoflook", "optional": false },
+      { "name": "komijn", "quantity": 1, "unit": "tl", "searchTerm": "komijn", "optional": true }
+    ]
+  },
+  {
+    "id": "tofu-roerbak",
+    "title": "Tofu roerbak met groente",
+    "servings": 2,
+    "timeMinutes": 25,
+    "dietTags": ["vegetarian", "vegan", "halal"],
+    "summary": "Plantaardige roerbak met tofu, wokgroente en sojasaus.",
+    "steps": [
+      "Pers tofu droog en bak krokant.",
+      "Roerbak wokgroente kort op hoog vuur.",
+      "Voeg sojasaus en tofu toe; serveer met rijst."
+    ],
+    "ingredients": [
+      { "name": "tofu", "quantity": 300, "unit": "g", "searchTerm": "tofu naturel", "optional": false },
+      { "name": "wokgroente", "quantity": 400, "unit": "g", "searchTerm": "wokgroente", "optional": false },
+      { "name": "sojasaus", "quantity": 2, "unit": "el", "searchTerm": "sojasaus", "optional": false },
+      { "name": "rijst", "quantity": 150, "unit": "g", "searchTerm": "rijst", "optional": false },
+      { "name": "sesamolie", "quantity": 1, "unit": "el", "searchTerm": "sesamolie", "optional": true }
+    ]
+  },
+  {
+    "id": "bonenschotel",
+    "title": "Mexicaanse bonenschotel",
+    "servings": 3,
+    "timeMinutes": 30,
+    "dietTags": ["vegetarian", "vegan", "halal"],
+    "summary": "Budgetvriendelijke schotel met zwarte bonen en mais.",
+    "steps": [
+      "Fruit ui en knoflook.",
+      "Voeg bonen, mais, tomatenblokjes en kruiden toe.",
+      "Serveer met tortilla's of rijst."
+    ],
+    "ingredients": [
+      { "name": "zwarte bonen", "quantity": 400, "unit": "g", "searchTerm": "zwarte bonen", "optional": false },
+      { "name": "mais", "quantity": 150, "unit": "g", "searchTerm": "mais", "optional": false },
+      { "name": "tomatenblokjes", "quantity": 400, "unit": "g", "searchTerm": "tomatenblokjes", "optional": false },
+      { "name": "ui", "quantity": 1, "unit": "stuk", "searchTerm": "ui", "optional": false },
+      { "name": "tortilla's", "quantity": 6, "unit": "stuk", "searchTerm": "tortilla", "optional": false },
+      { "name": "avocados", "quantity": 1, "unit": "stuk", "searchTerm": "avocado", "optional": true }
+    ]
+  }
+]

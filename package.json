@@ -2,7 +2,7 @@
   "name": "hackathon-project",
   "version": "0.1.0",
   "private": true,
-  "description": "Full-stack demo: Vite + React frontend, Express API, SQLite storage.",
+  "description": "PlateWise diet planner: prefs, seeded recipes, AH product match, shopping list.",
   "workspaces": [
     "server",
     "client"
